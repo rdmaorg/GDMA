@@ -4,17 +4,13 @@ var row = null;
 
 function doOnLoad(){
 	serverid = document.getElementById("server_id").value;	
-	doRefreshTableList();
 	row = dialogArguments;
-	
-	/*row.server_id = document.getElementById("fldDropDownColumnDisplayServerID" + id);
-   row.server_name = document.getElementById("fldDropDownColumnDisplayServerName" + id);
-   row.table_id = document.getElementById("fldDropDownColumnDisplayTableID" + id);
-   row.table_name = document.getElementById("fldDropDownColumnDisplayTableName" + id);
-	row.columnDisplay_id = document.getElementById("fldDropDownColumnDisplayID" + id);
-	row.columnDisplay_name = document.getElementById("fldDropDownColumnDisplayName" + id);
-   row.columnStored_id = document.getElementById("fldDropDownColumnStoreID" + id);
-   row.columnStored_name = document.getElementById("fldDropDownColumnStoreName" + id);*/
+	document.getElementById("server_id").value = row.server_id.value;
+	doRefreshTableList();
+	document.getElementById("table_id").value = row.table_id.value;
+	doRefreshColumnList();
+	document.getElementById("column_display_id").value = row.columnDisplay_id.value;
+	document.getElementById("column_store_id").value = row.columnStored_id.value;
 }
 
 function doOK(){

@@ -1,9 +1,3 @@
-/*
- * Created on Mar 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
 
 import java.sql.Types;
@@ -13,8 +7,6 @@ import org.apache.log4j.Logger;
 /**
  * @author RGILL
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
  */
 public class Column implements Comparable {
 
@@ -41,6 +33,8 @@ public class Column implements Comparable {
     private boolean allowUpdate;
 
     private boolean nullable;
+    
+    private String special;
 
     /**
      * @return Returns the dropDownColumnDisplay.
@@ -268,6 +262,19 @@ public class Column implements Comparable {
         this.columnTypeString = columnTypeString;
     }
     
+    /**
+     * @return Returns the special.
+     */
+    public String getSpecial() {
+        return special;
+    }
+    /**
+     * @param special The special to set.
+     */
+    public void setSpecial(String special) {
+        this.special = special;
+    }
+    
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("id                    : ");
@@ -291,7 +298,9 @@ public class Column implements Comparable {
         sb.append("\ndisplayed             : ");
         sb.append(displayed );
         sb.append("\nnullable              : ");
-        sb.append(nullable);        
+        sb.append(nullable);     
+        sb.append("\nspecial              : ");
+        sb.append(special);                
         return sb.toString();
     }    
     

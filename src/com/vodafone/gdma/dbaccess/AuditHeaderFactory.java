@@ -1,9 +1,3 @@
-/*
- * Created on Mar 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
 
 import java.io.IOException;
@@ -20,8 +14,9 @@ import org.apache.log4j.Logger;
 /**
  * @author RGILL
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
+ * This class is used to create and retrieve Audit Header records in the database.
+ * For now, the code only works with an oracle database.
+ *  
  */
 public class AuditHeaderFactory extends DBFactory {
 
@@ -30,11 +25,12 @@ public class AuditHeaderFactory extends DBFactory {
     // Log4j logger
     private static Logger logger = Logger.getLogger(AuditHeaderFactory.class);
 
+    /*
+     * GEt a particular Audit Header Record
+     */
     public AuditHeader getAuditHeader(Long id) {
         AuditHeader AuditHeader = null;
-
         if (id == null) return null;
-
         for (int i = 0; i <= list.size(); i++) {
             AuditHeader = (AuditHeader) list.get(i);
             if (id.equals(AuditHeader.getID())) return AuditHeader;
@@ -42,16 +38,18 @@ public class AuditHeaderFactory extends DBFactory {
         return null;
     }
 
+    /*
+     * Build the list of Audit Header Records
+     * @see com.vodafone.gdma.dbaccess.DBFactory#buildList()
+     */
     public synchronized void buildList() throws ClassNotFoundException,
             SQLException, IOException, Exception {
-        // Create the TreeMap whcih will hold the Providers
         java.sql.Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
         String query = "SELECT * FROM GDMA_AUDIT_HEADER order by modifed_date";
-        // Create the ArrayList which will hold the ServerRegistrations
+        // Create the ArrayList which will hold records
         list = new ArrayList();
-
         try {
             con = DBUtil.getConnection();
             stmt = con.createStatement();
@@ -59,7 +57,6 @@ public class AuditHeaderFactory extends DBFactory {
 
             while (rs != null && rs.next()) {
                 AuditHeader AuditHeader = new AuditHeader();
-
                 AuditHeader.setID(new Long(rs.getLong("id")));
                 AuditHeader.setTableID(new Long(rs.getLong("table_id")));
                 AuditHeader.setType(rs.getString("type"));
@@ -76,6 +73,11 @@ public class AuditHeaderFactory extends DBFactory {
 
     }
 
+    /*
+     * Save an Audit Header record in teh database.
+     * The newly created id will be placed back into the Audit Header record
+     * 
+     */
     public void save(AuditHeader auditHeader) throws Exception {
 
         Connection con = null;
@@ -101,8 +103,7 @@ public class AuditHeaderFactory extends DBFactory {
             stmt.registerOutParameter(5, Types.NUMERIC);
             stmt.execute();
             
-            long lng = stmt.getBigDecimal(5).longValue();
-            logger.debug("lng = " + lng);
+            long lng = stmt.getBigDecimal(5).longValue();            
             auditHeader.setID(new Long(lng));
             logger.debug("Audit Header ID = " + auditHeader.getID());
         } catch (Exception e) {

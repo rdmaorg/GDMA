@@ -12,7 +12,7 @@ function toggleColumnLookup(id){
 
 function doDDLookup(id) {
                          
-   var propDialog = "dialogHeight:227px;" +
+   var propDialog = "dialogHeight:150px;" +
                     "dialogWidth:500px;" +
                     "dialogTop:240;" +
                     "dialogLeft:270;" +
@@ -29,8 +29,8 @@ function doDDLookup(id) {
    row.server_name = document.getElementById("fldDropDownColumnDisplayServerName" + id);
    row.table_id = document.getElementById("fldDropDownColumnDisplayTableID" + id);
    row.table_name = document.getElementById("fldDropDownColumnDisplayTableName" + id);
-	row.columnDisplay_id = document.getElementById("fldDropDownColumnDisplayID" + id);
-	row.columnDisplay_name = document.getElementById("fldDropDownColumnDisplayName" + id);
+   row.columnDisplay_id = document.getElementById("fldDropDownColumnDisplayID" + id);
+   row.columnDisplay_name = document.getElementById("fldDropDownColumnDisplayName" + id);
    row.columnStored_id = document.getElementById("fldDropDownColumnStoreID" + id);
    row.columnStored_name = document.getElementById("fldDropDownColumnStoreName" + id);
    

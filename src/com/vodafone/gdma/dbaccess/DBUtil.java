@@ -1,9 +1,3 @@
-/*
- * Created on Mar 15, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
 
 import java.io.IOException;
@@ -18,8 +12,6 @@ import com.vodafone.gdma.util.Config;
 /**
  * @author RGILL
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
  */
 public class DBUtil {
 
@@ -29,6 +21,10 @@ public class DBUtil {
 
     private static Properties connectionProp;
 
+    /*
+     *  returns the default connection for the GDMA database
+     * 
+     */
     public static Connection getConnection()
             throws ClassNotFoundException, SQLException, IOException, Exception {
 
@@ -42,6 +38,9 @@ public class DBUtil {
         return DriverManager.getConnection(Config.getProperty("url"), connectionProp);
     }
 
+    /*
+     * Loads the properties file
+     */
     private static void loadProperties() throws IOException, Exception {
         if (connectionProp == null) {
             synchronized (DBUtil.class) {
@@ -57,6 +56,9 @@ public class DBUtil {
         }
     }
     
+    /*
+     * Get a conenction to any database 
+     */
     public static Connection getConnection(String conenctionClass, 
             String user, String pass, String url) throws SQLException, ClassNotFoundException{
   
@@ -85,12 +87,18 @@ public class DBUtil {
         return DriverManager.getConnection(reg.getConnectionURL(), prop);
     }
     
+    /*
+     * Used to test if a column is a date
+     */
     public static boolean isDate(int type){
         return type == Types.DATE ||
         type == Types.TIME ||
         type == Types.TIMESTAMP;
     }
     
+    /*
+     * Used to test if a column is a number
+     */    
     public static boolean isNumber(int type){
         return type == Types.TINYINT ||
         type == Types.INTEGER ||

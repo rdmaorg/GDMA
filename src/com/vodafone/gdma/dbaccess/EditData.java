@@ -1,8 +1,8 @@
 /*
  * Created on Mar 22, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * 
+ * To change the template for this generated file go to Window - Preferences -
+ * Java - Code Generation - Code and Comments
  */
 package com.vodafone.gdma.dbaccess;
 
@@ -17,14 +17,15 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
 import com.vodafone.gdma.security.User;
+import com.vodafone.gdma.util.Config;
 import com.vodafone.gdma.util.Formatter;
 
 /**
@@ -37,7 +38,7 @@ public class EditData {
 
     // Log4j logger
     private static Logger logger = Logger
-            .getLogger("ServerRegistrationFactory");
+            .getLogger("EditData");
 
     private ODBCProvider odbc = null;
 
@@ -105,11 +106,13 @@ public class EditData {
         return selectData(mode);
     }
 
-    public String generateSelect(Column display, Column Store, String name, String value) throws Exception {
+    public String generateSelect(Column display, Column store, String name,
+            String value) throws Exception {
         PreparedStatement stmt = null;
         Column column = null;
         ResultSet rs = null;
         StringBuffer sbTemp = new StringBuffer();
+        String strDisplay, strStore;
 
         this.table = TableFactory.getInstance().getTable(display.getTableID());
         this.reg = ServerRegistrationFactory.getInstance()
@@ -125,9 +128,9 @@ public class EditData {
         columnsNew = new ArrayList();
         columnsWhere = new ArrayList();
         columnsNew.add(display);
-        columnsNew.add(Store);
+        columnsNew.add(store);
 
-        stmt = con.prepareStatement(createSelectStatement());
+        stmt = con.prepareStatement(createSelectStatement() + createOrderBy());
 
         rs = stmt.executeQuery();
         sbTemp.append("<select value=\"");
@@ -137,32 +140,38 @@ public class EditData {
         sbTemp.append("\" id=\"");
         sbTemp.append(name);
         sbTemp.append("\">\n");
+        //if its for a search the insert an ALL
+        if (name.startsWith("search"))
+                sbTemp.append("<option value=\"%\">ALL</option>\n");
+
         if (rs != null) {
             while (rs.next()) {
+                strDisplay = rs.getString(1);
+                strStore = rs.getString(2);
                 sbTemp.append("<option value=\"");
-                sbTemp.append(rs.getString(1));
+                sbTemp.append(strStore);
                 sbTemp.append("\">");
-                sbTemp.append(rs.getString(2));
+                sbTemp.append(strDisplay);
                 sbTemp.append("</option>\n");
             }
             sbTemp.append("</select>\n");
-            sbTemp.append("<script>\n");
-            sbTemp.append("  document.getElementById('");
-            sbTemp.append(name);
-            sbTemp.append("').value = ");
-            sbTemp.append(value);
-            sbTemp.append(";\n</script>\n");
+            if (value != null && !"".equals(value.trim())) {
+                sbTemp.append("<script>\n");
+                sbTemp.append("  document.getElementById('");
+                sbTemp.append(name);
+                sbTemp.append("').value = '");
+                sbTemp.append(value);
+                sbTemp.append("';\n</script>\n");
+            }
         } else {
             sbTemp.append("<option value=\"\">");
             sbTemp.append("No data found");
             sbTemp.append("</option>\n");
             sbTemp.append("</select>\n");
         }
-        
-        
-        
-        
-        return sbTemp.toString();    }
+
+        return sbTemp.toString();
+    }
 
     private String selectData(String mode) throws Exception {
         PreparedStatement stmt = null;
@@ -173,10 +182,21 @@ public class EditData {
             columnsNew = table.getDisplayedColumns();
             columnsWhere = table.getDisplayedColumns();
             if (table.getDisplayedColumns().size() > 0) {
-                getOldValues();
-                stmt = con.prepareStatement(createSelectStatement());
-                setSelectWhereValues(stmt, columnsNew.size());
+                if (request.getParameter("BACK") != null
+                        && request.getSession().getAttribute("OLD_WHERE") != null) {
+                    columnsWhere = (ArrayList) request.getSession()
+                            .getAttribute("OLD_WHERE");
+                    valuesWhere = (HashMap) request.getSession().getAttribute(
+                            "OLD_WHERE_VALUES");
+                } else {
+                    getSearchValues();
+                }
 
+                request.getSession().setAttribute("OLD_WHERE", columnsWhere);
+                request.getSession().setAttribute("OLD_WHERE_VALUES",
+                        valuesWhere);
+
+                stmt = con.prepareStatement(createSelectStatement());
                 rs = stmt.executeQuery();
             }
             if ("XML".equals(mode))
@@ -220,16 +240,15 @@ public class EditData {
             throw new Exception("NumberFormatException - " + e.getMessage());
         } catch (SQLException e) {
             logger.error("START SQL ERROR");
-            while (e != null)
-            {
-                logger.error("SQLState: " +e.getSQLState ());
-                logger.error("Message:  " +e.getMessage ());
-                logger.error("Vendor:   " +e.getErrorCode ());
-                e = e.getNextException ();                
-            }            
+            while (e != null) {
+                logger.error("SQLState: " + e.getSQLState());
+                logger.error("Message:  " + e.getMessage());
+                logger.error("Vendor:   " + e.getErrorCode());
+                e = e.getNextException();
+            }
             logger.error("END SQL ERROR");
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
         } finally {
@@ -257,18 +276,17 @@ public class EditData {
             throw new Exception("NumberFormatException - " + e.getMessage());
         } catch (SQLException e) {
             logger.error("START SQL ERROR");
-            while (e != null)
-            {
-                logger.error("SQLState: " +e.getSQLState ());
-                logger.error("Message:  " +e.getMessage ());
-                logger.error("Vendor:   " +e.getErrorCode ());
-                e = e.getNextException ();                
-            }            
+            while (e != null) {
+                logger.error("SQLState: " + e.getSQLState());
+                logger.error("Message:  " + e.getMessage());
+                logger.error("Vendor:   " + e.getErrorCode());
+                e = e.getNextException();
+            }
             logger.error("END SQL ERROR");
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            
+
             throw e;
         } finally {
             closeAll(con, stmt, null);
@@ -300,20 +318,37 @@ public class EditData {
                             + Formatter.dateFormat + "].\n" + e.getMessage());
         } catch (SQLException e) {
             logger.error("START SQL ERROR");
-            while (e != null)
-            {
-                logger.error("SQLState: " +e.getSQLState ());
-                logger.error("Message:  " +e.getMessage ());
-                logger.error("Vendor:   " +e.getErrorCode ());
-                e = e.getNextException ();                
-            }            
+            while (e != null) {
+                logger.error("SQLState: " + e.getSQLState());
+                logger.error("Message:  " + e.getMessage());
+                logger.error("Vendor:   " + e.getErrorCode());
+                e = e.getNextException();
+            }
             logger.error("END SQL ERROR");
             throw e;
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
         } finally {
             closeAll(con, stmt, null);
+        }
+    }
+
+    private void getSearchValues() throws ParseException {
+        valuesWhere = new HashMap();
+        Column column = null;
+        String value;
+        for (int i = 0; i < columnsWhere.size(); i++) {
+            column = (Column) columnsWhere.get(i);
+            value = request.getParameter("search_" + column.getName());
+            if (value != null) {
+                if ("".equals(value)) value = null;
+
+                if (value != null && DBUtil.isDate(column.getColumnType())) {
+                    value = "" + Formatter.parseDate(value).getTime();
+                }
+            }
+            valuesWhere.put(column.getName(), value);
         }
     }
 
@@ -324,8 +359,7 @@ public class EditData {
         for (int i = 0; i < columnsWhere.size(); i++) {
             column = (Column) columnsWhere.get(i);
             value = request.getParameter("old_" + column.getName());
-            if(value != null){
-                value = value.trim();
+            if (value != null) {
                 if ("".equals(value)) value = null;
 
                 if (value != null && DBUtil.isDate(column.getColumnType())) {
@@ -333,21 +367,18 @@ public class EditData {
                 }
             }
             valuesWhere.put(column.getName(), value);
-
         }
     }
 
     private void getNewValues() throws ParseException {
         Column column = null;
         String value;
-
         valuesNew = new HashMap();
 
         for (int i = 0; i < columnsNew.size(); i++) {
             column = (Column) columnsNew.get(i);
             value = request.getParameter("new_" + column.getName());
-            if(value != null){
-                value = value.trim();
+            if (value != null) {
                 if ("".equals(value)) value = null;
 
                 if (value != null && DBUtil.isDate(column.getColumnType())) {
@@ -380,21 +411,6 @@ public class EditData {
         }
     }
 
-    private void setSelectWhereValues(PreparedStatement stmt, int offset)
-            throws Exception {
-        Column column;
-        String value;
-        int idx = 1;
-        for (int i = 0; i < columnsWhere.size(); i++) {
-            column = (Column) columnsWhere.get(i);
-            value = (String) valuesWhere.get(column.getName());
-            if (value != null && !"".equals(value.trim())) {
-                setValue(stmt, idx, column.getColumnType(), value);
-                idx++;
-            }
-        }
-    }
-
     private String createWhereClause() {
 
         Column column;
@@ -423,7 +439,7 @@ public class EditData {
         return sbStatement.toString();
     }
 
-    private String createConditionalWhereClause() {
+    private String createSelectWhereClause() {
 
         Column column;
         int size = columnsWhere.size();
@@ -436,18 +452,32 @@ public class EditData {
             column = (Column) columnsWhere.get(i);
             value = (String) valuesWhere.get(column.getName());
             if (value != null && !"".equals(value.trim())) {
-                sbStatement.append(quotedIdentifer);
-                sbStatement.append(column.getName());
-                sbStatement.append(quotedIdentifer);
-                if (DBUtil.isNumber(column.getColumnType())) {
-                    sbStatement.append(" = ?");
-                } else {
-                    sbStatement.append(" LIKE ?");
-                }
                 sbStatement.append(firstWhereClause ? "" : " AND ");
+                if (column != null && 
+                    column.getDropDownColumnDisplay() != null &&
+                    !"%".equals(value)) {
+                    sbStatement.append("upper(cast(");
+                    sbStatement.append(quotedIdentifer);
+                    sbStatement.append(column.getName());
+                    sbStatement.append(quotedIdentifer);
+                    sbStatement.append(" as char(100)))");
+                    sbStatement.append(" = upper(cast('");
+                    sbStatement.append(value.toUpperCase());
+                    sbStatement.append("'as char(100)))");
+                } else {
+
+                    sbStatement.append("upper(cast(");
+                    sbStatement.append(quotedIdentifer);
+                    sbStatement.append(column.getName());
+                    sbStatement.append(quotedIdentifer);
+                    sbStatement.append(" as char(100)))");
+                    sbStatement.append(" LIKE '%");
+                    sbStatement.append(value.toUpperCase());
+                    sbStatement.append("%'");
+                }
+
                 firstWhereClause = false;
             }
-
         }
         if (sbStatement.length() > 1) {
             sbStatement.insert(0, " WHERE ( ");
@@ -463,7 +493,7 @@ public class EditData {
         int size = columnsNew.size();
 
         StringBuffer sbUpdate = new StringBuffer("UPDATE ");
-        
+
         sbUpdate.append(quotedIdentifer);
         sbUpdate.append(reg.getPrefix());
         sbUpdate.append(quotedIdentifer);
@@ -504,29 +534,11 @@ public class EditData {
             sbSelect.append(quotedIdentifer);
             sbSelect.append(column.getName());
             sbSelect.append(quotedIdentifer);
-            
-            
-            /*
-             if(column!=null && column.getDropDownColumnDisplay() != null){
-                Column colDropDownColumnDisplay = ColumnFactory.getInstance().getColumn(column.getDropDownColumnDisplay().longValue());
-                Column colDropDownColumnStore = ColumnFactory.getInstance().getColumn(column.getDropDownColumnStore().longValue());
-                sbSelect.append(",");
-                
-                sbSelect.append(quotedIdentifer);
-                sbSelect.append(table.getName());
-                sbSelect.append(quotedIdentifer);
-                sbSelect.append(".");
-                sbSelect.append(quotedIdentifer);
-                sbSelect.append(column.getName());
-                sbSelect.append(quotedIdentifer);
-            }
-             */
-            
             sbSelect.append(i == (size - 1) ? "" : ",");
         }
 
         sbSelect.append(" FROM ");
-        
+
         sbSelect.append(quotedIdentifer);
         sbSelect.append(reg.getPrefix());
         sbSelect.append(quotedIdentifer);
@@ -535,10 +547,33 @@ public class EditData {
         sbSelect.append(table.getName());
         sbSelect.append(quotedIdentifer);
 
-        sbSelect.append(createConditionalWhereClause());
+        sbSelect.append(createSelectWhereClause());
 
         logger.debug(sbSelect);
         return sbSelect.toString();
+    }
+
+    private String createOrderBy() {
+
+        Column column;
+        int size = columnsNew.size();
+
+        StringBuffer sbOrderBy = new StringBuffer("ORDER BY ");
+
+        for (int i = 0; i < size; i++) {
+            column = (Column) columnsNew.get(i);
+            sbOrderBy.append(quotedIdentifer);
+            sbOrderBy.append(table.getName());
+            sbOrderBy.append(quotedIdentifer);
+            sbOrderBy.append(".");
+            sbOrderBy.append(quotedIdentifer);
+            sbOrderBy.append(column.getName());
+            sbOrderBy.append(quotedIdentifer);
+            sbOrderBy.append(i == (size - 1) ? "" : ",");
+        }
+
+        logger.debug(sbOrderBy);
+        return sbOrderBy.toString();
     }
 
     private String createInsertStatement() {
@@ -548,7 +583,7 @@ public class EditData {
 
         StringBuffer sbInsert = new StringBuffer("INSERT INTO ");
         StringBuffer sbValues = new StringBuffer("VALUES ( ");
-        
+
         sbInsert.append(quotedIdentifer);
         sbInsert.append(reg.getPrefix());
         sbInsert.append(quotedIdentifer);
@@ -612,6 +647,8 @@ public class EditData {
             case Types.TINYINT:
             case Types.INTEGER:
             case Types.BIGINT:
+            case Types.BIT:
+            case Types.SMALLINT:
                 stmt.setInt(position, Integer.parseInt(data));
                 logger.debug(position + " : " + Integer.parseInt(data));
                 break;
@@ -619,6 +656,7 @@ public class EditData {
             case Types.FLOAT:
             case Types.NUMERIC:
             case Types.REAL:
+            case Types.DOUBLE:
                 stmt.setBigDecimal(position, new BigDecimal(data));
                 logger.debug(position + " : " + new BigDecimal(data));
                 break;
@@ -776,15 +814,15 @@ public class EditData {
             columnCount = rsmd.getColumnCount();
 
             for (int i = 1; i <= columnCount; i++) {
-                if("id".equalsIgnoreCase(rsmd.getColumnName(i)))
-                    sbTemp.append("\"");
+                if ("id".equalsIgnoreCase(rsmd.getColumnName(i)))
+                        sbTemp.append("\"");
                 sbTemp.append(rsmd.getColumnName(i));
-                if("id".equalsIgnoreCase(rsmd.getColumnName(i)))
-                    sbTemp.append("\"");                
+                if ("id".equalsIgnoreCase(rsmd.getColumnName(i)))
+                        sbTemp.append("\"");
                 sbTemp.append(i == columnCount ? "" : ", ");
             }
 
-            sbTemp.append("\n");
+            sbTemp.append("\r\n");
 
             for (int row = 1; rs.next(); row++) {
                 for (int i = 1; i <= columnCount; i++) {
@@ -792,10 +830,10 @@ public class EditData {
                     sbTemp.append(value == null ? "" : value);
                     sbTemp.append(i == columnCount ? "" : ", ");
                 }
-                sbTemp.append("\n");
+                sbTemp.append("\r\n");
             }
         } else {
-            sbTemp.append("No columns specified\n");
+            sbTemp.append("No columns specified\r\n");
         }
         return sbTemp.toString();
     }
@@ -809,31 +847,30 @@ public class EditData {
         sbTemp.append("<?xml version=\"1.0\"?>\n");
         sbTemp.append("<Workbook xmlns=\"urn:schemas-microsoft-com:");
         sbTemp.append("office:spreadsheet\"\n");
-        sbTemp.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n");
-        sbTemp.append(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n");
+        sbTemp.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\"\r\n");
+        sbTemp.append(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\r\n");
         sbTemp
-                .append(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n");
-        sbTemp.append(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n");
+                .append(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\r\n");
+        sbTemp.append(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">\r\n");
 
-        sbTemp.append("<Worksheet ss:Name=\"Sheet1\">\n");
-        sbTemp.append("  <Table >\n");
+        sbTemp.append("<Worksheet ss:Name=\"Sheet1\">\r\n");
+        sbTemp.append("  <Table >\r\n");
         if (rs != null) {
             rsmd = rs.getMetaData();
             columnCount = rsmd.getColumnCount();
-            sbTemp.append("  <Row>\n");
+            sbTemp.append("  <Row>\r\n");
             for (int i = 1; i <= columnCount; i++) {
                 sbTemp.append("    <Cell><Data ss:Type=\"String\">");
                 sbTemp.append(rsmd.getColumnName(i));
-                sbTemp.append("</Data></Cell>\n");
+                sbTemp.append("</Data></Cell>\r\n");
             }
-            sbTemp.append("  </Row>\n");
+            sbTemp.append("  </Row>\r\n");
             for (int row = 1; rs.next(); row++) {
-                sbTemp.append("  <Row>\n");
+                sbTemp.append("  <Row>\r\n");
                 for (int i = 1; i <= columnCount; i++) {
                     sbTemp.append("    <Cell><Data ss:Type=\"");
 
                     if (DBUtil.isDate(rsmd.getColumnType(i))) {
-                        // TODO : Used to be DateTime
                         sbTemp.append("String\">");
                         java.sql.Date value = rs.getDate(i);
                         sbTemp.append(value == null ? "" : Formatter
@@ -847,20 +884,20 @@ public class EditData {
                         sbTemp.append("String\">");
                         sbTemp.append(value == null ? "" : value.trim());
                     }
-                    sbTemp.append("</Data></Cell>\n");
+                    sbTemp.append("</Data></Cell>\r\n");
                 }
-                sbTemp.append("  </Row>\n");
+                sbTemp.append("  </Row>\r\n");
             }
 
         } else {
-            sbTemp.append("  <Row>\n");
+            sbTemp.append("  <Row>\r\n");
             sbTemp.append("    <Cell><Data ss:Type=\"String\">");
             sbTemp.append("No Columns Specified");
-            sbTemp.append("  </Row>\n");
+            sbTemp.append("  </Row>\r\n");
         }
-        sbTemp.append("</Table>\n");
-        sbTemp.append("</Worksheet>\n");
-        sbTemp.append("</Workbook>\n");
+        sbTemp.append("</Table>\r\n");
+        sbTemp.append("</Worksheet>\r\n");
+        sbTemp.append("</Workbook>\r\n");
 
         return sbTemp.toString();
     }
@@ -870,6 +907,8 @@ public class EditData {
 
         ResultSetMetaData rsmd;
         int columnCount;
+        int rowCount = 0;
+        int maxRowCount = Integer.parseInt(Config.getProperty("max_row_count"));
         sbTemp
                 .append("      <table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"dataTable\">\n");
         if (rs != null) {
@@ -879,56 +918,77 @@ public class EditData {
             sbTemp
                     .append("      <td class=\"dataHeader\" width=\"30px\" nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
             for (int i = 1; i <= columnCount; i++) {
+                String columnName = rsmd.getColumnName(i);
                 sbTemp.append("      <td class=\"dataHeader\" nowrap >");
-                sbTemp.append(rsmd.getColumnName(i));
-                sbTemp.append("&nbsp;</td>\n");
+                sbTemp.append(columnName);
+                //add hidden columns to take values when editing
+                sbTemp.append("<input type=\"hidden\" value=\"\" id=\"old_");
+                sbTemp.append(columnName);
+                sbTemp.append("\" name=\"old_");
+                sbTemp.append(columnName);
+                sbTemp.append("\">&nbsp;</td>\n");
             }
             sbTemp.append("    </tr>\n");
 
             for (int row = 1; rs.next(); row++) {
-                sbTemp
-                        .append("    <tr onmouseover=\"mouseEntered(this)\" onmouseout=\"mouseExited(this)\"");
-                if (table.isAllowUpdate()) {
-                    sbTemp.append(" ondblclick=\"mouseDblClicked(this,");
-                    sbTemp.append(row);
-                    sbTemp.append(");\"");
-                    sbTemp.append(" onclick=\"mouseClicked(this,");
-                    sbTemp.append(row);
-                    sbTemp.append(");\"");
-                }
+                rowCount++;
+                if (rowCount <= maxRowCount) {
+                    sbTemp
+                            .append("    <tr onmouseover=\"mouseEntered(this)\" onmouseout=\"mouseExited(this)\"");
+                    if (table.isAllowUpdate()) {
+                        sbTemp.append(" ondblclick=\"mouseDblClicked(this,");
+                        sbTemp.append(row);
+                        sbTemp.append(");\"");
+                        sbTemp.append(" onclick=\"mouseClicked(this,");
+                        sbTemp.append(row);
+                        sbTemp.append(");\"");
+                    }
 
-                sbTemp.append(" id=\"trRow");
-                sbTemp.append(row);
-                sbTemp.append("\" class=\"dataBody\">\n");
-                sbTemp.append("      <td class=\"dataHeader\" align=\"left\" ");
-                sbTemp.append(" style=\"font-weight: normal\">");
-                sbTemp.append(row);
-                sbTemp.append("</td>\n");
-                String value;
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    // we need a hidden field for each column
-                    if (DBUtil.isDate(rsmd.getColumnType(i))) {
-                        java.sql.Timestamp date = rs.getTimestamp(i);
-                        if (date == null) {
-                            sbTemp
-                                    .append("      <td class=\"dataGreyBorder\" nowrap></td>");
+                    sbTemp.append(" id=\"trRow");
+                    sbTemp.append(row);
+                    sbTemp.append("\" class=\"dataBody\">\n");
+                    sbTemp
+                            .append("      <td class=\"dataHeader\" align=\"left\" ");
+                    sbTemp.append(" style=\"font-weight: normal\">");
+                    sbTemp.append(row);
+                    sbTemp.append("</td>\n");
+                    String value, formatted;
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        // we need a hidden field for each column
+                        if (DBUtil.isDate(rsmd.getColumnType(i))) {
+                            java.sql.Timestamp date = rs.getTimestamp(i);
+                            value = (date == null ? "0" : "" + date.getTime());
+                            formatted = (date == null ? "&nbsp;" : Formatter
+                                    .formatDate(date));
                         } else {
-                            sbTemp
-                                    .append("      <td class=\"dataGreyBorder\" nowrap>");
-                            sbTemp.append(Formatter.formatDate(date));
-                            sbTemp.append("<input type=\"hidden\" value=\"");
-                            sbTemp.append(date.getTime());
-                            sbTemp.append("\"></td>");
+                            value = rs.getString(i);
+                            formatted = (value == null ? "" : value.replaceAll(
+                                    " ", "&nbsp;"));
+
                         }
-                    } else {
-                        value = rs.getString(i);
                         sbTemp
                                 .append("      <td class=\"dataGreyBorder\" nowrap>");
-                        sbTemp.append(value == null ? "" : value);
-                        sbTemp.append("</td>");
+                        sbTemp.append(formatted);
+                        sbTemp.append("<input type=\"hidden\" value=\"");
+                        sbTemp.append(value);
+                        sbTemp.append("\"></td>\n");
                     }
+                    sbTemp.append("    </tr>\n");
+                } else {
+                    sbTemp.append("    <tr id=\"dataBody\">\n");
+                    sbTemp
+                            .append("      <td class=\"dataHeader\" width=\"30px\" ");
+                    sbTemp.append("nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
+                    sbTemp
+                            .append("      <td class=\"dataGreyBorder\" nowrap colspan=\"");
+                    sbTemp.append(columnCount);
+                    sbTemp.append("\">NOTE: Only the first ");
+                    sbTemp.append(maxRowCount);
+                    sbTemp.append(" rows were returned</td>\n");
+                    ;
+                    sbTemp.append("    </tr>\n");
+                    break;
                 }
-                sbTemp.append("    </tr>");
             }
 
         } else {

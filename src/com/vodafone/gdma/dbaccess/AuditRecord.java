@@ -1,17 +1,9 @@
-/*
- * Created on Mar 25, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
-
 
 /**
  * @author RGILL
  *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * This class is an Audit Record
  */
 public class AuditRecord {
     private Long id;

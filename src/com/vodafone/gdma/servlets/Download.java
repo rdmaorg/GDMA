@@ -107,14 +107,14 @@ public class Download extends HttpServlet {
             EditData ed = new EditData();
             String content = null;
             if (request.getServletPath().indexOf("export.xml") > -1) {
-                response.setContentType("text/xml");
+                response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition",
-                        "attachment");
+                        "attachment; filename=export.xml");
                 content = ed.select(reg,table,request,"XML");
             } else {
                 response.setContentType("application/vnd.ms-excel");
                 response.setHeader("Content-Disposition",
-                        "attachment");
+                        "attachment;  filename=export.csv");
                 content = ed.select(reg,table,request,"CSV");                
             }
             response.setContentLength(content.getBytes().length);

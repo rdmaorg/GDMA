@@ -1,10 +1,5 @@
-/*
- * Created on Mar 23, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -16,8 +11,7 @@ import org.apache.log4j.Logger;
 /**
  * @author RGILL
  *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * 
  */
 public abstract class DBFactory {
     

@@ -1,9 +1,3 @@
-/*
- * Created on Mar 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
 
 import java.sql.Connection;
@@ -17,9 +11,10 @@ import org.apache.log4j.Logger;
 
 /**
  * @author RGILL
+ * This class is used to create and retrieve Column records in the database.
+ * The list of columns is held im memory to speed up the application.
+ * Uses a singleton pattern
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
  */
 public class ColumnFactory extends DBFactory {
 
@@ -28,8 +23,10 @@ public class ColumnFactory extends DBFactory {
 
     private static ColumnFactory instance = null;
 
+    
     public static ColumnFactory getInstance() throws Exception {
         if (instance == null) {
+            //need to make sure we only ever get back the one object
             synchronized (ODBCProviderFactory.class) {
                 if (instance == null) {
                     try {
@@ -58,7 +55,6 @@ public class ColumnFactory extends DBFactory {
     }
 
     public synchronized void buildList() throws Exception {
-        // Create the TreeMap whcih will hold the Providers
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -82,8 +78,7 @@ public class ColumnFactory extends DBFactory {
                 column.setColumnType(rs.getInt("type"));
                 column.setColumnTypeString(rs.getString("typeString"));
                 
-                temp = rs.getLong("dd_lookup_column_display");
-               
+                temp = rs.getLong("dd_lookup_column_display");               
                 if(rs.wasNull())
                     column.setDropDownColumnDisplay((Long)null);
                 else
@@ -99,6 +94,7 @@ public class ColumnFactory extends DBFactory {
                 column.setAllowInsert("Y".equals(rs.getString("allowinsert")));
                 column.setAllowUpdate("Y".equals(rs.getString("allowupdate")));
                 column.setNullable("Y".equals(rs.getString("nullable")));
+                column.setSpecial(rs.getString("special"));
                 list.add(column);
             }
         }catch (Exception e) {
@@ -117,15 +113,13 @@ public class ColumnFactory extends DBFactory {
     }
     
     private void addColumn(Column col) throws Exception {
-
         Connection con = null;
         PreparedStatement stmt = null;
 
         try {
             con = DBUtil.getConnection();
             stmt = con
-                    .prepareStatement("INSERT INTO gmda_column (table_id,name,type,dd_lookup_column_display,"
-                            + "dd_lookup_column_store,displayed,allowinsert,allowupdate,nullable) VALUES  (?,?,?,?,?,?,?,?,?)");
+                    .prepareStatement("INSERT INTO gmda_column (table_id,name,type,dd_lookup_column_display,dd_lookup_column_store,displayed,allowinsert,allowupdate,nullable,special) VALUES  (?,?,?,?,?,?,?,?,?,?)");
             stmt.setLong(1, col.getTableID().longValue());
             stmt.setString(2, col.getName());
             stmt.setInt(3, col.getColumnType());
@@ -141,7 +135,7 @@ public class ColumnFactory extends DBFactory {
             stmt.setString(7, col.isAllowInsert() ? "Y" : "N");
             stmt.setString(8, col.isAllowUpdate() ? "Y" : "N");
             stmt.setString(9, col.isNullable() ? "Y" : "N");
-
+            stmt.setString(10, col.getSpecial());
             stmt.executeUpdate();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);  
@@ -160,23 +154,26 @@ public class ColumnFactory extends DBFactory {
             con = DBUtil.getConnection();
             stmt = con
                     .prepareStatement("UPDATE gmda_column SET table_id=?,name=?,type=?,dd_lookup_column_display=?,dd_lookup_column_store=?"
-                            + ",displayed=?,allowinsert=?,allowupdate=?,nullable=? WHERE id =?");
+                            + ",displayed=?,allowinsert=?,allowupdate=?,nullable=?,special=? WHERE id =?");
             stmt.setLong(1, col.getTableID().longValue());
             stmt.setString(2, col.getName());
             stmt.setInt(3, col.getColumnType());
-            if (col.getDropDownColumnStore() != null)
-                stmt.setLong(4, col.getDropDownColumnStore().longValue());
+            if (col.getDropDownColumnDisplay() != null)
+                stmt.setLong(4, col.getDropDownColumnDisplay().longValue());
             else
                 stmt.setNull(4, Types.NUMERIC);
+            
             if (col.getDropDownColumnStore() != null)
-                stmt.setLong(5, col.getDropDownColumnDisplay().longValue());
+                stmt.setLong(5, col.getDropDownColumnStore().longValue());
             else
                 stmt.setNull(5, Types.NUMERIC);
+           
             stmt.setString(6, col.isDisplayed() ? "Y" : "N");
             stmt.setString(7, col.isAllowInsert() ? "Y" : "N");
             stmt.setString(8, col.isAllowUpdate() ? "Y" : "N");
-            stmt.setString(9, col.isNullable() ? "Y" : "N");
-            stmt.setLong(10, col.getId().longValue());
+            stmt.setString(9, col.isNullable() ? "Y" : "N");           
+            stmt.setString(10, col.getSpecial());
+            stmt.setLong(11, col.getId().longValue());
             stmt.executeUpdate();
 
         } catch (Exception e) {
@@ -185,9 +182,12 @@ public class ColumnFactory extends DBFactory {
             closeAll(con, stmt, null);
         }
     }
-    
+    /*
+     * This method is used to 'remove' the current records for columns.
+     * The record are actually reset rather than actually deleting them
+     * 
+     */
     public void hideAll(Long lngTableID) throws Exception {
-
         Connection con = null;
         PreparedStatement stmt = null;
 
@@ -195,18 +195,15 @@ public class ColumnFactory extends DBFactory {
 
             con = DBUtil.getConnection();
             stmt = con
-                    .prepareStatement("UPDATE gmda_column SET " +
-                            "dd_lookup_column_display=?," +
-                            "dd_lookup_column_store=?"
-                            + ",displayed=?," +
-                                    "allowinsert=?,allowupdate=?,nullable=? WHERE table_id =?");
+                    .prepareStatement("UPDATE gmda_column SET dd_lookup_column_display=?,dd_lookup_column_store=?,displayed=?,allowinsert=?,allowupdate=?,nullable=?,special=? WHERE table_id =?");
             stmt.setNull(1, Types.NUMERIC);
             stmt.setNull(2, Types.NUMERIC);
             stmt.setString(3, "N");
             stmt.setString(4, "N");
             stmt.setString(5, "N");
             stmt.setString(6, "N");
-            stmt.setLong(7, lngTableID.longValue());
+            stmt.setString(7, "N");
+            stmt.setLong(8, lngTableID.longValue());
             stmt.executeUpdate();
             
         } catch (Exception e) {

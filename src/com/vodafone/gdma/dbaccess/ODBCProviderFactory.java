@@ -1,9 +1,3 @@
-/*
- * Created on 14-Mar-2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
 
 import java.sql.Connection;
@@ -16,7 +10,10 @@ import org.apache.log4j.Logger;
 /**
  * @author Ronan Gill
  * 
- * 14-Mar-2004
+ * This class is used to create and retrieve ODBC records in the database.
+ * The list is held im memory to speed up the application.
+ * Uses a singleton pattern
+ * 
  */
 public class ODBCProviderFactory extends DBFactory {
 

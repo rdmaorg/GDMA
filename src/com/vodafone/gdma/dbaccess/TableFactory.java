@@ -18,8 +18,10 @@ import org.apache.log4j.Logger;
 /**
  * @author RGILL
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
+ * This class is used to create and retrieve Table records in the database.
+ * The list is held im memory to speed up the application.
+ * Uses a singleton pattern
+ * 
  */
 public class TableFactory extends DBFactory {
 

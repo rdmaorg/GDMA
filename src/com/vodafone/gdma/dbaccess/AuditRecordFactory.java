@@ -1,9 +1,3 @@
-/*
- * Created on Mar 19, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 package com.vodafone.gdma.dbaccess;
 
 import java.io.IOException;
@@ -18,8 +12,9 @@ import org.apache.log4j.Logger;
 /**
  * @author RGILL
  * 
- * To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Generation - Code and Comments
+ * This class is used to create and retrieve Audit records in the database.
+ * For now, the code only works with an oracle database.
+ * 
  */
 public class AuditRecordFactory extends DBFactory {
 
