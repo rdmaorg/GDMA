@@ -1,0 +1,193 @@
+* {
+	cursor: default;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+img {
+	border: none;
+	}
+
+BODY {
+	background-color:#FFFFFF;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color:#000000;
+} 
+
+.nomargin{
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.nopadding{
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.dotted{
+	background-image: url(../images/dotted.gif);
+	background-repeat: repeat-y;
+}
+
+.redBackground {
+	background-color:#FF0000;
+}
+
+.button{
+	
+	font-size: 10px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	border-bottom:1 solid #660000;
+	border-top:1 solid #FF9999;
+	border-right:1 solid #660000;
+	border-left:1 solid #FF9999;
+	color : #FFFFFF;
+	width:80px;
+	background-color: #FF0000;
+}
+
+.dataTable{
+	background-color: #D4D0C8;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:10px;	
+	border-top: 1px solid #000000;	
+	border-left: 1px solid #000000;	
+		border-bottom: 1px solid #ABA7A1;
+	border-right: 1px solid #ABA7A1;
+}
+
+.dataHeader{
+	background-color: #D4D0C8;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:10px;	
+	font-weight:bold;
+	border-top: 1px solid #FFFFFF;	
+	border-left: 1px solid #FFFFFF;		
+	border-bottom: 1px solid #000000;
+	border-right: 1px solid #000000;
+}
+
+.dataBody{
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.dataGreyBorder{
+	border-bottom: 1px solid #D4D0C8;
+	border-right: 1px solid #D4D0C8;
+}
+
+.dataBodySelected{
+	background-color: #0A246A;
+	color: #FFFFFF;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.dataBodyHover{
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;	
+	border-bottom: 1px solid #000000;	
+	border-right: 1px solid #000000;	
+	background-color: #D4D0C8;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.greyButton{
+	border-top: 1px solid #D4D0C8;
+	border-left: 1px solid #D4D0C8;	
+	border-bottom: 1px solid #D4D0C8;	
+	border-right: 1px solid #D4D0C8;	
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.greyButtonHover{
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;	
+	border-bottom: 1px solid #808080;	
+	border-right: 1px solid #808080;	
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.toolBar{
+	border: none;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+	background-color: #D4D0C8;	
+}
+
+.formHeader{
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12px;	
+	font-weight:bold;
+}
+
+.formLabel{
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+	font-weight:bold;
+}
+
+.formInput{
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.formValue{
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+}
+
+.topnav {
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#FFFFFF;
+	text-decoration : none;
+	cursor: pointer;
+}
+
+.topnav:hover {
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#FFFFFF;
+	text-decoration : underline;
+	cursor: pointer;
+}
+
+.aServer{
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:11px;	
+	text-decoration: none;
+	color: #000000;
+	cursor: pointer;
+}
+
+.aServer:hover{
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:11px;	
+	text-decoration: underline;
+	color: #000000;
+	cursor: pointer;
+}
+
