@@ -15,32 +15,57 @@ function doOnLoad(){
 
 function doOK(){
 	
-	
-	
 	var idx, obj;
 	
 	obj = document.getElementById("server_id");
-	idx =  obj.selectedIndex;	
-	row.server_id.value = obj.options[idx].value;
-   row.server_name.value =  obj.options[idx].text;
+    if(validateSelect(obj,"server")){
+        idx =  obj.selectedIndex;       
+    	row.server_id.value = obj.options[idx].value;
+        row.server_name.value =  obj.options[idx].text;
+    }else{
+        return;
+    }
    
-   obj = document.getElementById("table_id");
-	idx =  obj.selectedIndex;	
-   row.table_id.value = obj.options[idx].value;
-   row.table_name.value = obj.options[idx].text;
+    obj = document.getElementById("table_id");
+    if(validateSelect(obj,"table")){
+    	idx =  obj.selectedIndex;	
+        row.table_id.value = obj.options[idx].value;
+        row.table_name.value = obj.options[idx].text;
+    }else{
+        return;
+    }
    
-   obj = document.getElementById("column_display_id");
-	idx =  obj.selectedIndex;	
-	row.columnDisplay_id.value = obj.options[idx].value;
-	row.columnDisplay_name.value = obj.options[idx].text;
+    obj = document.getElementById("column_display_id");
+    if(validateSelect(obj,"display column")){
+    	idx =  obj.selectedIndex;	
+    	row.columnDisplay_id.value = obj.options[idx].value;
+        row.columnDisplay_name.value = obj.options[idx].text;
+    }else{
+        return;
+    }
 	
 	obj = document.getElementById("column_store_id");
-	idx =  obj.selectedIndex;	
-   row.columnStored_id.value = obj.options[idx].value;
-   row.columnStored_name.value = obj.options[idx].text;
+    if(validateSelect(obj,"store column")){    
+        idx =  obj.selectedIndex;	
+        row.columnStored_id.value = obj.options[idx].value;
+        row.columnStored_name.value = obj.options[idx].text;
+    }else{
+        return;
+    }
    
    returnValue=true;
    window.close();
+}
+
+function validateSelect(obj,prompt){
+    if(obj.selectedIndex > 0 && 
+       obj.options[obj.selectedIndex].value > 0){
+        return true;
+    }else{
+        alert("Please select a " + prompt);
+        obj.focus();
+        return false;
+    }
 }
 
 function doCancel(){
