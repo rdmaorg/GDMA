@@ -98,8 +98,14 @@ public class ColumnFactory extends DBFactory {
         }
 
     }
-
-    public void addColumn(Column col) throws Exception {
+    public void save(Column col) throws Exception {
+        if(col.getId() == null)
+            addColumn(col);    //new column
+        else
+            updateColumn(col); //old column 
+    }
+    
+    private void addColumn(Column col) throws Exception {
 
         Connection con = null;
         PreparedStatement stmt = null;
@@ -138,7 +144,7 @@ public class ColumnFactory extends DBFactory {
 
     }
 
-    public void updateColumn(Column col) throws Exception {
+    private void updateColumn(Column col) throws Exception {
 
         Connection con = null;
         PreparedStatement stmt = null;

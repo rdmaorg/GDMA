@@ -49,10 +49,11 @@
     <tr>
         <td width="50px">&nbsp;</td>
         <td align="left">
-            <input type="button" class="button" id="btnTable" name="btnTable" value="Tables" onclick="doTables()">&nbsp;        
+            <input type="button" class="button" id="btnTable" name="btnTable" value="Tables" onclick="doEdit()">&nbsp;        
             <input type="button" class="button" id="btnDelete" name="btnDelete" value="Delete" onclick="doDelete()">&nbsp;
-            <input type="button" class="button" id="btnEdit" name="btnEdit" value="Edit" onclick="doEdit()">&nbsp;
-            <input type="button" class="button" id="btnAdd" name="btnAdd" value="Add" onclick='doNew()'></td>
+            <input type="button" class="button" id="btnEdit" name="btnEdit" value="Edit" onclick="doEditReg()">&nbsp;
+            <input type="button" class="button" id="btnAdd" name="btnAdd" value="Add" onclick='doNew()'>
+        </td>
     </tr>
  </table>
 </body>

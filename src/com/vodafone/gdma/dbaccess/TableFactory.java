@@ -96,7 +96,14 @@ public class TableFactory extends DBFactory {
 
     }
 
-    public void addTable(Table table) throws Exception {
+    public void save(Table table) throws Exception {
+        if(table.getId() == null)
+            addTable(table);    //new table
+        else
+            updateTable(table); //old table 
+    }
+    
+    private void addTable(Table table) throws Exception {
 
         Connection con = null;
         Statement stmt = null;
@@ -129,7 +136,7 @@ public class TableFactory extends DBFactory {
 
     }
 
-    public void updateTable(Table table) throws Exception {
+    private void updateTable(Table table) throws Exception {
 
         Connection con = null;
         Statement stmt = null;

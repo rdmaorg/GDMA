@@ -4,9 +4,9 @@ function doNew(){
 
 function doEdit(){
 	if(selectedID)
-		window.location.href='ServerRegistration.jsp?action=EDIT&id='+selectedID;
+		window.location.href='ListTables.jsp?server_id='+selectedID;
 	else
-		alert('Please select a server to edit');
+		alert('Please select a server');
 }  
 
 function doDelete(){
@@ -16,10 +16,10 @@ function doDelete(){
 		alert('Please select a server to delete');
 } 
 
-function doTables(){
+function doEditReg(){
 	if(selectedID)
-		window.location.href='ListTables.jsp?server_id='+selectedID;
+		window.location.href='ServerRegistration.jsp?action=EDIT&id='+selectedID;
 	else
-		alert('Please select a server');
+		alert('Please select a server to edit');
 } 
   

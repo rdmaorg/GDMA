@@ -56,4 +56,13 @@ public class Formatter {
 
         return sdf.parse(date);
     }
+    
+    public static String getDateStringFromTimestamp(String timestamp) throws ParseException {
+        String value = "";
+        
+        if (timestamp != null) 
+            value = formatDate(new Date(Long.parseLong(timestamp)));
+        
+        return value;
+    }
 }

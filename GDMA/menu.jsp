@@ -39,5 +39,6 @@
     <form action="Login.jsp" method="post" id="frmLogout" target="_top">
         <input type="hidden" name="action" value="LOGOUT" >
     </form>
+    <iframe name="frmHidden" id="frmHidden" style="visibility:hidden"></iframe>
 </body>
 </html>

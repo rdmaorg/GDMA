@@ -60,7 +60,7 @@ public class ODBCProviderFactory extends DBFactory {
         Statement stmt = null;
         ResultSet rs = null;
         ODBCProvider odbc = null;
-        String query = "SELECT * FROM dbo.gdma_odbc_types ORDER BY name";
+        String query = "SELECT * FROM gdma_odbc_types ORDER BY name";
 
         // Create the ArrayList whcih will hold the ServerRegistrations
         list = new ArrayList();

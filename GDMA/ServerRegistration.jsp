@@ -5,6 +5,7 @@
     ServerRegistrationFactory fac = ServerRegistrationFactory.getInstance();
     ServerRegistration reg = null; 
     String strMode = "EDIT"; 
+    System.out.println(request.getMethod());
     if("POST".equalsIgnoreCase(request.getMethod()))
     {
         reg = new ServerRegistration();
@@ -85,6 +86,7 @@
             <td class="formLabel">Conenction Type</td><td>
                 <select class="formInput" name="fldType" id="fldType" value="<%=reg == null ? "" : "" + reg.getOdbcTypeID()%>">
 <%
+System.out.println("ODBCProviderFactory.getInstance");
     ArrayList providers = ODBCProviderFactory.getInstance().getList();
     ODBCProvider odbc;
     for(int i = 0 ; i < providers.size(); i++){
@@ -103,7 +105,7 @@
                  class="formInput" value="<%=reg == null ? "" : reg.getUsername()%>"></td>
         </tr>
         <tr>
-            <td class="formLabel">Password</td><td><input type="text" name="fldPassword" id="fldPassword"
+            <td class="formLabel">Password</td><td><input type="password" name="fldPassword" id="fldPassword"
                  class="formInput" value="<%=reg == null || reg.getPassword() == null ? "" : reg.getPassword()%>"></td>
         </tr>
         <tr>

@@ -1,8 +1,6 @@
 <%@ page language="java" %>
 <%@ page import="com.vodafone.gdma.dbaccess.*,
-                 java.sql.*,
-                 java.util.*,
-                 com.vodafone.gdma.util.*"%>
+                 java.util.*"%>
 <%
 //TODO: Error checking
     if(session.getAttribute("USER") == null){
@@ -10,14 +8,19 @@
     }        
     ServerRegistration reg = null;
     Table table = null;
+    Hashtable htSearch = new Hashtable();;
     String serverID = request.getParameter("server_id");
     String tableID = request.getParameter("table_id");
+    String strMode = request.getParameter("mode");
+    Long lngServerID = null;
+    Long lngTableID = null;
     if(serverID != null && tableID != null){
-        Long lngServerID = new Long(serverID);
-        Long lngTableID = new Long(tableID);
+        lngServerID = new Long(serverID);
+        lngTableID = new Long(tableID);
         reg = ServerRegistrationFactory.getInstance().getServerRegistration(lngServerID); 
         table = TableFactory.getInstance().getTable(lngTableID);
-    }    
+    }  
+    
 %>                 
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
@@ -30,137 +33,128 @@
         <script language="javascript" src="js/ViewData.js"></script>
     </head>
 <body class="nomargin nopadding">
-<form action="EditData.jsp" method="post">
+<form action="EditData.jsp" method="post" id="frmMain">        
 <table border="0" cellpadding="1" cellspacing="0" width="100%" height="100%">   
     <tr>
         <td width="100%"  class="toolBar">
             <table border="0" cellpadding="0" cellspacing="0">   
                 <tr height="25px">
-                    <td width="60px" >&nbsp;</td>
+                    <td width="5px" >&nbsp;</td>
 <%
     if(table !=null){
-%>                         
+%>                     
+                    <td class="formLabel" align="left" valign="middle" 
+                        nowrap><%=reg.getName()%> - <%=table.getName()%> | </td>                                        
                     <td class="greyTextButton" align="center" valign="middle"
                         onmouseover="this.className = 'greyTextButtonHover';"
                         onmouseout="this.className = 'greyTextButton';"
-                        onclick="window.location.reload();">Refresh</td>                                        
-                    </td>                    
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
                         onclick="doInsert();">Insert</td>
                     <td class="greyTextButton" align="center" valign="middle"
                         onmouseover="this.className = 'greyTextButtonHover';"
                         onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
                         onclick="doEdit();">Update</td>
 <%
         if(table.isAllowDelete()){
 %>                          
-                 <td class="greyTextButton" align="center" valign="middle"
+                    <td class="greyTextButton" align="center" valign="middle"
                         onmouseover="this.className = 'greyTextButtonHover';"
                         onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
                         onclick="doDelete();">Delete</td>                                        
-                    </td>
 <%
         }
+%>         
+                    <td class="greyTextButton" align="center" valign="middle"
+                        onmouseover="this.className = 'greyTextButtonHover';"
+                        onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
+                        onclick="doAllRecords();">Show All</td>                                        
+                    <td class="greyTextButton" align="center" valign="middle"
+                        onmouseover="this.className = 'greyTextButtonHover';"
+                        onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
+                        onclick="doToggleSearch();">Search</td>                                        
+                    <td class="greyTextButton" align="center" valign="middle"
+                        onmouseover="this.className = 'greyTextButtonHover';"
+                        onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
+                        onclick="doDownload('XML');">XML</td>
+                    <td class="greyTextButton" align="center" valign="middle"
+                        onmouseover="this.className = 'greyTextButtonHover';"
+                        onmouseout="this.className = 'greyTextButton';"
+                        onmousedown="this.className = 'greyTextButtonDown';"
+                        onmouseup="this.className = 'greyTextButtonHover';"
+                        onclick="doDownload('CSV');">CSV</td> 
+<%
     }
-%>                    
+%>                                                            
                 </tr>
             </table>
         </td>
     </tr> 
+    <tr style="display:none" id="trSearch">
+        <td width="100%"  class="searchForm">
+            <table border="0" cellpadding="2" cellspacing="2">  
+                <tr height="25px">
+                    <td colspan="3" align="left" valign="top" class="formHeader">Search Form</td>                                        
+                </tr>            
+<%
+    if(table !=null){
+        ArrayList columns = table.getDisplayedColumns();
+        for(int i = 0; i < columns.size(); i++){
+            Column column = (Column)columns.get(i);
+            String value = (String)htSearch.get(column.getName());
+%> 
+                <tr height="25px">
+                    <td align="left" valign="top" class="formLabel" width="20%">&nbsp;</td>                                                        
+                    <td align="left" valign="top" class="formLabel"><%=column.getName()%></td>                                        
+                    <td class="formInput"><input type="text" 
+                        value="<%=request.getParameter("old_" + column.getName())==null?"":request.getParameter("old_" + column.getName())%>" 
+                        id="old_<%=column.getName()%>" name="old_<%=column.getName()%>"></td>                                                          
+                </tr>
+<%
+        }
+%>  
+                <tr>
+                    <td align="right" colspan="3" >
+                        <input type="reset" class="button" value="Reset">&nbsp;
+                        <input type="button" class="button" id="btnSearch" name="btnSearch" 
+                            value="Search" onclick='doSearch()'>
+                    </td>
+                </tr>
+<%        
+    }
+%>                  
+            </table>
+        </td>
+    </tr>     
     <tr>
         <td class="dataHolder" height="100%" valign="top">
-    <table border="0" cellpadding="2" cellspacing="0" class="dataTable">                 
 <%
-    if(reg != null && table != null){
-        ArrayList columns = table.getDisplayedColumns();
-
-        Connection con = DBUtil.getConnection(reg);
-        Statement stmt = con.createStatement();
-        StringBuffer sbQuery = new StringBuffer();
-        sbQuery.append("SELECT ");
-        if(columns != null && columns.size() > 0)
-	    {
-	        for(int i = 0; i < columns.size(); i++){
-	          sbQuery.append(((Column)columns.get(i)).getName());
-	          sbQuery.append(i == columns.size() - 1 ? " ":", ");
-	        }
-	        sbQuery.append(" FROM  ");
-	        sbQuery.append( table.getName());
-	        sbQuery.append(" ORDER BY  ");	
-            for(int i = 0; i < columns.size(); i++){
-              sbQuery.append(((Column)columns.get(i)).getName());
-              sbQuery.append(i == columns.size() - 1 ? " ":", ");
-            }	        
-	    }else{
-	        sbQuery.append("'No columns selected for this table'");
-	    }
-	    ResultSet rs = stmt.executeQuery(sbQuery.toString());
-	    ResultSetMetaData rsmd = rs.getMetaData();
-	    if(rs != null)
-	    { 
-%>
-    <tr id="trHeader">
-        <td class="dataHeader" width="30px" nowrap>&nbsp;&nbsp;&nbsp;</td>                        
-<%              
-            for(int i = 1; i <= rsmd.getColumnCount(); i++){
-%>
-        <td class="dataHeader" nowrap ><%=rsmd.getColumnName(i)%>&nbsp;<input
-            type="hidden" id="old_<%=rsmd.getColumnName(i)%>"
-            name="old_<%=rsmd.getColumnName(i)%>"></td>                    
-<%
-            }
-%>
-    </tr>
-<%
-            for(int row = 1; rs.next(); row++){
-%>
-    <tr onmouseover="mouseEntered(this)" onmouseout="mouseExited(this)" 
-        onclick="mouseClicked(this,<%=row%>);"
-        ondblclick="mouseDblClicked(this,<%=row%>);" 
-        id="trRow<%=row%>" class="dataBody">
-        <td class="dataHeader" align="left" style=" font-weight: normal"><%=row%></td>      
-<%
-	            String value;
-		        for(int i = 1; i <= rsmd.getColumnCount(); i++){ 
-			        // we need a hidden field for each column  
-			        if(DBUtil.isDate(rsmd.getColumnType(i))){
-			           Timestamp date = rs.getTimestamp(i);
-			           if(date == null){
-%>
-        <td class="dataGreyBorder" nowrap></td>
-<%		           
-			           }else{
-%>
-        <td class="dataGreyBorder" nowrap><%=Formatter.formatDate(date)%><input
-                type="hidden" value="<%=date.getTime()%>"></td>
-<%		           
-	                    }
-			        }else{
-			          value =  rs.getString(i);                
-%>
-        <td class="dataGreyBorder" nowrap><%=value==null?"":value%></td>
-<%
-                    }
-                }
-%>
-    </tr>
-<%
-            }
-	       }  
-		    rs.close();
-		    stmt.close();
-		    con.close();  
-	    }          
+    if(reg != null && table != null && 
+        ("ALL".equals(strMode) || "SEARCH".equals(strMode) ) ){
+        EditData ed = new EditData();
+        try{
+            out.print(ed.select(reg,table,request,"HTML"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }          
 %>  
+            <input type="hidden" id="mode" name="mode" value="">
+            <input type="hidden" id="server_id" name="server_id" value="<%=serverID%>">
+            <input type="hidden" id="table_id" name="table_id" value="<%=tableID%>">
+        </td>
+    </tr>
 </table>
-</td>
-</tr>
-</table>
-<input type="hidden" id="mode" name="mode" value="">
-<input type="hidden" id="server_id" name="server_id" value="<%=serverID%>">
-<input type="hidden" id="table_id" name="table_id" value="<%=tableID%>">
-</form>
+</form> 
 </body>
 </html>

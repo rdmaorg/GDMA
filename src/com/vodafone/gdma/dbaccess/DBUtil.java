@@ -90,4 +90,15 @@ public class DBUtil {
         type == Types.TIME ||
         type == Types.TIMESTAMP;
     }
+    
+    public static boolean isNumber(int type){
+        return type == Types.TINYINT ||
+        type == Types.INTEGER ||
+        type == Types.BIGINT ||
+        type == Types.DECIMAL ||
+        type == Types.FLOAT ||
+        type == Types.NUMERIC ||
+        type == Types.REAL ;
+    }
+    
 }

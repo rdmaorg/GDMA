@@ -4,6 +4,7 @@
 <%
     String serverID = request.getParameter("server_id");
     String tableID = request.getParameter("table_id");
+System.out.println("serverID  " + serverID + " -- tableID" + tableID);    
     Long lngServerID = new Long(serverID);
     Long lngTableID = new Long(tableID);
     ServerRegistrationFactory servFac = ServerRegistrationFactory.getInstance();
@@ -27,12 +28,10 @@
             column.setAllowInsert(request.getParameter("fldAllowInsert" + i) != null);
             column.setAllowUpdate(request.getParameter("fldAllowUpdate" + i) != null);
             column.setNullable("true".equals(request.getParameter("fldNullable" + i)));
-
-            if(column.getId() == null)
-                colFac.addColumn(column);    //new column
-            else
-                colFac.updateColumn(column); //old column 
+            colFac.save(column);    //new column
         }
+        response.sendRedirect("ListTables.jsp?server_id="+serverID);
+        return;
     }
 %>
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">

@@ -48,6 +48,7 @@ BODY {
 	color : #FFFFFF;
 	width:80px;
 	background-color: #FF0000;
+	cursor: pointer;
 }
 
 .dataTable{
@@ -156,6 +157,18 @@ BODY {
 	width:60px;	
 	font-weight:bold;	
     cursor:pointer;
+}
+.greyTextButtonDown{
+	border-top: 1px solid #808080;
+	border-left: 1px solid #808080;	
+	border-bottom: 1px solid #FFFFFF;	
+	border-right: 1px solid #FFFFFF;	
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	width:60px;	
+	font-weight:bold;	
+    cursor:pointer;	
 }
 
 .toolBar{

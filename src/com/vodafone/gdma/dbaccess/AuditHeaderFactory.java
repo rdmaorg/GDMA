@@ -32,10 +32,9 @@ public class AuditHeaderFactory extends DBFactory {
 
     public AuditHeader getAuditHeader(Long id) {
         AuditHeader AuditHeader = null;
-        
-        if(id == null)
-            return null;
-        
+
+        if (id == null) return null;
+
         for (int i = 0; i <= list.size(); i++) {
             AuditHeader = (AuditHeader) list.get(i);
             if (id.equals(AuditHeader.getID())) return AuditHeader;
@@ -49,7 +48,7 @@ public class AuditHeaderFactory extends DBFactory {
         java.sql.Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-        String query = "select * from gdma_audit_header order by modifed_date";
+        String query = "SELECT * FROM GDMA_AUDIT_HEADER order by modifed_date";
         // Create the ArrayList which will hold the ServerRegistrations
         list = new ArrayList();
 
@@ -77,7 +76,7 @@ public class AuditHeaderFactory extends DBFactory {
 
     }
 
-    public void addAuditHeader(AuditHeader auditHeader) throws Exception {
+    public void save(AuditHeader auditHeader) throws Exception {
 
         Connection con = null;
         CallableStatement stmt = null;
@@ -85,17 +84,26 @@ public class AuditHeaderFactory extends DBFactory {
 
         try {
             con = DBUtil.getConnection();
-            stmt = con.prepareCall("{ call gmda_audit_header_Ins (?,?,?,?,?) }");
-            stmt.setLong(1,auditHeader.getTableID().longValue());
-            stmt.setString(2,auditHeader.getType());
-            stmt.setString(3,auditHeader.getModifiedBy());
-            stmt.setTimestamp(4,auditHeader.getModifiedOn());
-            stmt.registerOutParameter(5,Types.NUMERIC);
-            stmt.executeUpdate();
-            long lng = stmt.getBigDecimal(5).longValue();
-            logger.debug("lng = " +lng);
-            auditHeader.setID(new Long(lng));
+
+            sbInsert.append("BEGIN\n INSERT INTO \"GMDA_AUDIT_HEADER\" ");
+            sbInsert.append(" (\"ID\", \"TABLE_ID\", \"TYPE\", ");
+            sbInsert.append(" \"MODIFIED_BY\", \"MODIFIED_ON\") ");
+            sbInsert
+                    .append(" VALUES (\"SEQ_GDMA_AUDIT_HEADER\".NEXTVAL, ?, ?, ?, ? )");
+            sbInsert.append(" RETURNING \"ID\" INTO ? ;\n");
+            sbInsert.append("END;");
+
+            stmt = con.prepareCall(sbInsert.toString());
+            stmt.setLong(1, auditHeader.getTableID().longValue());
+            stmt.setString(2, auditHeader.getType());
+            stmt.setString(3, auditHeader.getModifiedBy());
+            stmt.setTimestamp(4, auditHeader.getModifiedOn());
+            stmt.registerOutParameter(5, Types.NUMERIC);
+            stmt.execute();
             
+            long lng = stmt.getBigDecimal(5).longValue();
+            logger.debug("lng = " + lng);
+            auditHeader.setID(new Long(lng));
             logger.debug("Audit Header ID = " + auditHeader.getID());
         } catch (Exception e) {
             logger.error(e);
@@ -103,9 +111,5 @@ public class AuditHeaderFactory extends DBFactory {
         } finally {
             closeAll(con, stmt, null);
         }
-    }
-
-    public void updateAuditHeader(AuditHeader AuditHeader) throws Exception {
-        throw new Exception ("Update of Audit Not Allowed"); 
     }
 }

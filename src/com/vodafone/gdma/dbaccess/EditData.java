@@ -9,6 +9,8 @@ package com.vodafone.gdma.dbaccess;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -55,7 +57,7 @@ public class EditData {
     private ArrayList columnsWhere = null;
 
     private ArrayList columnsNew = null;
-    
+
     private User user = null;
 
     public int save(ServerRegistration reg, Table table,
@@ -65,8 +67,8 @@ public class EditData {
         this.reg = reg;
         this.table = table;
         this.request = request;
-        
-        user = (User)request.getSession().getAttribute("USER");
+
+        user = (User) request.getSession().getAttribute("USER");
 
         odbc = ODBCProviderFactory.getInstance().getODBCProvider(
                 reg.getOdbcTypeID());
@@ -83,6 +85,56 @@ public class EditData {
             ret = deleteData();
         }
         return ret;
+    }
+
+    public String select(ServerRegistration reg, Table table,
+            HttpServletRequest request, String mode) throws Exception {
+
+        int ret = 0;
+        this.reg = reg;
+        this.table = table;
+        this.request = request;
+
+        odbc = ODBCProviderFactory.getInstance().getODBCProvider(
+                reg.getOdbcTypeID());
+        con = DBUtil.getConnection(odbc.getConnectionClass(),
+                reg.getUsername(), reg.getPassword(), reg.getConnectionURL());
+        quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
+
+        return selectData(mode);
+    }
+
+    private String selectData(String mode) throws Exception {
+        PreparedStatement stmt = null;
+        Column column = null;
+        ResultSet rs = null;
+
+        try {
+            columnsNew = table.getDisplayedColumns();
+            columnsWhere = table.getDisplayedColumns();
+            if(table.getDisplayedColumns().size() > 0) {
+	            getOldValues();
+	            stmt = con.prepareStatement(createSelectStatement());
+	            setSelectWhereValues(stmt, columnsNew.size());
+	
+	            rs = stmt.executeQuery();
+            }
+            if ("XML".equals(mode))
+                return getAsXML(rs);
+            else if ("CSV".equals(mode))
+                return getAsCSV(rs);
+            else
+                return getAsHTML(rs);
+
+        } catch (NumberFormatException e) {
+            logger.error(e.getMessage(), e);
+            throw new Exception("NumberFormatException - " + e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            closeAll(con, stmt, rs);
+        }
     }
 
     private int updateData() throws Exception {
@@ -110,7 +162,7 @@ public class EditData {
             logger.error(e.getMessage(), e);
             throw e;
         } finally {
-            closeAll(con, stmt);
+            closeAll(con, stmt, null);
         }
     }
 
@@ -136,7 +188,7 @@ public class EditData {
             logger.error(e.getMessage(), e);
             throw e;
         } finally {
-            closeAll(con, stmt);
+            closeAll(con, stmt, null);
         }
     }
 
@@ -167,7 +219,7 @@ public class EditData {
             logger.error(e.getMessage(), e);
             throw e;
         } finally {
-            closeAll(con, stmt);
+            closeAll(con, stmt, null);
         }
     }
 
@@ -223,6 +275,21 @@ public class EditData {
         }
     }
 
+    private void setSelectWhereValues(PreparedStatement stmt, int offset)
+            throws Exception {
+        Column column;
+        String value;
+        int idx = 1;
+        for (int i = 0; i < columnsWhere.size(); i++) {
+            column = (Column) columnsWhere.get(i);
+            value = (String) valuesWhere.get(column.getName());
+            if (value != null && !"".equals(value.trim())) {
+                setValue(stmt, idx, column.getColumnType(), value);
+                idx++;
+            }
+        }
+    }
+
     private String createWhereClause() {
 
         Column column;
@@ -251,6 +318,36 @@ public class EditData {
         return sbStatement.toString();
     }
 
+    private String createConditionalWhereClause() {
+
+        Column column;
+        int size = columnsWhere.size();
+        String value = null;
+        boolean firstWhereClause = true;
+
+        StringBuffer sbStatement = new StringBuffer();
+
+        for (int i = 0; i < size; i++) {
+            column = (Column) columnsWhere.get(i);
+            value = (String) valuesWhere.get(column.getName());
+            if (value != null && !"".equals(value.trim())) {
+                sbStatement.append(quotedIdentifer);
+                sbStatement.append(column.getName());
+                sbStatement.append(quotedIdentifer);
+                sbStatement.append(" = ?");
+                sbStatement.append(firstWhereClause ? "" : " AND ");
+                firstWhereClause = false;
+            }
+
+        }
+        if (sbStatement.length() > 1) {
+            sbStatement.insert(0, " WHERE ( ");
+            sbStatement.append(") ");
+        }
+
+        return sbStatement.toString();
+    }
+
     private String createUpdateStatement() {
 
         Column column;
@@ -276,6 +373,32 @@ public class EditData {
 
         logger.debug(sbUpdate);
         return sbUpdate.toString();
+    }
+
+    private String createSelectStatement() {
+
+        Column column;
+        int size = columnsNew.size();
+
+        StringBuffer sbSelect = new StringBuffer("SELECT ");
+
+        for (int i = 0; i < size; i++) {
+
+            sbSelect.append(quotedIdentifer);
+            sbSelect.append(((Column) columnsNew.get(i)).getName());
+            sbSelect.append(quotedIdentifer);
+            sbSelect.append(i == (size - 1) ? "" : ",");
+        }
+
+        sbSelect.append(" FROM ");
+        sbSelect.append(quotedIdentifer);
+        sbSelect.append(table.getName());
+        sbSelect.append(quotedIdentifer);
+
+        sbSelect.append(createConditionalWhereClause());
+
+        logger.debug(sbSelect);
+        return sbSelect.toString();
     }
 
     private String createInsertStatement() {
@@ -357,8 +480,8 @@ public class EditData {
                 stmt
                         .setTimestamp(position, new Timestamp(Long
                                 .parseLong(data)));
-                logger.debug(position + " : " +  new Timestamp(Long
-                        .parseLong(data)));
+                logger.debug(position + " : "
+                        + new Timestamp(Long.parseLong(data)));
                 break;
             default:
                 logger.debug("Unknow datatype[" + sqlDataType
@@ -369,7 +492,12 @@ public class EditData {
         }
     }
 
-    private void closeAll(Connection con, Statement stmt) {
+    private void closeAll(Connection con, Statement stmt, ResultSet rs) {
+        try {
+            if (rs != null) rs.close();
+        } catch (Exception e) {
+            logger.error("Exception while closing ResultSet", e);
+        }
         try {
             if (stmt != null) stmt.close();
         } catch (Exception e) {
@@ -382,7 +510,7 @@ public class EditData {
         }
     }
 
-    private void generateInsertAuditRecord() throws Exception{
+    private void generateInsertAuditRecord() throws Exception {
         AuditHeaderFactory headerFac = new AuditHeaderFactory();
         AuditRecordFactory recordFac = new AuditRecordFactory();
         Timestamp date = new Timestamp((new Date()).getTime());
@@ -391,67 +519,271 @@ public class EditData {
         header.setType("I");
         header.setModifiedBy(user.getDomain() + "\\" + user.getUserName());
         header.setModifiedOn(date);
-        
-        headerFac.addAuditHeader(header);
+
+        headerFac.save(header);
         logger.debug("Audit Header ID = " + header.getID());
-        for(int i = 0; i < columnsWhere.size();i++){
-            Column column = (Column)columnsWhere.get(i);
+        for (int i = 0; i < columnsWhere.size(); i++) {
+            Column column = (Column) columnsWhere.get(i);
+            String value;
             AuditRecord record = new AuditRecord();
             record.setAuditHeaderID(header.getID());
             record.setColumnID(column.getId());
-            record.setNewValue(valuesNew == null? null: (String)valuesNew.get(column.getName()));
+            value = (String) valuesNew.get(column.getName());
+            if (DBUtil.isDate(column.getColumnType())) {
+                value = Formatter.getDateStringFromTimestamp(value);
+            }
+            record.setNewValue("" + value);
             record.setOldValue(null);
             recordFac.addAuditRecord(record);
         }
     }
-    
-    private void generateUpdateAuditRecord() throws Exception{
+
+    private void generateUpdateAuditRecord() throws Exception {
         AuditHeaderFactory headerFac = new AuditHeaderFactory();
         AuditRecordFactory recordFac = new AuditRecordFactory();
         Timestamp date = new Timestamp((new Date()).getTime());
         AuditHeader header = new AuditHeader();
         header.setTableID(table.getId());
-        header.setType("I");
+        header.setType("U");
         header.setModifiedBy(user.getDomain() + "\\" + user.getUserName());
         header.setModifiedOn(date);
-        
-        headerFac.addAuditHeader(header);
+
+        headerFac.save(header);
         logger.debug("Audit Header ID = " + header.getID());
-        for(int i = 0; i < columnsWhere.size();i++){
-            Column column = (Column)columnsWhere.get(i);
+        for (int i = 0; i < columnsWhere.size(); i++) {
+            Column column = (Column) columnsWhere.get(i);
+            String value;
             AuditRecord record = new AuditRecord();
             record.setAuditHeaderID(header.getID());
             record.setColumnID(column.getId());
-            if(column.isAllowUpdate()){
-                record.setNewValue((String)valuesNew.get(column.getName()));
-            }else{
-                record.setNewValue((String)valuesWhere.get(column.getName()));
+            if (column.isAllowUpdate())
+                value = (String) valuesNew.get(column.getName());
+            else
+                value = (String) valuesWhere.get(column.getName());
+
+            if (DBUtil.isDate(column.getColumnType())) {
+                value = Formatter.getDateStringFromTimestamp(value);
             }
-            record.setOldValue(valuesWhere == null? null: (String)valuesWhere.get(column.getName()));
+            record.setNewValue("" + value);
+
+            value = (String) valuesWhere.get(column.getName());
+            if (DBUtil.isDate(column.getColumnType())) {
+                value = Formatter.getDateStringFromTimestamp(value);
+            }
+
+            record.setOldValue("" + value);
             recordFac.addAuditRecord(record);
         }
     }
-    
-    private void generateDeleteAuditRecord() throws Exception{
+
+    private void generateDeleteAuditRecord() throws Exception {
         AuditHeaderFactory headerFac = new AuditHeaderFactory();
         AuditRecordFactory recordFac = new AuditRecordFactory();
         Timestamp date = new Timestamp((new Date()).getTime());
         AuditHeader header = new AuditHeader();
         header.setTableID(table.getId());
-        header.setType("I");
+        header.setType("D");
         header.setModifiedBy(user.getDomain() + "\\" + user.getUserName());
         header.setModifiedOn(date);
-        
-        headerFac.addAuditHeader(header);
+
+        headerFac.save(header);
         logger.debug("Audit Header ID = " + header.getID());
-        for(int i = 0; i < columnsWhere.size();i++){
-            Column column = (Column)columnsWhere.get(i);
+        for (int i = 0; i < columnsWhere.size(); i++) {
+            Column column = (Column) columnsWhere.get(i);
+            String value;
             AuditRecord record = new AuditRecord();
             record.setAuditHeaderID(header.getID());
             record.setColumnID(column.getId());
             record.setNewValue(null);
-            record.setOldValue(valuesWhere == null? null: (String)valuesWhere.get(column.getName()));
+            value = (String) valuesWhere.get(column.getName());
+            if (DBUtil.isDate(column.getColumnType())) {
+                value = Formatter.getDateStringFromTimestamp(value);
+            }
+
+            record.setOldValue("" + value);
             recordFac.addAuditRecord(record);
         }
     }
+
+    private String getAsCSV(ResultSet rs) throws Exception {
+        StringBuffer sbTemp = new StringBuffer();
+
+        ResultSetMetaData rsmd;
+
+        if (rs != null) {
+            rsmd = rs.getMetaData();
+            String value;
+            int columnCount;
+
+            if (rs != null) {
+                rsmd = rs.getMetaData();
+                columnCount = rsmd.getColumnCount();
+
+                for (int i = 1; i <= columnCount; i++) {
+                    sbTemp.append(rsmd.getColumnName(i));
+                    sbTemp.append(i == columnCount ? "" : ",");
+                }
+
+                sbTemp.append("\n");
+
+                for (int row = 1; rs.next(); row++) {
+                    for (int i = 1; i <= columnCount; i++) {
+                        value = rs.getString(i);
+                        sbTemp.append(value == null ? "" : value);
+                        sbTemp.append(i == columnCount ? "" : ",");
+                    }
+                    sbTemp.append("\n");
+                }
+            }
+        } else {
+            sbTemp.append("No columns specified\n");
+        }
+        return sbTemp.toString();
+    }
+
+    private String getAsXML(ResultSet rs) throws Exception {
+
+        StringBuffer sbTemp = new StringBuffer();
+
+        ResultSetMetaData rsmd = null;
+        int columnCount;
+        sbTemp.append("<?xml version=\"1.0\"?>\n");
+        sbTemp.append("<Workbook xmlns=\"urn:schemas-microsoft-com:");
+        sbTemp.append("office:spreadsheet\"\n");
+        sbTemp.append(" xmlns:o=\"urn:schemas-microsoft-com:office:office\"\n");
+        sbTemp.append(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"\n");
+        sbTemp
+                .append(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n");
+        sbTemp.append(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n");
+
+        sbTemp.append("<Worksheet ss:Name=\"Sheet1\">\n");
+        sbTemp.append("  <Table >\n");
+        if (rs != null) {
+            rsmd = rs.getMetaData();
+            columnCount = rsmd.getColumnCount();
+            sbTemp.append("  <Row>\n");
+            for (int i = 1; i <= columnCount; i++) {
+                sbTemp.append("    <Cell><Data ss:Type=\"String\">");
+                sbTemp.append(rsmd.getColumnName(i));
+                sbTemp.append("</Data></Cell>\n");
+            }
+            sbTemp.append("  </Row>\n");
+            for (int row = 1; rs.next(); row++) {
+                sbTemp.append("  <Row>\n");
+                for (int i = 1; i <= columnCount; i++) {
+                    sbTemp.append("    <Cell><Data ss:Type=\"");
+
+                    if (DBUtil.isDate(rsmd.getColumnType(i))) {
+                        // TODO : Used to be DateTime
+                        sbTemp.append("String\">");
+                        java.sql.Date value = rs.getDate(i);
+                        sbTemp.append(value == null ? "" : Formatter
+                                .formatDate(value));
+                    } else if (DBUtil.isNumber(rsmd.getColumnType(i))) {
+                        sbTemp.append("Number\">");
+                        String value = rs.getString(i);
+                        sbTemp.append(value == null ? "" : value.trim());
+                    } else {
+                        String value = rs.getString(i);
+                        sbTemp.append("String\">");
+                        sbTemp.append(value == null ? "" : value.trim());
+                    }
+                    sbTemp.append("</Data></Cell>\n");
+                }
+                sbTemp.append("  </Row>\n");
+            }
+
+        } else {
+            sbTemp.append("  <Row>\n");
+            sbTemp.append("    <Cell><Data ss:Type=\"String\">");
+            sbTemp.append("No Columns Specified");
+            sbTemp.append("  </Row>\n");
+        }
+        sbTemp.append("</Table>\n");
+        sbTemp.append("</Worksheet>\n");
+        sbTemp.append("</Workbook>\n");
+
+        return sbTemp.toString();
+    }
+
+    private String getAsHTML(ResultSet rs) throws Exception {
+        StringBuffer sbTemp = new StringBuffer();
+
+        ResultSetMetaData rsmd;
+        int columnCount;
+        sbTemp
+                .append("      <table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"dataTable\">\n");
+        if (rs != null) {
+            rsmd = rs.getMetaData();
+            columnCount = rsmd.getColumnCount();
+            sbTemp.append("    <tr id=\"trHeader\">\n");
+            sbTemp
+                    .append("      <td class=\"dataHeader\" width=\"30px\" nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
+            for (int i = 1; i <= columnCount; i++) {
+                sbTemp.append("      <td class=\"dataHeader\" nowrap >");
+                sbTemp.append(rsmd.getColumnName(i));
+                sbTemp.append("&nbsp;<input type=\"hidden\" id=\"old_");
+                sbTemp.append(rsmd.getColumnName(i));
+                sbTemp.append("\" name=\"old_");
+                sbTemp.append(rsmd.getColumnName(i));
+                sbTemp.append("\"></td>\n");
+            }
+            sbTemp.append("    </tr>\n");
+
+            for (int row = 1; rs.next(); row++) {
+                sbTemp
+                        .append("    <tr onmouseover=\"mouseEntered(this)\" onmouseout=\"mouseExited(this)\"");
+                sbTemp.append(" ondblclick=\"mouseDblClicked(this,");
+                sbTemp.append(row);
+                sbTemp.append(");\" id=\"trRow");
+                sbTemp.append(row);
+                sbTemp.append("\" class=\"dataBody\">\n");
+                sbTemp.append("      <td class=\"dataHeader\" align=\"left\" ");
+                sbTemp.append(" style=\"font-weight: normal\">");
+                sbTemp.append(row);
+                sbTemp.append("</td>\n");
+                String value;
+                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                    // we need a hidden field for each column
+                    if (DBUtil.isDate(rsmd.getColumnType(i))) {
+                        java.sql.Timestamp date = rs.getTimestamp(i);
+                        if (date == null) {
+                            sbTemp
+                                    .append("      <td class=\"dataGreyBorder\" nowrap>&nbsp;</td>");
+                        } else {
+                            sbTemp
+                                    .append("      <td class=\"dataGreyBorder\" nowrap>");
+                            sbTemp.append(Formatter.formatDate(date));
+                            sbTemp.append("<input type=\"hidden\" value=\"");
+                            sbTemp.append(date.getTime());
+                            sbTemp.append("\"></td>");
+                        }
+                    } else {
+                        value = rs.getString(i);
+                        sbTemp
+                                .append("      <td class=\"dataGreyBorder\" nowrap>");
+                        sbTemp.append(value == null ? "" : value);
+                        sbTemp.append("</td>");
+                    }
+                }
+                sbTemp.append("    </tr>");
+            }
+
+        } else {
+            sbTemp.append("    <tr id=\"trHeader\">\n");
+            sbTemp
+                    .append("      <td class=\"dataHeader\" width=\"30px\" nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
+            sbTemp.append("      <td class=\"dataHeader\" nowrap >&nbsp;</td>");
+            sbTemp.append("    </tr>\n");
+            sbTemp.append("    <tr id=\"dataBody\">\n");
+            sbTemp
+                    .append("      <td class=\"dataHeader\" width=\"30px\" nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
+            sbTemp
+                    .append("      <td class=\"dataGreyBorder\" nowrap >No Columns Specified</td>\n");
+            sbTemp.append("    </tr>\n");
+        }
+        sbTemp.append("      </table>\n");
+        return sbTemp.toString();
+    }
+
 }

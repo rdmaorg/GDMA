@@ -92,11 +92,13 @@
 <%
     }
 %>
+<!--
     <script language="Javascript">
         document.getElementById('username').value = 'tomcatadmin';
         document.getElementById('password').value = 'password';
         document.getElementById('domain').value = 'localhost';
         document.forms[0].submit();
     </script>  
+-->    
 </body>
 </html>

@@ -15,17 +15,16 @@
     if("POST".equalsIgnoreCase(request.getMethod())){
         
          for(int i = 0; request.getParameter("fldName" +i) != null; i++){
-            table = new Table();
-            table.setId(request.getParameter("fldID" + i));
-            table.setServerID(lngServerID);
-            table.setName(request.getParameter("fldName" + i));
-            table.setDisplayed(request.getParameter("fldDisplayed" + i) != null);
-            table.setAllowDelete(request.getParameter("fldAllowDelete" + i) != null);            
-            
-            if(table.getId() == null)                
-                tabFac.addTable(table);    //new table
-            else
-                tabFac.updateTable(table); //old table 
+            if(request.getParameter("fldDisplayed" + i) != null){
+                table = new Table();
+                table.setId(request.getParameter("fldID" + i));
+                table.setServerID(lngServerID);
+                table.setName(request.getParameter("fldName" + i));
+                table.setDisplayed(request.getParameter("fldDisplayed" + i) != null);
+                table.setAllowDelete(request.getParameter("fldAllowDelete" + i) != null);  
+                tabFac.save(table);
+System.out.println(i);                    
+            }
         }
     }
     
@@ -43,7 +42,7 @@
         <script language="javascript" src="js/ListTables.js"></script>
     </head>
 <body class="nomargin nopadding">
-<form method="post" action="ListTables.jsp">
+<form method="post" action="ListTables.jsp" name="frmMain" id="frmMain">
 <table border="0" cellpadding="5" cellspacing="5" >
     <tr>
         <td width="50px">&nbsp;</td> 
@@ -94,7 +93,7 @@
         <td align="right">
             <input name="server_id" id="server_id" type="hidden" value="<%=serverID%>">
             <input type="button" class="button" id="btnBack" name="btnBack" value="Back" onclick="window.location.href='ListServerRegistration.jsp?ts=<%=(new Date()).getTime()%>'">&nbsp;        
-            <input type="button" class="button" id="btnColumns" name="btnColumns" value="Columns" onclick="doColumns(<%=serverID%>);">&nbsp;            
+            <input type="button" class="button" id="btnColumns" name="btnColumns" value="Columns" onclick="doEdit();">&nbsp;            
             <input type="submit" class="button" id="btnSave" name="btnSave" value="Save" >&nbsp;
     </tr>
  </table>

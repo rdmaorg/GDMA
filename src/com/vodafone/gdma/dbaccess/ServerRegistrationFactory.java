@@ -202,6 +202,7 @@ public class ServerRegistrationFactory extends DBFactory{
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
+        String table;
 
         try {
             con = DBUtil.getConnection(odbc.getConnectionClass(), reg
@@ -211,7 +212,9 @@ public class ServerRegistrationFactory extends DBFactory{
             rs = stmt.executeQuery(odbc.getSQLGetTables());
 
             while (rs != null && rs.next()) {
-                tables.add(rs.getString("TABLE_NAME"));
+                table = rs.getString("TABLE_NAME");
+                if(table != null)
+                    tables.add(table.trim());
             }
 
         } catch (Exception e) {
@@ -234,6 +237,7 @@ public class ServerRegistrationFactory extends DBFactory{
         ResultSet rs = null;
         ResultSetMetaData rsMeta = null;
         Column column = null;
+        String columnName = null;
         String quotedIdentifer = "";
         StringBuffer sbQuery = new StringBuffer();
 
@@ -254,17 +258,19 @@ public class ServerRegistrationFactory extends DBFactory{
 
             rsMeta = rs.getMetaData();
             for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
-                column = new Column();
-                column.setName(rsMeta.getColumnName(i));
-                column.setColumnType(rsMeta.getColumnType(i));
-                column.setColumnTypeString(rsMeta.getColumnTypeName(i));
-                column.setAllowInsert(rsMeta.isWritable(i));
-                column.setAllowUpdate(rsMeta.isWritable(i));
-                column
+                columnName = rsMeta.getColumnName(i);
+                if(columnName != null) {
+                    column = new Column();
+                    column.setName(columnName.trim());
+                    column.setColumnType(rsMeta.getColumnType(i));
+                    column.setColumnTypeString(rsMeta.getColumnTypeName(i));
+                    column.setAllowInsert(rsMeta.isWritable(i));
+                    column.setAllowUpdate(rsMeta.isWritable(i));
+                    column
                         .setNullable(rsMeta.isNullable(i) == ResultSetMetaData.columnNullable
                                 || rsMeta.isNullable(i) == ResultSetMetaData.columnNullableUnknown);
-                columns.add(column);
-
+                    columns.add(column);
+                }
             }
 
         } catch (Exception e) {
