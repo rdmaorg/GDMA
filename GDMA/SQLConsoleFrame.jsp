@@ -4,7 +4,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <TITLE>SQL Console</TITLE>
+        <TITLE>Generic Data Maintenance Application - SQL Console</TITLE>
     </HEAD>
     <FRAMESET rows="30%,*" frameborder="1" >
         <FRAME src="SQLConsole.jsp" name="sql_top" scrolling='no'>

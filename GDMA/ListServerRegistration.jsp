@@ -12,7 +12,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>List Servers</title>
+        <title>Generic Data Maintenance Application - List Server Registrations</title>
         <script language="javascript" src="js/general.js"></script>
         <script language="javascript" src="js/ListServerRegistration.js"></script>
     </head>

@@ -10,9 +10,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Properties;
 
-import com.vodafone.gdma.Config;
+import com.vodafone.gdma.util.Config;
 
 /**
  * @author RGILL
@@ -82,5 +83,11 @@ public class DBUtil {
 
         // Connect to the database
         return DriverManager.getConnection(reg.getConnectionURL(), prop);
-    }    
+    }
+    
+    public static boolean isDate(int type){
+        return type == Types.DATE ||
+        type == Types.TIME ||
+        type == Types.TIMESTAMP;
+    }
 }

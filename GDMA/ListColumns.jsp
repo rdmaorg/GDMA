@@ -41,7 +41,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>List Columns</title>
+        <title>Generic Data Maintenance Application - List Columns</title>
         <script language="javascript" src="js/general.js"></script>
         <script language="javascript" src="js/ListTables.js"></script>
     </head>

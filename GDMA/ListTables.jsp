@@ -38,7 +38,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>List Tables</title>
+        <title>Generic Data Maintenance Application - List Tables</title>
         <script language="javascript" src="js/general.js"></script>
         <script language="javascript" src="js/ListTables.js"></script>
     </head>

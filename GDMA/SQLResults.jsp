@@ -1,14 +1,13 @@
 <%@ page language="java" %>
 <%@ page import="com.vodafone.gdma.dbaccess.*,
-                 java.sql.Statement,
-                 java.sql.ResultSet"%>
+                 java.sql.*"%>
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
     <head>
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>SQL Results</title>
+        <title>Generic Data Maintenance Application - SQL Results</title>
     </head>
 <body class="nomargin nopadding" style="background-color: #D4D0C8">
 <table border="0" cellpadding="2" cellspacing="0" class="dataTable">
@@ -18,10 +17,10 @@
     if(serverID != null && SQL != null){
         ServerRegistration reg = ServerRegistrationFactory
                                           .getInstance()
-                                          .getServerRegistration(Long.parseLong(serverID));
+                                          .getServerRegistration(new Long(serverID));
         if(reg !=  null){
             ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(reg.getOdbcTypeID());
-            java.sql.Connection con = Connection.getConnection(
+            Connection con = DBUtil.getConnection(
                                     odbc.getConnectionClass(), 
                                     reg.getUsername(), 
                                     reg.getPassword(), 

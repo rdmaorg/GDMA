@@ -53,7 +53,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>Add Server</title>
+        <title>Generic Data Maintenance Application - Edit Server Registrations</title>
     </head>
 <body>
 <form name="frmServerRegistration" method="POST">

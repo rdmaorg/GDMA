@@ -1,11 +1,23 @@
 <%@ page language="java" %>
 <%@ page import="com.vodafone.gdma.dbaccess.*,
                  java.sql.*,
-                 java.util.*"%>
+                 java.util.*,
+                 com.vodafone.gdma.util.*"%>
 <%
 //TODO: Error checking
+    if(session.getAttribute("USER") == null){
+        %><jsp:forward page="NotLoggedIn.jsp"/><%
+    }        
+    ServerRegistration reg = null;
+    Table table = null;
     String serverID = request.getParameter("server_id");
     String tableID = request.getParameter("table_id");
+    if(serverID != null && tableID != null){
+        Long lngServerID = new Long(serverID);
+        Long lngTableID = new Long(tableID);
+        reg = ServerRegistrationFactory.getInstance().getServerRegistration(lngServerID); 
+        table = TableFactory.getInstance().getTable(lngTableID);
+    }    
 %>                 
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
@@ -13,7 +25,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>View Data</title>
+        <title>Generic Data Maintenance Application - View Data</title>
         <script language="javascript" src="js/general.js"></script>
         <script language="javascript" src="js/ViewData.js"></script>
     </head>
@@ -25,17 +37,34 @@
             <table border="0" cellpadding="0" cellspacing="0">   
                 <tr height="25px">
                     <td width="60px" >&nbsp;</td>
+<%
+    if(table !=null){
+%>                         
                     <td class="greyTextButton" align="center" valign="middle"
                         onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';">Add</td>
+                        onmouseout="this.className = 'greyTextButton';"
+                        onclick="window.location.reload();">Refresh</td>                                        
+                    </td>                    
                     <td class="greyTextButton" align="center" valign="middle"
                         onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"><a 
-                        href="javascript:doEdit()">Edit</a></td>
+                        onmouseout="this.className = 'greyTextButton';"
+                        onclick="doInsert();">Insert</td>
                     <td class="greyTextButton" align="center" valign="middle"
                         onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';">Del</td>                                        
+                        onmouseout="this.className = 'greyTextButton';"
+                        onclick="doEdit();">Update</td>
+<%
+        if(table.isAllowDelete()){
+%>                          
+                 <td class="greyTextButton" align="center" valign="middle"
+                        onmouseover="this.className = 'greyTextButtonHover';"
+                        onmouseout="this.className = 'greyTextButton';"
+                        onclick="doDelete();">Delete</td>                                        
                     </td>
+<%
+        }
+    }
+%>                    
                 </tr>
             </table>
         </td>
@@ -44,48 +73,48 @@
         <td class="dataHolder" height="100%" valign="top">
     <table border="0" cellpadding="2" cellspacing="0" class="dataTable">                 
 <%
-    if(serverID != null && tableID != null){
-    Long lngServerID = new Long(serverID);
-    Long lngTableID = new Long(tableID);
-    ServerRegistrationFactory servFac = ServerRegistrationFactory.getInstance();
-    ServerRegistration reg = servFac.getServerRegistration(lngServerID); 
-    Table table = TableFactory.getInstance().getTable(lngTableID);
-                
-    ArrayList columns = table.getDisplayedColumns();
+    if(reg != null && table != null){
+        ArrayList columns = table.getDisplayedColumns();
 
-    Connection con = DBUtil.getConnection(reg);
-    Statement stmt = con.createStatement();
-    StringBuffer sbQuery = new StringBuffer();
-    sbQuery.append("SELECT ");
-    if(columns != null && columns.size() > 0)
-    {
-        for(int i = 0; i < columns.size(); i++){
-          sbQuery.append(((Column)columns.get(i)).getName());
-          sbQuery.append(i == columns.size() - 1 ? " ":", ");
-        }
-        sbQuery.append("FROM  ");
-        sbQuery.append( table.getName());	
-    }else{
-        sbQuery.append("'No columns selected for this table'");
-    }
-    ResultSet rs = stmt.executeQuery(sbQuery.toString());
-    if(rs != null)
-    { 
+        Connection con = DBUtil.getConnection(reg);
+        Statement stmt = con.createStatement();
+        StringBuffer sbQuery = new StringBuffer();
+        sbQuery.append("SELECT ");
+        if(columns != null && columns.size() > 0)
+	    {
+	        for(int i = 0; i < columns.size(); i++){
+	          sbQuery.append(((Column)columns.get(i)).getName());
+	          sbQuery.append(i == columns.size() - 1 ? " ":", ");
+	        }
+	        sbQuery.append(" FROM  ");
+	        sbQuery.append( table.getName());
+	        sbQuery.append(" ORDER BY  ");	
+            for(int i = 0; i < columns.size(); i++){
+              sbQuery.append(((Column)columns.get(i)).getName());
+              sbQuery.append(i == columns.size() - 1 ? " ":", ");
+            }	        
+	    }else{
+	        sbQuery.append("'No columns selected for this table'");
+	    }
+	    ResultSet rs = stmt.executeQuery(sbQuery.toString());
+	    ResultSetMetaData rsmd = rs.getMetaData();
+	    if(rs != null)
+	    { 
 %>
     <tr id="trHeader">
         <td class="dataHeader" width="30px" nowrap>&nbsp;&nbsp;&nbsp;</td>                        
 <%              
-        for(int i = 1; i <= rs.getMetaData().getColumnCount(); i++){
+            for(int i = 1; i <= rsmd.getColumnCount(); i++){
 %>
-        <td class="dataHeader" nowrap ><%=rs.getMetaData().getColumnName(i)%>&nbsp;<input
-            type="hidden" id="old_<%=rs.getMetaData().getColumnName(i)%>"
-            name="old_<%=rs.getMetaData().getColumnName(i)%>"></td>                    
+        <td class="dataHeader" nowrap ><%=rsmd.getColumnName(i)%>&nbsp;<input
+            type="hidden" id="old_<%=rsmd.getColumnName(i)%>"
+            name="old_<%=rsmd.getColumnName(i)%>"></td>                    
 <%
-        }
+            }
 %>
     </tr>
-<%                  
-	    for(int row = 1; rs.next(); row++){
+<%
+            for(int row = 1; rs.next(); row++){
 %>
     <tr onmouseover="mouseEntered(this)" onmouseout="mouseExited(this)" 
         onclick="mouseClicked(this,<%=row%>);"
@@ -93,23 +122,37 @@
         id="trRow<%=row%>" class="dataBody">
         <td class="dataHeader" align="left" style=" font-weight: normal"><%=row%></td>      
 <%
-	        String value;
-	        for(int i = 1; i <= rs.getMetaData().getColumnCount(); i++){ 
-		        // we need a hidden field for each column  
-		        value =  rs.getString(i);                
+	            String value;
+		        for(int i = 1; i <= rsmd.getColumnCount(); i++){ 
+			        // we need a hidden field for each column  
+			        if(DBUtil.isDate(rsmd.getColumnType(i))){
+			           Timestamp date = rs.getTimestamp(i);
+			           if(date == null){
+%>
+        <td class="dataGreyBorder" nowrap></td>
+<%		           
+			           }else{
+%>
+        <td class="dataGreyBorder" nowrap><%=Formatter.formatDate(date)%><input
+                type="hidden" value="<%=date.getTime()%>"></td>
+<%		           
+	                    }
+			        }else{
+			          value =  rs.getString(i);                
 %>
         <td class="dataGreyBorder" nowrap><%=value==null?"":value%></td>
 <%
-            }
+                    }
+                }
 %>
     </tr>
 <%
-        }
-    }  
-    rs.close();
-    stmt.close();
-    con.close();  
-    }          
+            }
+	       }  
+		    rs.close();
+		    stmt.close();
+		    con.close();  
+	    }          
 %>  
 </table>
 </td>

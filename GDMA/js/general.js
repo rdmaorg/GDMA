@@ -13,6 +13,7 @@ function mouseClicked(obj,id)
   {
     selectedRow.className = 'dataBody';
     selectedRow = null;
+    selectedID = null; 
   }
   
   selectedRow = obj;

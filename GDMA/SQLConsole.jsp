@@ -7,7 +7,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>SQL Results</title>
+        <title> Generic Data Maintenance Application - SQL Console</title>
         <script>
             function jfnMSKeyPress()
             {
