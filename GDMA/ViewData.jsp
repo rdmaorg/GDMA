@@ -31,6 +31,7 @@
         <title>Generic Data Maintenance Application - View Data</title>
         <script language="javascript" src="js/general.js"></script>
         <script language="javascript" src="js/ViewData.js"></script>
+        
     </head>
 <body class="nomargin nopadding">
 <form action="EditData.jsp" method="post" id="frmMain">        
@@ -44,56 +45,32 @@
     if(table !=null){
 %>                     
                     <td class="formLabel" align="left" valign="middle" 
-                        nowrap><%=reg.getName()%> - <%=table.getName()%> | </td>                                        
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doInsert();">Insert</td>
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doEdit();">Update</td>
+                        nowrap><%=reg.getName()%> - <%=table.getName()%> | </td> 
+                    <td><a onclick="doAllRecords();" href="#" class="greyTextButton">Show All<a></td>
+                    <td><a onclick="doToggleSearch();" href="#" class="greyTextButton">Search<a></td>                        
 <%
-        if(table.isAllowDelete()){
-%>                          
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doDelete();">Delete</td>                                        
+        if(table.isAllowInsert()){
+%>                                                                   
+                    <td><a onclick="doInsert();" href="#" class="greyTextButton">Insert<a></td>
 <%
         }
-%>         
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doAllRecords();">Show All</td>                                        
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doToggleSearch();">Search</td>                                        
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doDownload('XML');">XML</td>
-                    <td class="greyTextButton" align="center" valign="middle"
-                        onmouseover="this.className = 'greyTextButtonHover';"
-                        onmouseout="this.className = 'greyTextButton';"
-                        onmousedown="this.className = 'greyTextButtonDown';"
-                        onmouseup="this.className = 'greyTextButtonHover';"
-                        onclick="doDownload('CSV');">CSV</td> 
+        if("ALL".equals(strMode) || "SEARCH".equals(strMode) ){
+            if(table.isAllowUpdate()){
+%>    
+                    <td><a onclick="doEdit();" href="#" class="greyTextButton">Update<a></td>
 <%
+            }
+            if(table.isAllowDelete()){
+%>                          
+                    <td><a onclick="doDelete();" href="#" class="greyTextButton">Delete<a></td>
+<%
+            }
+%>         
+
+                    <td><a onclick="doDownload('export.xml');" href="#" class="greyTextButton">XML<a></td>
+                    <td><a onclick="doDownload('export.csv');" href="#" class="greyTextButton">CSV<a></td>
+<%
+        }
     }
 %>                                                            
                 </tr>
@@ -125,7 +102,7 @@
 %>  
                 <tr>
                     <td align="right" colspan="3" >
-                        <input type="reset" class="button" value="Reset">&nbsp;
+                        <input type="button" class="button" value="Reset" onclick="clearSearch();">&nbsp;
                         <input type="button" class="button" id="btnSearch" name="btnSearch" 
                             value="Search" onclick='doSearch()'>
                     </td>

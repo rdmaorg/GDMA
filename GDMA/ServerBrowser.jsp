@@ -18,6 +18,7 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
+        <script language="javascript" src="js/index.js"></script>                  
 		<title>Generic Data Maintenance Application - Server Browser</title>
 		<script language="javascript">
 		    function toggleDisplay(id){
@@ -37,10 +38,21 @@
 		    }  
 		</script>
     </head>
-<body >
-<table border="0" cellpadding="0" cellspacing="0">
+<body class="nomargin nopadding ">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" id="tblMain">
     <tr>
-        <td align="left"><a href="ServerBrowser.jsp?ts=<%=(new Date()).getTime()%>" class="aServer">Refresh</a><br><br></td>
+        <td width="100%"  class="toolBar">
+            <table border="0" cellpadding="0" cellspacing="0" width="100">   
+                <tr height="27px">
+                    <td width="5px" >&nbsp;</td>
+                    <td><a href="ServerBrowser.jsp?ts=<%=(new Date()).getTime()%>" class="greyTextButton">Refresh<a></td>
+                    <td><a onclick="doHideLeftFrame();" href="#" class="greyTextButton">Hide<a></td>
+                </tr>
+            </table>
+       </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
     </tr>
 <%
     if(servers.size() == 0){
@@ -63,9 +75,9 @@
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
             <tr width="100%">
                 <td width="20px" valign="top"><a href="javascript:toggleDisplay('Tables<%=i%>');" 
-                        class="aServer"><img 
+                        style="cursor:pointer"><img 
                         width="20px" border="0" id="imgTables<%=i%>"
-                        src="images/plus.gif"></a></td>
+                        src="images/plus.gif" style="cursor:pointer"></a></td>
                 <td width="20px"><img width="20px" border="0"
                         src="images/db.gif"></td>
                 <td align="left" width="100%" valign="bottom"><a 
@@ -110,6 +122,16 @@
     }
 %>
 
+</table>
+<table border="0" style="display:none" cellpadding="0" 
+       cellspacing="0" width="100%" height="100%" id="tblHidden"
+       class="toolBar">
+  <tr>
+    <td onclick="doHideLeftFrame()" 
+        onmouseover="this.style.cursor = 'pointer';"
+        onmouseout="this.style.cursor = 'default';"
+        width="100%" height="100%">&gt;</td>
+  </tr>
 </table>
 </body>
 </html>

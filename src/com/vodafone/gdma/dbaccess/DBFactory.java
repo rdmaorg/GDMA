@@ -32,6 +32,10 @@ public abstract class DBFactory {
     public ArrayList getList() {
         return list;
     }
+    
+    public void refreshList()throws Exception{
+        buildList();
+    }
 
     protected void closeAll(Connection con, Statement stmt, ResultSet rs) {
         try {

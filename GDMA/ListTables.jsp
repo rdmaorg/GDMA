@@ -13,8 +13,11 @@
     Table table = null;
 
     if("POST".equalsIgnoreCase(request.getMethod())){
-        
+        //first hide all existing tables fro this server
+
+        tabFac.hideAll(lngServerID);
          for(int i = 0; request.getParameter("fldName" +i) != null; i++){
+            //only save tables that are to be displayed
             if(request.getParameter("fldDisplayed" + i) != null){
                 table = new Table();
                 table.setId(request.getParameter("fldID" + i));
@@ -23,9 +26,9 @@
                 table.setDisplayed(request.getParameter("fldDisplayed" + i) != null);
                 table.setAllowDelete(request.getParameter("fldAllowDelete" + i) != null);  
                 tabFac.save(table);
-System.out.println(i);                    
             }
         }
+        tabFac.refreshList();
     }
     
 

@@ -6,7 +6,8 @@ create table GDMA_SERVER_REGISTRATION
   NAME         VARCHAR2(255) not null,
   USERNAME     VARCHAR2(255) not null,
   PASSWORD     VARCHAR2(255),
-  URL          VARCHAR2(500)
+  URL          VARCHAR2(500),
+  PREFIX       VARCHAR2(50)
 )
 tablespace GDMA
   pctfree 10

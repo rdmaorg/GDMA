@@ -28,6 +28,8 @@ public class ServerRegistration implements Comparable {
     private String connectionURL;
 
     private long odbcTypeID;
+    
+    private String prefix;
 
     public ServerRegistration() {
 
@@ -198,5 +200,17 @@ public class ServerRegistration implements Comparable {
                 "Cannot compare ServerRegistration with "
                         + o.getClass().getName()); }
         return name.compareTo(((ServerRegistration) o).getName());
+    }
+    /**
+     * @return Returns the prefix.
+     */
+    public String getPrefix() {
+        return prefix;
+    }
+    /**
+     * @param prefix The prefix to set.
+     */
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }

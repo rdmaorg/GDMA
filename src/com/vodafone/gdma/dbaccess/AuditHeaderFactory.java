@@ -68,7 +68,7 @@ public class AuditHeaderFactory extends DBFactory {
                 list.add(AuditHeader);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, rs);
@@ -106,7 +106,7 @@ public class AuditHeaderFactory extends DBFactory {
             auditHeader.setID(new Long(lng));
             logger.debug("Audit Header ID = " + auditHeader.getID());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, null);

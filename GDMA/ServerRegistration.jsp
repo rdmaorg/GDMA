@@ -15,6 +15,7 @@
         reg.setUsername(request.getParameter("fldUsername"));
         reg.setPassword(request.getParameter("fldPassword"));
         reg.setConnectionURL(request.getParameter("fldURL"));
+        reg.setPrefix(request.getParameter("fldPrefix"));
         
         if("NEW".equals(request.getParameter("fldMode")))
         {
@@ -111,7 +112,11 @@ System.out.println("ODBCProviderFactory.getInstance");
         <tr>
             <td class="formLabel">URL</td><td><input type="text" name="fldURL" id="fldURL" 
                  class="formInput" value="<%=reg == null ? "" : reg.getConnectionURL()%>"></td>
-        </tr>               
+        </tr>  
+        <tr>
+            <td class="formLabel">Prefix</td><td><input type="text" name="fldPrefix" id="fldPrefix" 
+                 class="formInput" value="<%=reg == null || reg.getPrefix() == null ? "" : reg.getPrefix()%>"></td>
+        </tr>                      
         <tr>
             <td colspan="2" align="right"><input type="button" id="btnBack" 
                 name="btnBack" value="Back" class="button" 

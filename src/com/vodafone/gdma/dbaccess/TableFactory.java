@@ -36,7 +36,7 @@ public class TableFactory extends DBFactory {
                     try {
                         instance = new TableFactory();
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(),e);
                         throw e;
                     }
                 }
@@ -62,7 +62,7 @@ public class TableFactory extends DBFactory {
         return null;
     }
 
-    public synchronized void buildList() throws ClassNotFoundException,
+    protected synchronized void buildList() throws ClassNotFoundException,
             SQLException, IOException, Exception {
         // Create the TreeMap whcih will hold the Providers
         java.sql.Connection con = null;
@@ -125,15 +125,11 @@ public class TableFactory extends DBFactory {
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, null);
         }
-
-        //now refresh our local list
-        buildList();
-
     }
 
     private void updateTable(Table table) throws Exception {
@@ -152,18 +148,41 @@ public class TableFactory extends DBFactory {
         sbInsert.append(table.isAllowDelete() ? 'Y' : 'N');
         sbInsert.append("' WHERE id =");
         sbInsert.append(table.getId());
+        logger.debug(sbInsert); 
+        try {
+            con = DBUtil.getConnection();
+            stmt = con.createStatement();
+            stmt.executeUpdate(sbInsert.toString());
+        } catch (Exception e) {
+            logger.error("Exception while calling [updateTable]", e);
+            throw e;
+        } finally {
+            closeAll(con, stmt, null);
+        }
+    }
+    
+    public void hideAll(Long lngServerID) throws Exception {
+        Connection con = null;
+        Statement stmt = null;
+        StringBuffer sbInsert = new StringBuffer();
+
+        sbInsert.append("UPDATE gdma_table SET ");
+        sbInsert.append(" displayed='N',");
+        sbInsert.append(" allowdelete='N'");
+        sbInsert.append(" WHERE server_id =");
+        sbInsert.append(lngServerID);
+
+        logger.debug(sbInsert);     
 
         try {
             con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Exception while calling [hideAll]", e);
             throw e;
         } finally {
             closeAll(con, stmt, null);
         }
-
-        buildList();
     }
 }

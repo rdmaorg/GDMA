@@ -49,6 +49,7 @@ BODY {
 	width:80px;
 	background-color: #FF0000;
 	cursor: pointer;
+	cursor: hand;
 }
 
 .dataTable{
@@ -139,36 +140,60 @@ BODY {
 	border-bottom: 1px solid #D4D0C8;	
 	border-right: 1px solid #D4D0C8;	
 	color: #000000;
+	text-decoration : none;
 	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10px;
+	padding-top: 3px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 3px;
     width:60px;
     font-weight:bold;
-    cursor:pointer;
+	text-align:center;
+	cursor:pointer;
+    cursor: hand;
 }
 
-.greyTextButtonHover{
+.greyTextButton:hover{
 	border-top: 1px solid #FFFFFF;
 	border-left: 1px solid #FFFFFF;	
 	border-bottom: 1px solid #808080;	
 	border-right: 1px solid #808080;	
-	color: #000000;
-	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 10px;
-	width:60px;	
-	font-weight:bold;	
-    cursor:pointer;
 }
-.greyTextButtonDown{
+
+
+.topnav {
+	border-top: 1px solid #FF0000;
+	border-left: 1px solid #FF0000;	
+	border-bottom: 1px solid #FF0000;	
+	border-right: 1px solid #FF0000;	
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	width:100px;	
+	color:#FFFFFF;
+	text-decoration : none;
+	padding-top: 3px;
+	padding-left: 3px;
+	padding-right: 3px;
+	padding-bottom: 5px;
+	text-align:center;
+	cursor:pointer;
+    cursor: hand;
+}
+
+.topnav:hover {
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;	
+	border-bottom: 1px solid #808080;	
+	border-right: 1px solid #808080;
+}
+
+.topnav:active {
 	border-top: 1px solid #808080;
 	border-left: 1px solid #808080;	
 	border-bottom: 1px solid #FFFFFF;	
-	border-right: 1px solid #FFFFFF;	
-	color: #000000;
-	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 10px;
-	width:60px;	
-	font-weight:bold;	
-    cursor:pointer;	
+	border-right: 1px solid #FFFFFF;
 }
 
 .toolBar{
@@ -206,6 +231,21 @@ BODY {
 	font-size: 10px;	
 }
 
+.formDDSelect{
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;	
+	width:150px;
+}
+
+.formInputDisabled{
+	background-color: #cfcfcf;
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;		
+}
+
 .formValue{
 	background-color: #FFFFFF;
 	color: #000000;
@@ -213,35 +253,29 @@ BODY {
 	font-size: 10px;	
 }
 
-.topnav {
-	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size:12px;
-	color:#FFFFFF;
-	text-decoration : none;
-	cursor: pointer;
-}
 
-.topnav:hover {
-	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size:12px;
-	color:#FFFFFF;
-	text-decoration : underline;
-	cursor: pointer;
-}
 
 .aServer{
 	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:11px;	
 	text-decoration: none;
 	color: #000000;
-	cursor: pointer;
+	padding-top: 2px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-bottom: 2px;
+	cursor:pointer;
+    cursor: hand;
 }
 
 .aServer:hover{
-	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size:11px;	
 	text-decoration: underline;
 	color: #000000;
-	cursor: pointer;
+}
+
+.aServer:active{
+	text-decoration: none;
+	color: #FFFFFF;
+	background-color: #374c85;
 }
 

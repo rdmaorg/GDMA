@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class Table implements Comparable{
-    
+public class Table implements Comparable {
+
     private static Logger logger = Logger.getLogger(Column.class);
 
     private Long id;
@@ -25,9 +25,9 @@ public class Table implements Comparable{
     private Long serverID;
 
     private String name;
-    
+
     private boolean displayed;
-    
+
     private boolean allowDelete;
 
     /**
@@ -44,23 +44,23 @@ public class Table implements Comparable{
     public void setId(Long id) {
         this.id = id;
     }
+
     /**
      * @param dropDownColumnStore
      *            The dropDownColumnStore to set.
      */
     public void setId(String id) {
         try {
-            if(id == null || "".equals(id.trim()))
+            if (id == null || "".equals(id.trim()))
                 this.id = null;
             else
-                this.id = new Long(id);             
+                this.id = new Long(id);
         } catch (NumberFormatException e) {
             this.id = null;
             logger.error(e);
             throw e;
         }
-    }    
-    
+    }
 
     /**
      * @return Returns the name.
@@ -74,10 +74,11 @@ public class Table implements Comparable{
      *            The name to set.
      */
     public void setName(String name) {
-        if(name != null)
+        if (name != null)
             this.name = name.trim();
         else
-            this.name = null;;
+            this.name = null;
+        ;
     }
 
     /**
@@ -94,49 +95,86 @@ public class Table implements Comparable{
     public void setServerID(Long serverID) {
         this.serverID = serverID;
     }
-    
+
     /**
      * @param dropDownColumnStore
      *            The dropDownColumnStore to set.
      */
     public void setServerID(String serverID) {
         try {
-            if(serverID == null || "".equals(serverID.trim()))
+            if (serverID == null || "".equals(serverID.trim()))
                 this.serverID = null;
             else
-                this.serverID = new Long(serverID);             
+                this.serverID = new Long(serverID);
         } catch (NumberFormatException e) {
             this.serverID = null;
             logger.error(e);
             throw e;
         }
-    }    
-        
+    }
+
     /**
      * @return Returns the allowDelete.
      */
     public boolean isAllowDelete() {
         return allowDelete;
     }
+
     /**
-     * @param allowDelete The allowDelete to set.
+     * @return Returns the allowDelete.
+     */
+    public boolean isAllowInsert() {
+        ArrayList columns;
+        try {
+            columns = getColumns();
+            for (int i = 0; i < columns.size(); i++) {
+                if (((Column) columns.get(i)).isAllowInsert()) return true;
+            }
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return false;
+    }
+
+    /**
+     * @return Returns the allowDelete.
+     */
+    public boolean isAllowUpdate() {
+        ArrayList columns;
+        try {
+            columns = getColumns();
+            for (int i = 0; i < columns.size(); i++) {
+                if (((Column) columns.get(i)).isAllowUpdate()) return true;
+            }
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return false;
+    }
+
+    /**
+     * @param allowDelete
+     *            The allowDelete to set.
      */
     public void setAllowDelete(boolean allowDelete) {
         this.allowDelete = allowDelete;
     }
+
     /**
      * @return Returns the displayed.
      */
     public boolean isDisplayed() {
         return displayed;
     }
+
     /**
-     * @param displayed The displayed to set.
+     * @param displayed
+     *            The displayed to set.
      */
     public void setDisplayed(boolean displayed) {
         this.displayed = displayed;
     }
-    
+
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("id               : ");
@@ -148,7 +186,7 @@ public class Table implements Comparable{
         sb.append("\ndisplayed        : ");
         sb.append(displayed);
         sb.append("\nallowdelete      : ");
-        sb.append(allowDelete);        
+        sb.append(allowDelete);
 
         return sb.toString();
     }
@@ -157,74 +195,69 @@ public class Table implements Comparable{
      * @return Returns the full list of columns for this table.
      */
     public ArrayList getColumns() throws Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getList();
+        ArrayList columns = ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
-        
-        if(id == null)
-            return temp;
+
+        if (id == null) return temp;
 
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (id.equals(column.getTableID()))
-                    temp.add(columns.get(i));
+            if (id.equals(column.getTableID())) temp.add(columns.get(i));
         }
         return temp;
     }
-    
-    
+
     /**
      * @return Returns the columns that should be displayed for this table.
      */
     public ArrayList getDisplayedColumns() throws Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getList();
+        ArrayList columns = ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
 
-        if(id == null)
-            return temp;
-        
+        if (id == null) return temp;
+
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (id.equals(column.getTableID()) && column.isDisplayed() )
+            if (id.equals(column.getTableID()) && column.isDisplayed())
                     temp.add(columns.get(i));
         }
         return temp;
-    } 
-    
+    }
+
     /**
      * @return Returns the columns that can be have values inserted
      */
     public ArrayList getInsertColumns() throws Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getList();
+        ArrayList columns = ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
 
-        if(id == null)
-            return temp;
-        
+        if (id == null) return temp;
+
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (id.equals(column.getTableID()) && column.isAllowInsert() && column.isDisplayed() )
-                    temp.add(columns.get(i));
+            if (id.equals(column.getTableID()) && column.isAllowInsert()
+                    && column.isDisplayed()) temp.add(columns.get(i));
         }
         return temp;
-    }  
-    
+    }
+
     /**
      * @return Returns the columns that can be have values updated
      */
     public ArrayList getUpdateColumns() throws Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getList();
+        ArrayList columns = ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
 
-        if(id == null)
-            return temp;
-        
+        if (id == null) return temp;
+
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (id.equals(column.getTableID()) && column.isAllowUpdate() && column.isDisplayed() )
-                    temp.add(columns.get(i));
+            if (id.equals(column.getTableID()) && column.isAllowUpdate()
+                    && column.isDisplayed()) temp.add(columns.get(i));
         }
         return temp;
-    }     
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -232,9 +265,8 @@ public class Table implements Comparable{
      */
     public int compareTo(Object o) throws ClassCastException {
         if (o == null || !(o instanceof Table)) { throw new ClassCastException(
-                "Cannot compare Table with "
-                        + o.getClass().getName()); }
+                "Cannot compare Table with " + o.getClass().getName()); }
         return name.compareTo(((Table) o).getName());
-    }    
-   
+    }
+
 }

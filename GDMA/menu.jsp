@@ -18,7 +18,7 @@
         if(user.isAdmin()){
 %>            
             <td valign="middle"><a href="ListServerRegistration.jsp" 
-                target="main" class="topnav">Server Registrations</a></td>
+                target="main" class="topnav">Servers</a></td>
             <td valign="middle"><a href="SQLConsoleFrame.jsp" 
                 target="main" class="topnav">SQL Console</a></td> 
 <%

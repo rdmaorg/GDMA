@@ -9,6 +9,7 @@ package com.vodafone.gdma.security;
 import org.apache.log4j.Logger;
 
 import com.tagish.auth.win32.NTSystem;
+import com.vodafone.gdma.util.Config;
 
 /**
  * @author RGILL
@@ -30,8 +31,6 @@ public class Security {
             ret = "Please select a domain";
         else {
             try {
-                //TODO: Fix this
-                /*
                 NTSystem ntSystem = new NTSystem();
                 ntSystem.logon(user.getUserName(), user.getPassword()
                         .toCharArray(), user.getDomain());
@@ -43,13 +42,17 @@ public class Security {
                 user.setPassword(null);
                 //see if the user is allowed access and is admin
                 String[] groups = ntSystem.getGroupNames(false);
+                for(int i = 0; i < groups.length; i++){
+                    logger.debug("User [" + user.getUserName()
+                                + "] in Group ["
+                                + groups[i] +"]");
+                }
                 if(!isMemberOf(groups,Config.getProperty("UserGroup")))
                     throw new Exception(" User ["+ user.getUserName() +  "] is not member of the group ["+ Config.getProperty("UserGroup") +  "]");
                 user.setAdmin(isMemberOf(groups,Config.getProperty("AdminGroup")));
-                */
-                user.setAdmin(true);
             } catch (Exception e) {
                 ret = e.getMessage();
+                logger.error(e.getMessage(),e);
                 logger.debug("Exception in logon - " + e.getMessage());
                 logger.debug(user.toString());
             }
@@ -59,6 +62,9 @@ public class Security {
 
     //Check that the user is a normal user
     private static boolean isMemberOf(String[] groups, String group) throws Exception{
+        if(group == null)
+            return false;
+        group = group.trim();
         for(int i = 0; i < groups.length; i++){
             if(group.equalsIgnoreCase(groups[i]))
                 return true;

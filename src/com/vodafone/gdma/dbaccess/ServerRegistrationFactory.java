@@ -34,7 +34,7 @@ public class ServerRegistrationFactory extends DBFactory{
                     try {
                         instance = new ServerRegistrationFactory();
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(),e);
                         throw e;
                     }
                 }
@@ -91,11 +91,14 @@ public class ServerRegistrationFactory extends DBFactory{
                 reg.setUsername(rs.getString("username"));
                 reg.setPassword(rs.getString("password"));
                 reg.setConnectionURL(rs.getString("url"));
+                reg.setPrefix(rs.getString("prefix"));
+                if(rs.wasNull())
+                    reg.setPrefix(null);
 
                 list.add(reg);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, null);
@@ -108,7 +111,7 @@ public class ServerRegistrationFactory extends DBFactory{
         StringBuffer sbInsert = new StringBuffer();
 
         sbInsert.append("INSERT INTO gdma_server_registration (odbc_type_id,");
-        sbInsert.append("name,username,password, url) VALUES (");
+        sbInsert.append("name,username,password, url, prefix) VALUES (");
         sbInsert.append(reg.getOdbcTypeID());
         sbInsert.append(",'");
         sbInsert.append(reg.getName());
@@ -118,6 +121,8 @@ public class ServerRegistrationFactory extends DBFactory{
         sbInsert.append(reg.getPassword() == null ? "" : reg.getPassword());
         sbInsert.append("','");
         sbInsert.append(reg.getConnectionURL());
+        sbInsert.append("','");
+        sbInsert.append(reg.getPrefix());
         sbInsert.append("')");
 
         try {
@@ -125,7 +130,7 @@ public class ServerRegistrationFactory extends DBFactory{
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, null);
@@ -153,6 +158,8 @@ public class ServerRegistrationFactory extends DBFactory{
         sbInsert.append(reg.getPassword() == null ? "" : reg.getPassword());
         sbInsert.append("', url ='");
         sbInsert.append(reg.getConnectionURL());
+        sbInsert.append("', prefix ='");
+        sbInsert.append(reg.getPrefix());
         sbInsert.append("' WHERE id =");
         sbInsert.append(reg.getId());
 
@@ -249,6 +256,10 @@ public class ServerRegistrationFactory extends DBFactory{
 
             sbQuery.append("select * from ");
             sbQuery.append(quotedIdentifer);
+            sbQuery.append(reg.getPrefix());
+            sbQuery.append(quotedIdentifer);
+            sbQuery.append(".");
+            sbQuery.append(quotedIdentifer);
             sbQuery.append(tableName);
             sbQuery.append(quotedIdentifer);
             sbQuery.append(" where 1 = 0");
@@ -274,7 +285,7 @@ public class ServerRegistrationFactory extends DBFactory{
             }
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, rs);

@@ -67,7 +67,7 @@ public class AuditRecordFactory extends DBFactory {
                 list.add(AuditRecord);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, rs);
@@ -97,7 +97,7 @@ public class AuditRecordFactory extends DBFactory {
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, null);

@@ -2,6 +2,8 @@ function doEdit(){
 	if(selectedID == null){
 		alert("Please select a row");
 	}else{
+		document.getElementById("trSearch").style.display == "none";
+		clearSearch();
 		fillFields();
 		document.getElementById("mode").value="UPDATE";
 		document.getElementById("frmMain").action='EditData.jsp';
@@ -36,14 +38,13 @@ function fillFields(){
 	//get a pointer to the header row which contains the INPUTS for posting
 	var trRow = document.getElementById("trRow"+selectedID);
 	//get a pointer to the row we are going to post
-   var trHeader = document.getElementById("trHeader");
+   var trHeader = document.getElementById("trSearch");
    //make sure we have TDs in the row and inputs in the header
    //this codes fails if the data contains valid HTML
    var tdRow = trRow.getElementsByTagName("TD");
 	var fldHeader = trHeader.getElementsByTagName("INPUT");
 	if(tdRow && tdRow.length > 0 &&
 	   fldHeader && fldHeader.length > 0){
-
 		//start at 1 because first col is ID
 		for( i = 1; i < tdRow.length ; i++){
 			//This will only occur in the case of a date
@@ -58,9 +59,8 @@ function fillFields(){
 		}
 	}
 }
-function doDownload(mode){
-	document.getElementById("mode").value=mode;
-	document.getElementById("frmMain").action='Download.srv';
+function doDownload(file){
+	document.getElementById("frmMain").action=file;
 	document.getElementById("frmMain").target='frmHidden';
 	document.getElementById("frmMain").submit();
 }
@@ -82,7 +82,20 @@ function doSearch(){
 }
 
 function doAllRecords(){
+	clearSearch();
 	document.getElementById("mode").value='ALL';
 	document.getElementById("frmMain").action='ViewData.jsp';
 	document.getElementById("frmMain").submit();	
 }
+
+function clearSearch(){
+	//first clear out all old search values
+	var flds = document.getElementById("frmMain").getElementsByTagName("INPUT");
+	if(flds && flds.length > 0){
+		for( i = 0; i < flds.length ; i++){
+			if(flds[i].name && flds[i].name.length > 4 && flds[i].name.substr(0,4) == "old_")
+				flds[i].value = "";
+		}
+	}	
+}
+

@@ -32,7 +32,7 @@ public class ODBCProviderFactory extends DBFactory {
                     try {
                         instance = new ODBCProviderFactory();
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(),e);
                         throw e;
                     }
                 }
@@ -80,7 +80,7 @@ public class ODBCProviderFactory extends DBFactory {
                 list.add(odbc);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
             throw e;
         } finally {
             closeAll(con, stmt, rs);

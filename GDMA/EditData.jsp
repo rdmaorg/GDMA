@@ -2,7 +2,6 @@
 <%@ page import="com.vodafone.gdma.dbaccess.*,
                  com.vodafone.gdma.util.*,
                  java.util.ArrayList,
-                 java.sql.Types,
                  java.util.Date"%>
 <%                 
     if(session.getAttribute("USER") == null){
@@ -69,17 +68,21 @@
 <%
     Column column = null;
     String disbaled = null;
+    String style = null;
     String value = null;
     for(int i= 0; i < columns.size(); i++){
         column = (Column)columns.get(i);
         if("INSERT".equals(strMode)){
+           style = column.isAllowInsert() ? "formInput": "formInputDisabled"; 
            disbaled = column.isAllowInsert() ? "": "DISABLED"; 
         }
         else
         if("UPDATE".equals(strMode)){
+            style = column.isAllowUpdate() ? "formInput": "formInputDisabled"; 
             disbaled = column.isAllowUpdate()? "": "DISABLED"; 
         }
         else{
+            style = "formInputDisabled"; 
             disbaled = "DISABLED";
         }
 %>       
@@ -96,18 +99,26 @@
         }else{
             value =request.getParameter("new_"+ column.getName());
         }
-
-
+        if(column!=null && column.getDropDownColumnDisplay() != null){
+            Column colDropDownColumnDisplay = ColumnFactory.getInstance().getColumn(column.getDropDownColumnDisplay().longValue());
+            Column colDropDownColumnStore = ColumnFactory.getInstance().getColumn(column.getDropDownColumnStore().longValue());
+            EditData ed = new EditData();
+            out.println(ed.generateSelect(colDropDownColumnDisplay,colDropDownColumnStore,"new_"+column.getName(),value));
+        }else{   
 %>
-            <input class="formInput" type="text" 
+            <input class="<%=style%>" type="text" 
                    name="new_<%=column.getName()%>" 
                    id="new_<%=column.getName()%>" 
                    value="<%=value%>"
                    <%=disbaled%>>
+
+<%
+    }
+%>     
             <input type="hidden" 
                    name="old_<%=column.getName()%>" 
                    id="old_<%=column.getName()%>" 
-                   value="<%=request.getParameter("old_"+ column.getName())%>">
+                   value="<%=request.getParameter("old_"+ column.getName())%>">              
         </td>
     <tr>
 <%

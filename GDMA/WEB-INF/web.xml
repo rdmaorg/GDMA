@@ -10,8 +10,12 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Download</servlet-name>
-        <url-pattern>/Download.srv</url-pattern>
+        <url-pattern>/export.xml</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Download</servlet-name>
+        <url-pattern>/export.csv</url-pattern>
+    </servlet-mapping>    
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>

@@ -35,7 +35,7 @@ public class ColumnFactory extends DBFactory {
                     try {
                         instance = new ColumnFactory();
                     } catch (Exception e) {
-                        logger.error(e);
+                        logger.error(e.getMessage(),e);
                         throw e;
                     }
                 }
@@ -66,6 +66,7 @@ public class ColumnFactory extends DBFactory {
         String query = "SELECT * FROM gmda_column ORDER BY id";
         // Create the ArrayList which will hold the Columns
         list = new ArrayList();
+        long temp;
 
         try {
             con = DBUtil.getConnection();
@@ -80,10 +81,20 @@ public class ColumnFactory extends DBFactory {
                 column.setName(rs.getString("name"));
                 column.setColumnType(rs.getInt("type"));
                 column.setColumnTypeString(rs.getString("typeString"));
-                column.setDropDownColumnDisplay(new Long(rs
-                        .getLong("dd_lookup_column_display")));
-                column.setDropDownColumnStore(new Long(rs
-                        .getLong("dd_lookup_column_store")));
+                
+                temp = rs.getLong("dd_lookup_column_display");
+               
+                if(rs.wasNull())
+                    column.setDropDownColumnDisplay((Long)null);
+                else
+                    column.setDropDownColumnDisplay(new Long(temp));
+                
+                temp = rs.getLong("dd_lookup_column_store");                
+                if(rs.wasNull())
+                    column.setDropDownColumnStore((Long)null);
+                else
+                    column.setDropDownColumnStore(new Long(temp));                 
+                
                 column.setDisplayed("Y".equals(rs.getString("displayed")));
                 column.setAllowInsert("Y".equals(rs.getString("allowinsert")));
                 column.setAllowUpdate("Y".equals(rs.getString("allowupdate")));
@@ -91,7 +102,7 @@ public class ColumnFactory extends DBFactory {
                 list.add(column);
             }
         }catch (Exception e) {
-            logger.error(e);  
+            logger.error(e.getMessage(),e);  
             throw e;
         }  finally {
             closeAll(con, stmt, rs);
@@ -133,15 +144,11 @@ public class ColumnFactory extends DBFactory {
 
             stmt.executeUpdate();
         } catch (Exception e) {
-            logger.error(e);  
+            logger.error(e.getMessage(),e);  
             throw e;
         } finally {
             closeAll(con, stmt, null);
         }
-
-        //now refresh our local list
-        buildList();
-
     }
 
     private void updateColumn(Column col) throws Exception {
@@ -173,11 +180,40 @@ public class ColumnFactory extends DBFactory {
             stmt.executeUpdate();
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage(),e);
         } finally {
             closeAll(con, stmt, null);
         }
+    }
+    
+    public void hideAll(Long lngTableID) throws Exception {
 
-        buildList();
+        Connection con = null;
+        PreparedStatement stmt = null;
+
+        try {
+
+            con = DBUtil.getConnection();
+            stmt = con
+                    .prepareStatement("UPDATE gmda_column SET " +
+                            "dd_lookup_column_display=?," +
+                            "dd_lookup_column_store=?"
+                            + ",displayed=?," +
+                                    "allowinsert=?,allowupdate=?,nullable=? WHERE table_id =?");
+            stmt.setNull(1, Types.NUMERIC);
+            stmt.setNull(2, Types.NUMERIC);
+            stmt.setString(3, "N");
+            stmt.setString(4, "N");
+            stmt.setString(5, "N");
+            stmt.setString(6, "N");
+            stmt.setLong(7, lngTableID.longValue());
+            stmt.executeUpdate();
+            
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } finally {
+            closeAll(con, stmt, null);
+        }
     }
 }
