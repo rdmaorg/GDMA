@@ -4,28 +4,28 @@
 <%
     String serverID = request.getParameter("server_id");
     String tableID = request.getParameter("table_id");
-    long lngServerID = Long.parseLong(serverID);
-    long lngTableID = Long.parseLong(tableID);
+    Long lngServerID = new Long(serverID);
+    Long lngTableID = new Long(tableID);
     ServerRegistrationFactory servFac = ServerRegistrationFactory.getInstance();
     ServerRegistration reg = servFac.getServerRegistration(lngServerID); 
+    ColumnFactory colFac = ColumnFactory.getInstance();
     Table table = TableFactory.getInstance().getTable(lngTableID);   
     ArrayList columnDB = servFac.getColumnsFromDB(reg, table.getName());
     Column column = null;
 
     if("POST".equalsIgnoreCase(request.getMethod())){
-        ColumnFactory colFac = ColumnFactory.getInstance();
-
         for(int i = 0; request.getParameter("fldName" +i) != null; i++){
             column = new Column();
             column.setId(request.getParameter("fldID" + i));
-            column.setTableID(new Long(lngTableID));
+            column.setTableID(lngTableID);
             column.setName(request.getParameter("fldName" + i));            
             column.setColumnType(request.getParameter("fldColumnType" + i));
             column.setColumnTypeString(request.getParameter("fldColumnTypeString" + i));            
             column.setDropDownColumnDisplay(request.getParameter("fldDropDownColumnDisplay" + i));
             column.setDropDownColumnStore(request.getParameter("fldDropDownColumnStore" + i)); 
-            column.setEditable(request.getParameter("fldEditable" + i) != null);
-            column.setIncluded(request.getParameter("fldInclude" + i) != null);
+            column.setDisplayed(request.getParameter("fldDisplayed" + i) != null);
+            column.setAllowInsert(request.getParameter("fldAllowInsert" + i) != null);
+            column.setAllowUpdate(request.getParameter("fldAllowUpdate" + i) != null);
             column.setNullable("true".equals(request.getParameter("fldNullable" + i)));
 
             if(column.getId() == null)
@@ -60,8 +60,9 @@
                 <tr>
                     <td class="dataHeader">Column Name</td>
                     <td class="dataHeader">Type</td>
-                    <td class="dataHeader">Editable</td>                    
-                    <td class="dataHeader">Display</td>                                        
+                    <td class="dataHeader">Displayed</td>                    
+                    <td class="dataHeader">Allow Insert</td>                                        
+                    <td class="dataHeader">Allow Update</td>                                        
                 </tr>
 <%
     //convert tables ArrayList to a HashMap for easier look ups
@@ -95,11 +96,15 @@
                                type="hidden" value="<%=colFromDB.getColumnTypeString()%>">                                                                                            
                     <%=((Column)columnDB.get(i)).getName()%></td>
                     <td class="dataGreyBorder" nowrap><%=colFromDB.getColumnTypeString()%></td>
-                    <td class="dataGreyBorder" nowrap><input name="fldEditable<%=i%>" id="fldEditable<%=i%>" 
-                               type="checkbox" <%=(column==null?"":(column.isEditable()? "checked":""))%> 
-                               <%=(colFromDB.isEditable()?"":"DISABLED")%>></td>
-                    <td align="center" class="dataGreyBorder" ><input name="fldInclude<%=i%>" id="fldInclude<%=i%>" 
-                               type="checkbox" <%=(column==null?"":(column.isIncluded()? "checked":""))%>></td>
+                    <td align="center" class="dataGreyBorder" ><input name="fldDisplayed<%=i%>" id="fldDisplayed<%=i%>" 
+                               type="checkbox" <%=(column==null?"":(column.isDisplayed()? "checked":""))%>></td>                    
+                    <td class="dataGreyBorder" nowrap><input name="fldAllowInsert<%=i%>" id="fldAllowInsert<%=i%>" 
+                               type="checkbox" <%=(column==null?"":(column.isAllowInsert()? "checked":""))%> 
+                               <%=(colFromDB.isAllowInsert()?"":"DISABLED")%>></td>
+                    <td class="dataGreyBorder" nowrap><input name="fldAllowUpdate<%=i%>" id="fldAllowUpdate<%=i%>" 
+                               type="checkbox" <%=(column==null?"":(column.isAllowUpdate()? "checked":""))%> 
+                               <%=(colFromDB.isAllowUpdate()?"":"DISABLED")%>></td>                               
+                    
                 </tr>
 <%
     }

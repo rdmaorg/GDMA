@@ -4,32 +4,27 @@
 <%
     ServerRegistrationFactory fac = ServerRegistrationFactory.getInstance();
     ServerRegistration reg = null; 
-    String strMode = "EDIT";
+    String strMode = "EDIT"; 
     if("POST".equalsIgnoreCase(request.getMethod()))
     {
+        reg = new ServerRegistration();
+        reg.setId(request.getParameter("fldID"));
+        reg.setName(request.getParameter("fldName"));
+        reg.setOdbcTypeID(Long.parseLong(request.getParameter("fldType")));
+        reg.setUsername(request.getParameter("fldUsername"));
+        reg.setPassword(request.getParameter("fldPassword"));
+        reg.setConnectionURL(request.getParameter("fldURL"));
+        
         if("NEW".equals(request.getParameter("fldMode")))
-        {//save the new registration
-	        ServerRegistrationFactory.getInstance().addServerRegistration(
-						        request.getParameter("fldName"),
-                                request.getParameter("fldType"),
-						        request.getParameter("fldUsername"),
-						        request.getParameter("fldPassword"),
-						        request.getParameter("fldURL")
-						        );
+        {
+	        fac.addServerRegistration(reg); //save the new registration
             response.sendRedirect("ListServerRegistration.jsp");
             return;						        
         }
         else
         if("EDIT".equals(request.getParameter("fldMode")))
-        {//update the registration
-            ServerRegistrationFactory.getInstance().updateServerRegistration(
-                                Integer.parseInt(request.getParameter("fldID")),
-                                request.getParameter("fldName"),
-                                request.getParameter("fldType"),                                
-                                request.getParameter("fldUsername"),
-                                request.getParameter("fldPassword"),
-                                request.getParameter("fldURL")
-                                );
+        {
+            fac.updateServerRegistration(reg); //update the registration
             response.sendRedirect("ListServerRegistration.jsp");
             return;                                
         }
@@ -39,7 +34,7 @@
         strMode = request.getParameter("action");
         if("EDIT".equals(strMode)){
             String id = request.getParameter("id");
-            reg = fac.getServerRegistration(Integer.parseInt(request.getParameter("id")));
+            reg = fac.getServerRegistration(new Long(request.getParameter("id")));
         }
         else
         if("DELETE".equals(strMode))
@@ -90,10 +85,13 @@
             <td class="formLabel">Conenction Type</td><td>
                 <select class="formInput" name="fldType" id="fldType" value="<%=reg == null ? "" : "" + reg.getOdbcTypeID()%>">
 <%
-    ArrayList providers = ODBCProviderFactory.getInstance().getODBCProviderList();
+    ArrayList providers = ODBCProviderFactory.getInstance().getList();
+    ODBCProvider odbc;
     for(int i = 0 ; i < providers.size(); i++){
+        odbc = (ODBCProvider)providers.get(i);
 %>
-                    <option value="<%=((ODBCProvider)providers.get(i)).getId()%>"><%=((ODBCProvider)providers.get(i)).getName()%></option>
+                    <option <%=reg != null && reg.getOdbcTypeID() == odbc.getId() ? "selected" : ""%>
+                            value="<%=odbc.getId()%>"  ><%=odbc.getName()%></option>
 <%    
     }
 %>                

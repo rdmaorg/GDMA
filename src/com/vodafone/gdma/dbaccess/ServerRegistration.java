@@ -6,16 +6,18 @@
  */
 package com.vodafone.gdma.dbaccess;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Ronan Gill
  */
-public class ServerRegistration {
+public class ServerRegistration implements Comparable {
 
-    private long id;
+    private static Logger logger = Logger.getLogger(Column.class);
+    
+    private Long id;
 
     private String name;
 
@@ -94,27 +96,40 @@ public class ServerRegistration {
     /**
      * @return Returns the tables.
      */
-    public ArrayList getTables() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-
-        TableFactory tableFac = TableFactory.getInstance();
-        return tableFac.getTablesForServer(id);
+    public ArrayList getTables() throws Exception {
+        ArrayList list = TableFactory.getInstance().getList();
+        ArrayList temp = new ArrayList();
+        Table table = null;
+        
+        if(id == null)
+            return temp;
+        
+        for (int i = 0; i < list.size(); i++) {
+            table = (Table) list.get(i);
+            if (id.equals(table.getServerID()))
+                temp.add(table);
+        }
+        return temp;
     }
-    
+
     /**
      * @return Returns the tables.
      */
-    public ArrayList getEditableTables() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-
-        TableFactory tableFac = TableFactory.getInstance();
-        return tableFac.getEditableTablesForServer(id); 
+    public ArrayList getDisplayedTables() throws Exception {
+        ArrayList list = TableFactory.getInstance().getList();
+        ArrayList temp = new ArrayList();
+        Table table = null;
+        for (int i = 0; i < list.size(); i++) {
+            table = (Table) list.get(i);
+            if (id.equals(table.getServerID()) && table.isDisplayed()) temp.add(table);
+        }
+        return temp;
     }
 
-      /**
+    /**
      * @return Returns the id.
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -122,9 +137,25 @@ public class ServerRegistration {
      * @param id
      *            The id to set.
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
+    /**
+     * @param id
+     *            The id to set.
+     */
+    public void setId(String id) {
+        try {
+            if(id == null || "".equals(id.trim()))
+                this.id = null;
+            else
+                this.id = new Long(id);             
+        } catch (NumberFormatException e) {
+            this.id = null;
+            logger.error(e);
+            throw e;
+        }
+    }     
 
     /**
      * @return Returns the odbcTypeID.
@@ -157,4 +188,15 @@ public class ServerRegistration {
         return sb.toString();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) throws ClassCastException {
+        if (o == null || !(o instanceof ServerRegistration)) { throw new ClassCastException(
+                "Cannot compare ServerRegistration with "
+                        + o.getClass().getName()); }
+        return name.compareTo(((ServerRegistration) o).getName());
+    }
 }

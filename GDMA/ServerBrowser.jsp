@@ -11,8 +11,7 @@
     ArrayList tables;
     ArrayList columns;  
     
-    ServerRegistrationFactory obj = ServerRegistrationFactory.getInstance();    
-    servers = obj.getServerRegistrations();
+    servers = ServerRegistrationFactory.getInstance().getList();     
     String imagesPath = "images/";
 %>
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
@@ -81,10 +80,9 @@
                            style="display:none" id="trTables<%=i%>" >
 <%
             
-            tables = reg.getEditableTables() ;
+            tables = reg.getDisplayedTables();
             for(int j = 0; j < tables.size() ; j++){
                 table = (Table)tables.get(j);
-                if(table.isEditable()){
 %>                      
                         <tr>
                             <td width="20px" <%=(i==servers.size() - 1?"":"class=\"dotted\"")%>><img 
@@ -97,7 +95,6 @@
                                 target="main" class="aServer"><%=table.getName()%></a></td>
                         </tr>
 <%
-                }
             }
 %>                        
                     </table>

@@ -6,6 +6,7 @@
  */
 package com.vodafone.gdma.dbaccess;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -18,31 +19,15 @@ import org.apache.log4j.Logger;
  * 
  * 14-Mar-2004
  */
-public class ServerRegistrationFactory {
+public class ServerRegistrationFactory extends DBFactory{
 
     // Log4j logger
-    private static Logger logger = Logger
-            .getLogger("ServerRegistrationFactory");
+    protected static Logger logger = Logger
+            .getLogger(ServerRegistrationFactory.class);
 
     private static ServerRegistrationFactory instance = null;
 
-    private ArrayList serverRegistrations;
-
-    //for testing only
-    public static void main(String args[]) {
-        ServerRegistrationFactory o;
-        try {
-            o = ServerRegistrationFactory.getInstance();
-            ArrayList a = o.getServerRegistrations();
-            for (int i = 0; i < a.size(); i++)
-                logger.debug(((ServerRegistration) a.get(i)).getName());
-        } catch (Exception e) {
-            logger.error(e);
-        }
-    }
-
     public static ServerRegistrationFactory getInstance() throws Exception {
-
         if (instance == null) {
             synchronized (ServerRegistrationFactory.class) {
                 if (instance == null) {
@@ -59,137 +44,136 @@ public class ServerRegistrationFactory {
     }
 
     private ServerRegistrationFactory() throws Exception {
-        buildServerRegistrationsList();
+        buildList();
     }
 
-    public ArrayList getServerRegistrations() {
-        return serverRegistrations;
-    }
-
-    public ServerRegistration getServerRegistration(long id) {
-
-        for (int i = 0; i < serverRegistrations.size(); i++) {
-            if (id == ((ServerRegistration) serverRegistrations.get(i)).getId()) { return (ServerRegistration) serverRegistrations
-                    .get(i); }
+    public ServerRegistration getServerRegistration(Long id) {
+        ServerRegistration reg = null;
+        if(id == null)
+            return null;
+        for (int i = 0; i < list.size(); i++) {
+            reg = (ServerRegistration) list.get(i);
+            if (id.equals(reg.getId())) 
+                return reg;
         }
         return null;
     }
 
-    private synchronized void buildServerRegistrationsList() throws Exception {
-        java.sql.Connection con = null;
+    /**
+     *
+     * Implemention of the buildList method. Generate an ArrayList
+     * of objects from the database. Must be synchronized
+     * if the object is to be a singleton.
+     * 
+     * @see com. com.vodafone.gdma.dbaccess.DBFactory#buildList()
+     */
+    protected synchronized void buildList() throws Exception {
+        Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
+        ServerRegistration reg = null;
+        String query = "SELECT * FROM gdma_server_registration ORDER BY name";
 
-        // Create the TreeMap whcih will hold the ServerRegistrations
-        serverRegistrations = new ArrayList();
+        // Create the ArrayList which will hold the ServerRegistrations
+        list = new ArrayList();
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
-            rs = stmt
-                    .executeQuery("SELECT id, odbc_type_id, name, username, password, url FROM dbo.gdma_server_registration ORDER BY name");
+            rs = stmt.executeQuery(query);
 
             while (rs != null && rs.next()) {
-                ServerRegistration reg = new ServerRegistration();
+                reg = new ServerRegistration();
 
-                reg.setId(rs.getLong("id"));
+                reg.setId(new Long(rs.getLong("id")));
                 reg.setOdbcTypeID(rs.getLong("odbc_type_id"));
                 reg.setName(rs.getString("name"));
                 reg.setUsername(rs.getString("username"));
                 reg.setPassword(rs.getString("password"));
                 reg.setConnectionURL(rs.getString("url"));
 
-                serverRegistrations.add(reg);
+                list.add(reg);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
             throw e;
         } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
     }
 
-    public void addServerRegistration(String name, String ODBCTypeID,
-            String username, String password, String url) throws Exception {
-
-        java.sql.Connection con = null;
+    public void addServerRegistration(ServerRegistration reg) throws Exception {
+        Connection con = null;
         Statement stmt = null;
         StringBuffer sbInsert = new StringBuffer();
 
         sbInsert.append("INSERT INTO gdma_server_registration (odbc_type_id,");
         sbInsert.append("name,username,password, url) VALUES (");
-        sbInsert.append(ODBCTypeID);
+        sbInsert.append(reg.getOdbcTypeID());
         sbInsert.append(",'");
-        sbInsert.append(name);
+        sbInsert.append(reg.getName());
         sbInsert.append("','");
-        sbInsert.append(username);
+        sbInsert.append(reg.getUsername());
         sbInsert.append("','");
-        sbInsert.append(password == null ? "" : password);
+        sbInsert.append(reg.getPassword() == null ? "" : reg.getPassword());
         sbInsert.append("','");
-        sbInsert.append(url);
+        sbInsert.append(reg.getConnectionURL());
         sbInsert.append("')");
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
             throw e;
         } finally {
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
-
+        
+        //TODO: get id and add to array list and then sort
         //now refresh our local list
-        buildServerRegistrationsList();
-
+        buildList();
     }
 
-    public void updateServerRegistration(long id, String name,
-            String ODBCTypeID, String username, String password, String url)
+    public void updateServerRegistration(ServerRegistration reg)
             throws Exception {
 
-        java.sql.Connection con = null;
+        Connection con = null;
         Statement stmt = null;
         StringBuffer sbInsert = new StringBuffer();
 
         sbInsert.append("UPDATE gdma_server_registration SET odbc_type_id=");
-        sbInsert.append(ODBCTypeID);
+        sbInsert.append(reg.getOdbcTypeID());
         sbInsert.append(",name='");
-        sbInsert.append(name);
+        sbInsert.append(reg.getName());
         sbInsert.append("',username='");
-        sbInsert.append(username);
+        sbInsert.append(reg.getUsername());
         sbInsert.append("',password='");
-        sbInsert.append(password == null ? "" : password);
+        sbInsert.append(reg.getPassword() == null ? "" : reg.getPassword());
         sbInsert.append("', url ='");
-        sbInsert.append(url);
+        sbInsert.append(reg.getConnectionURL());
         sbInsert.append("' WHERE id =");
-        sbInsert.append(id);
+        sbInsert.append(reg.getId());
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
 
         // now change our refernce to the object
-        ServerRegistration reg = getServerRegistration(id);
-        reg.setName(name);
-        buildServerRegistrationsList();
+        buildList();
     }
 
     public void deleteServerRegistration(int id) throws Exception {
-
-        java.sql.Connection con = null;
+        //TODO: put checks here for tables hanging off DB
+        Connection con = null;
         Statement stmt = null;
         StringBuffer sbInsert = new StringBuffer();
 
@@ -197,31 +181,30 @@ public class ServerRegistrationFactory {
         sbInsert.append(id);
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
 
         //      now refresh our local list
-        buildServerRegistrationsList();
+        buildList();
     }
 
     public ArrayList getTablesFromDB(ServerRegistration reg) throws Exception {
         ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(
                 reg.getOdbcTypeID());
         ArrayList tables = new ArrayList();
-        java.sql.Connection con = null;
+        Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
 
         try {
-            con = Connection.getConnection(odbc.getConnectionClass(), reg
+            con = DBUtil.getConnection(odbc.getConnectionClass(), reg
                     .getUsername(), reg.getPassword(), reg.getConnectionURL());
             stmt = con.createStatement();
 
@@ -235,9 +218,7 @@ public class ServerRegistrationFactory {
             e.printStackTrace();
             throw e;
         } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, rs);
         }
 
         return tables;
@@ -248,19 +229,28 @@ public class ServerRegistrationFactory {
         ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(
                 reg.getOdbcTypeID());
         ArrayList columns = new ArrayList();
-        java.sql.Connection con = null;
+        Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
         ResultSetMetaData rsMeta = null;
         Column column = null;
+        String quotedIdentifer = "";
+        StringBuffer sbQuery = new StringBuffer();
 
         try {
-            con = Connection.getConnection(odbc.getConnectionClass(), reg
+            con = DBUtil.getConnection(odbc.getConnectionClass(), reg
                     .getUsername(), reg.getPassword(), reg.getConnectionURL());
             stmt = con.createStatement();
-            logger.debug("select * from " + tableName + " where 1 = 0");
-            rs = stmt.executeQuery("select * from " + tableName
-                    + " where 1 = 0");
+            quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
+
+            sbQuery.append("select * from ");
+            sbQuery.append(quotedIdentifer);
+            sbQuery.append(tableName);
+            sbQuery.append(quotedIdentifer);
+            sbQuery.append(" where 1 = 0");
+            logger.debug(sbQuery.toString());
+
+            rs = stmt.executeQuery(sbQuery.toString());
 
             rsMeta = rs.getMetaData();
             for (int i = 1; i <= rsMeta.getColumnCount(); i++) {
@@ -268,21 +258,23 @@ public class ServerRegistrationFactory {
                 column.setName(rsMeta.getColumnName(i));
                 column.setColumnType(rsMeta.getColumnType(i));
                 column.setColumnTypeString(rsMeta.getColumnTypeName(i));
-                column.setEditable(rsMeta.isWritable(i));
-                column.setNullable(rsMeta.isNullable(i) == ResultSetMetaData.columnNullable || rsMeta.isNullable(i) == ResultSetMetaData.columnNullableUnknown );
+                column.setAllowInsert(rsMeta.isWritable(i));
+                column.setAllowUpdate(rsMeta.isWritable(i));
+                column
+                        .setNullable(rsMeta.isNullable(i) == ResultSetMetaData.columnNullable
+                                || rsMeta.isNullable(i) == ResultSetMetaData.columnNullableUnknown);
                 columns.add(column);
+
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
             throw e;
         } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, rs);
         }
 
         return columns;
     }
+ 
 }
-

@@ -24,7 +24,7 @@
 <form action="SQLResults.jsp" method="put" target="sql_bottom" >
 <table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">   
     <tr>
-        <td width="100%"  class="toolBar"style="background-color: #D4D0C8">
+        <td width="100%"  class="toolBar" style="background-color: #D4D0C8">
             <table border="0" cellpadding="0" cellspacing="0">   
                 <tr height="25px">
                     <td width="25px" >&nbsp;</td>
@@ -38,7 +38,7 @@
                     <td>
                         <select class="formInput" name="server" id="server">
 <%
-    ArrayList servers = ServerRegistrationFactory.getInstance().getServerRegistrations();
+    ArrayList servers = ServerRegistrationFactory.getInstance().getList();
     for(int i = 0 ; i < servers.size(); i++){
 %>
                             <option value="<%=((ServerRegistration)servers.get(i)).getId()%>"><%=((ServerRegistration)servers.get(i)).getName()%></option>

@@ -6,10 +6,9 @@
  */
 package com.vodafone.gdma.dbaccess;
 
-import java.io.IOException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -22,29 +21,14 @@ import org.apache.log4j.Logger;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class ColumnFactory {
+public class ColumnFactory extends DBFactory {
 
     // Log4j logger
     private static Logger logger = Logger.getLogger(ColumnFactory.class);
 
     private static ColumnFactory instance = null;
 
-    private ArrayList columns;
-
-    public static void main(String args[]) {
-        ColumnFactory o;
-        try {
-            o = ColumnFactory.getInstance();
-            ArrayList a = o.getColumns(); 
-            for (int i = 0; i < a.size(); i++)
-                logger.debug(((Column) a.get(i)).getName());
-        } catch (Exception e) {
-            logger.error(e);
-        }
-    }
-
-    public static ColumnFactory getInstance() throws ClassNotFoundException,
-            SQLException, IOException, Exception {
+    public static ColumnFactory getInstance() throws Exception {
         if (instance == null) {
             synchronized (ODBCProviderFactory.class) {
                 if (instance == null) {
@@ -60,132 +44,134 @@ public class ColumnFactory {
         return instance;
     }
 
-    private ColumnFactory() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-        buildColumnsList();
-    }
-
-    public ArrayList getColumns() {
-        return columns;
+    private ColumnFactory() throws Exception {
+        buildList();
     }
 
     public Column getColumn(long id) {
-        for (int i = 0; i < columns.size(); i++) {
-            if (((Column) columns.get(i)).getId().longValue() == id)
-                    return (Column) columns.get(i);
+        Column column = null;
+        for (int i = 0; i < list.size(); i++) {
+            column = (Column) list.get(i);
+            if (column.getId().longValue() == id) return column;
         }
         return null;
     }
 
-    public synchronized void buildColumnsList() throws ClassNotFoundException,
-            SQLException, IOException, Exception {
+    public synchronized void buildList() throws Exception {
         // Create the TreeMap whcih will hold the Providers
-        java.sql.Connection con = null;
+        Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-        // Create the TreeMap whcih will hold the ServerRegistrations
-        columns = new ArrayList();
+        Column column = null;
+        String query = "SELECT * FROM gmda_column ORDER BY id";
+        // Create the ArrayList which will hold the Columns
+        list = new ArrayList();
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
-            rs = stmt
-                    .executeQuery("SELECT id, table_id, name, type, typeString, dd_lookup_column_display, dd_lookup_column_store, editable, included, nullable FROM gmda_column ORDER BY id");
+            rs = stmt.executeQuery(query);
 
             while (rs != null && rs.next()) {
-                Column column = new Column();
+                column = new Column();
 
                 column.setId(new Long(rs.getLong("id")));
                 column.setTableID(new Long(rs.getLong("table_id")));
                 column.setName(rs.getString("name"));
                 column.setColumnType(rs.getInt("type"));
                 column.setColumnTypeString(rs.getString("typeString"));
-                column.setDropDownColumnDisplay(new Long(rs.getLong("dd_lookup_column_display")));
-                column.setDropDownColumnStore(new Long(rs.getLong("dd_lookup_column_store")));
-                column.setEditable("Y".equals(rs.getString("editable")));
-                column.setIncluded("Y".equals(rs.getString("included")));
+                column.setDropDownColumnDisplay(new Long(rs
+                        .getLong("dd_lookup_column_display")));
+                column.setDropDownColumnStore(new Long(rs
+                        .getLong("dd_lookup_column_store")));
+                column.setDisplayed("Y".equals(rs.getString("displayed")));
+                column.setAllowInsert("Y".equals(rs.getString("allowinsert")));
+                column.setAllowUpdate("Y".equals(rs.getString("allowupdate")));
                 column.setNullable("Y".equals(rs.getString("nullable")));
-                columns.add(column);
+                list.add(column);
             }
-        } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+        }catch (Exception e) {
+            logger.error(e);  
+            throw e;
+        }  finally {
+            closeAll(con, stmt, rs);
         }
 
     }
 
     public void addColumn(Column col) throws Exception {
 
-        java.sql.Connection con = null;
+        Connection con = null;
         PreparedStatement stmt = null;
 
         try {
-            con = Connection.getConnection();
-            stmt = con.prepareStatement("INSERT INTO gmda_column (table_id,name,type,dd_lookup_column_display," +
-                    "dd_lookup_column_store,editable,included,nullable) VALUES  (?,?,?,?,?,?,?,?)");
-            stmt.setLong(1,col.getTableID().longValue());
-            stmt.setString(2,col.getName());
-            stmt.setInt(3,col.getColumnType());
-            if(col.getDropDownColumnStore() != null)
-                stmt.setLong(4,col.getDropDownColumnStore().longValue());
+            con = DBUtil.getConnection();
+            stmt = con
+                    .prepareStatement("INSERT INTO gmda_column (table_id,name,type,dd_lookup_column_display,"
+                            + "dd_lookup_column_store,displayed,allowinsert,allowupdate,nullable) VALUES  (?,?,?,?,?,?,?,?,?)");
+            stmt.setLong(1, col.getTableID().longValue());
+            stmt.setString(2, col.getName());
+            stmt.setInt(3, col.getColumnType());
+            if (col.getDropDownColumnStore() != null)
+                stmt.setLong(4, col.getDropDownColumnStore().longValue());
             else
-                stmt.setNull(4,Types.NUMERIC);
-            if(col.getDropDownColumnDisplay() != null)
-                stmt.setLong(5,col.getDropDownColumnDisplay().longValue());
+                stmt.setNull(4, Types.NUMERIC);
+            if (col.getDropDownColumnDisplay() != null)
+                stmt.setLong(5, col.getDropDownColumnDisplay().longValue());
             else
-                stmt.setNull(5,Types.NUMERIC);            
-            stmt.setString(6,col.isEditable() ? "Y":"N");
-            stmt.setString(7,col.isIncluded() ? "Y":"N");
-            stmt.setString(8,col.isNullable() ? "Y":"N");
-           
+                stmt.setNull(5, Types.NUMERIC);
+            stmt.setString(6, col.isDisplayed() ? "Y" : "N");
+            stmt.setString(7, col.isAllowInsert() ? "Y" : "N");
+            stmt.setString(8, col.isAllowUpdate() ? "Y" : "N");
+            stmt.setString(9, col.isNullable() ? "Y" : "N");
+
             stmt.executeUpdate();
-            if (stmt != null) stmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);  
             throw e;
         } finally {
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
 
         //now refresh our local list
-        buildColumnsList();
+        buildList();
 
     }
 
     public void updateColumn(Column col) throws Exception {
 
-        java.sql.Connection con = null;
+        Connection con = null;
         PreparedStatement stmt = null;
-        
+
         try {
-            con = Connection.getConnection();
-            stmt = con.prepareStatement("UPDATE gmda_column SET table_id=?,name=?,type=?,dd_lookup_column_display=?,dd_lookup_column_store=?" +
-            		",editable=?, included =?, nullable=? WHERE id =?");
-            stmt.setLong(1,col.getTableID().longValue());
-            stmt.setString(2,col.getName());
-            stmt.setInt(3,col.getColumnType());
-            if(col.getDropDownColumnStore() != null)
-                stmt.setLong(4,col.getDropDownColumnStore().longValue());
+            con = DBUtil.getConnection();
+            stmt = con
+                    .prepareStatement("UPDATE gmda_column SET table_id=?,name=?,type=?,dd_lookup_column_display=?,dd_lookup_column_store=?"
+                            + ",displayed=?,allowinsert=?,allowupdate=?,nullable=? WHERE id =?");
+            stmt.setLong(1, col.getTableID().longValue());
+            stmt.setString(2, col.getName());
+            stmt.setInt(3, col.getColumnType());
+            if (col.getDropDownColumnStore() != null)
+                stmt.setLong(4, col.getDropDownColumnStore().longValue());
             else
-                stmt.setNull(4,Types.NUMERIC);
-            if(col.getDropDownColumnStore() != null)
-                stmt.setLong(5,col.getDropDownColumnDisplay().longValue());
+                stmt.setNull(4, Types.NUMERIC);
+            if (col.getDropDownColumnStore() != null)
+                stmt.setLong(5, col.getDropDownColumnDisplay().longValue());
             else
-                stmt.setNull(5,Types.NUMERIC);            
-            stmt.setString(6,col.isEditable() ? "Y":"N");
-            stmt.setString(7,col.isIncluded() ? "Y":"N");
-            stmt.setString(8,col.isNullable() ? "Y":"N");
-            stmt.setLong(9,col.getId().longValue());
+                stmt.setNull(5, Types.NUMERIC);
+            stmt.setString(6, col.isDisplayed() ? "Y" : "N");
+            stmt.setString(7, col.isAllowInsert() ? "Y" : "N");
+            stmt.setString(8, col.isAllowUpdate() ? "Y" : "N");
+            stmt.setString(9, col.isNullable() ? "Y" : "N");
+            stmt.setLong(10, col.getId().longValue());
             stmt.executeUpdate();
-            if (stmt != null) stmt.close();
+
         } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
+            logger.error(e);
         } finally {
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
 
-        buildColumnsList();
+        buildList();
     }
 }

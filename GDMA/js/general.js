@@ -4,7 +4,7 @@ var selectedID = null;
 function mouseDblClicked(obj,id)
 {
 	mouseClicked(obj,id);
-	doEdit(id);
+	doEdit();
 }
 
 function mouseClicked(obj,id)

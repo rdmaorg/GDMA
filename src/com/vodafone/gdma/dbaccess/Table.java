@@ -6,9 +6,9 @@
  */
 package com.vodafone.gdma.dbaccess;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author RGILL
@@ -16,35 +16,24 @@ import java.util.ArrayList;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class Table {
+public class Table implements Comparable{
+    
+    private static Logger logger = Logger.getLogger(Column.class);
 
-    private long id;
+    private Long id;
 
-    private long serverID;
+    private Long serverID;
 
     private String name;
-
-    private boolean editable;
-
-    /**
-     * @return Returns the editable.
-     */
-    public boolean isEditable() {
-        return editable;
-    }
-
-    /**
-     * @param editable
-     *            The editable to set.
-     */
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
+    
+    private boolean displayed;
+    
+    private boolean allowDelete;
 
     /**
      * @return Returns the id.
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -52,9 +41,26 @@ public class Table {
      * @param id
      *            The id to set.
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
+    /**
+     * @param dropDownColumnStore
+     *            The dropDownColumnStore to set.
+     */
+    public void setId(String id) {
+        try {
+            if(id == null || "".equals(id.trim()))
+                this.id = null;
+            else
+                this.id = new Long(id);             
+        } catch (NumberFormatException e) {
+            this.id = null;
+            logger.error(e);
+            throw e;
+        }
+    }    
+    
 
     /**
      * @return Returns the name.
@@ -74,7 +80,7 @@ public class Table {
     /**
      * @return Returns the server_id.
      */
-    public long getServerID() {
+    public Long getServerID() {
         return serverID;
     }
 
@@ -82,20 +88,64 @@ public class Table {
      * @param server_id
      *            The server_id to set.
      */
-    public void setServerID(long server_id) {
-        this.serverID = server_id;
+    public void setServerID(Long serverID) {
+        this.serverID = serverID;
     }
-
+    
+    /**
+     * @param dropDownColumnStore
+     *            The dropDownColumnStore to set.
+     */
+    public void setServerID(String serverID) {
+        try {
+            if(serverID == null || "".equals(serverID.trim()))
+                this.serverID = null;
+            else
+                this.serverID = new Long(serverID);             
+        } catch (NumberFormatException e) {
+            this.serverID = null;
+            logger.error(e);
+            throw e;
+        }
+    }    
+        
+    /**
+     * @return Returns the allowDelete.
+     */
+    public boolean isAllowDelete() {
+        return allowDelete;
+    }
+    /**
+     * @param allowDelete The allowDelete to set.
+     */
+    public void setAllowDelete(boolean allowDelete) {
+        this.allowDelete = allowDelete;
+    }
+    /**
+     * @return Returns the displayed.
+     */
+    public boolean isDisplayed() {
+        return displayed;
+    }
+    /**
+     * @param displayed The displayed to set.
+     */
+    public void setDisplayed(boolean displayed) {
+        this.displayed = displayed;
+    }
+    
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("id             : ");
+        sb.append("id               : ");
         sb.append(id);
-        sb.append("\nserver_id             : ");
+        sb.append("\nserver_id        : ");
         sb.append(serverID);
         sb.append("\nname             : ");
         sb.append(name);
-        sb.append("\neditable         : ");
-        sb.append(editable);
+        sb.append("\ndisplayed        : ");
+        sb.append(displayed);
+        sb.append("\nallowdelete      : ");
+        sb.append(allowDelete);        
 
         return sb.toString();
     }
@@ -103,14 +153,16 @@ public class Table {
     /**
      * @return Returns the full list of columns for this table.
      */
-    public ArrayList getColumns() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getColumns();
+    public ArrayList getColumns() throws Exception {
+        ArrayList columns =  ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
+        
+        if(id == null)
+            return temp;
 
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (column.getTableID().longValue() == id   )
+            if (id.equals(column.getTableID()))
                     temp.add(columns.get(i));
         }
         return temp;
@@ -120,32 +172,66 @@ public class Table {
     /**
      * @return Returns the columns that should be displayed for this table.
      */
-    public ArrayList getIncludedColumns() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getColumns();
+    public ArrayList getDisplayedColumns() throws Exception {
+        ArrayList columns =  ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
 
+        if(id == null)
+            return temp;
+        
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (column.getTableID().longValue() == id && column.isIncluded()  )
+            if (id.equals(column.getTableID()) && column.isDisplayed() )
                     temp.add(columns.get(i));
         }
         return temp;
     } 
     
     /**
-     * @return Returns the columns that are editable for this table.
+     * @return Returns the columns that can be have values inserted
      */
-    public ArrayList getEditableColumns() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-        ArrayList columns =  ColumnFactory.getInstance().getColumns();
+    public ArrayList getInsertColumns() throws Exception {
+        ArrayList columns =  ColumnFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
 
+        if(id == null)
+            return temp;
+        
         for (int i = 0; i < columns.size(); i++) {
             Column column = (Column) columns.get(i);
-            if (column.getTableID().longValue() == id && column.isIncluded() && column.isEditable() )
+            if (id.equals(column.getTableID()) && column.isAllowInsert() && column.isDisplayed() )
                     temp.add(columns.get(i));
         }
         return temp;
-    }      
+    }  
+    
+    /**
+     * @return Returns the columns that can be have values updated
+     */
+    public ArrayList getUpdateColumns() throws Exception {
+        ArrayList columns =  ColumnFactory.getInstance().getList();
+        ArrayList temp = new ArrayList();
+
+        if(id == null)
+            return temp;
+        
+        for (int i = 0; i < columns.size(); i++) {
+            Column column = (Column) columns.get(i);
+            if (id.equals(column.getTableID()) && column.isAllowUpdate() && column.isDisplayed() )
+                    temp.add(columns.get(i));
+        }
+        return temp;
+    }     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) throws ClassCastException {
+        if (o == null || !(o instanceof Table)) { throw new ClassCastException(
+                "Cannot compare Table with "
+                        + o.getClass().getName()); }
+        return name.compareTo(((Table) o).getName());
+    }    
+   
 }

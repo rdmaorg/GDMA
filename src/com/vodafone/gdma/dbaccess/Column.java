@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class Column {
+public class Column implements Comparable {
 
     private static Logger logger = Logger.getLogger(Column.class);
 
@@ -34,9 +34,11 @@ public class Column {
 
     private Long dropDownColumnStore;
 
-    private boolean included;
+    private boolean displayed;
 
-    private boolean editable;
+    private boolean allowInsert;
+    
+    private boolean allowUpdate;
 
     private boolean nullable;
 
@@ -165,23 +167,6 @@ public class Column {
         this.tableID = tableID;
     }
 
-  
-
-    /**
-     * @return Returns the editable.
-     */
-    public boolean isEditable() {
-        return editable;
-    }
-
-    /**
-     * @param editable
-     *            The editable to set.
-     */
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
-
     /**
      * @return Returns the columnType.
      */
@@ -215,18 +200,41 @@ public class Column {
     }       
 
     /**
-     * @return Returns the include.
+     * @return Returns the displayed.
      */
-    public boolean isIncluded() {
-        return included;
+    public boolean isDisplayed() {
+        return displayed;
+    }
+    /**
+     * @param displayed The displayed to set.
+     */
+    public void setDisplayed(boolean displayed) {
+        this.displayed = displayed;
     }
 
     /**
-     * @param include
-     *            The include to set.
+     * @return Returns the allowInsert.
      */
-    public void setIncluded(boolean include) {
-        this.included = include;
+    public boolean isAllowInsert() {
+        return allowInsert;
+    }
+    /**
+     * @param allowInsert The allowInsert to set.
+     */
+    public void setAllowInsert(boolean allowInsert) {
+        this.allowInsert = allowInsert;
+    }
+    /**
+     * @return Returns the allowUpdate.
+     */
+    public boolean isAllowUpdate() {
+        return allowUpdate;
+    }
+    /**
+     * @param allowUpdate The allowUpdate to set.
+     */
+    public void setAllowUpdate(boolean allowUpdate) {
+        this.allowUpdate = allowUpdate;
     }
 
     /**
@@ -236,6 +244,7 @@ public class Column {
         return nullable;
     }
 
+    
     /**
      * @param nullable
      *            The nullable to set.
@@ -272,12 +281,26 @@ public class Column {
         sb.append(dropDownColumnDisplay);
         sb.append("\ndropDownColumnStore   : ");
         sb.append(dropDownColumnStore);
-        sb.append("\neditable              : ");
-        sb.append(editable);
-        sb.append("\nincluded              : ");
-        sb.append(included);
-        sb.append("\nnullable   : ");
+        sb.append("\nallowInsert           : ");
+        sb.append(allowInsert);
+        sb.append("\nallowUpdate           : ");
+        sb.append(allowUpdate);        
+        sb.append("\ndisplayed             : ");
+        sb.append(displayed );
+        sb.append("\nnullable              : ");
         sb.append(nullable);        
         return sb.toString();
     }    
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) throws ClassCastException {
+        if (o == null || !(o instanceof Column)) { throw new ClassCastException(
+                "Cannot compare Column with "
+                        + o.getClass().getName()); }
+        return name.compareTo(((Column) o).getName());
+    }
 }

@@ -3,42 +3,33 @@
                  java.util.*"%>
 <%
     String serverID = request.getParameter("server_id");
-    long lngServerID = Long.parseLong(serverID);
+    Long lngServerID = new Long(serverID);
     ServerRegistrationFactory servFac = ServerRegistrationFactory.getInstance();
-    ServerRegistration reg = servFac.getServerRegistration(lngServerID);    
+    ServerRegistration reg = servFac.getServerRegistration(lngServerID);  
+    TableFactory tabFac = TableFactory.getInstance(); 
+    //get the actual list of tables 
     ArrayList tableNames = servFac.getTablesFromDB(reg);
-    
+   
     Table table = null;
 
-        
     if("POST".equalsIgnoreCase(request.getMethod())){
-        TableFactory tabFac = TableFactory.getInstance();
-        int i = 0;
-        String fldID;
-        String fldName;
-        String fldEditable;
         
-        while(request.getParameter("fldName" +i) != null){
-            fldID = request.getParameter("fldID" + i);
-            fldName = request.getParameter("fldName" + i);
-            fldEditable = request.getParameter("fldEditable" + i);
-
-            if(fldID == null || "".equals(fldID))
-            {
-                //new table
-                tabFac.addTable(lngServerID,
-                                fldName,
-                                fldEditable != null);
-            }else{
-                //old table 
-                tabFac.updateTable(Long.parseLong(fldID),
-                                   lngServerID,
-                                   fldName,
-                                   fldEditable != null);
-            }
-            i++;
+         for(int i = 0; request.getParameter("fldName" +i) != null; i++){
+            table = new Table();
+            table.setId(request.getParameter("fldID" + i));
+            table.setServerID(lngServerID);
+            table.setName(request.getParameter("fldName" + i));
+            table.setDisplayed(request.getParameter("fldDisplayed" + i) != null);
+            table.setAllowDelete(request.getParameter("fldAllowDelete" + i) != null);            
+            
+            if(table.getId() == null)                
+                tabFac.addTable(table);    //new table
+            else
+                tabFac.updateTable(table); //old table 
         }
     }
+    
+
       
 %>
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
@@ -65,14 +56,17 @@
                    width="50%" class="dataTable" >
                 <tr>
                     <td class="dataHeader">Table Name</td>
-                    <td class="dataHeader">Include</td>
+                    <td class="dataHeader">Displayed</td>
+                    <td class="dataHeader" nowrap>Allow Delete</td>
                 </tr>
 <%
-    //convert tables ArrayList to a HashMap for easier look ups
+    //get the list of tables in the DB
     ArrayList tables = reg.getTables(); 
+    //convert tables ArrayList to a HashMap for easier look ups 
     HashMap tablesMap = new HashMap();
     for(int i = 0; i < tables.size() ; i++)
         tablesMap.put( ((Table)tables.get(i)).getName(),tables.get(i));
+    //iterate throught eh names from the database
     for(int i = 0; i < tableNames.size() ; i++){
         table = (Table)tablesMap.get((String)tableNames.get(i));
 %>
@@ -84,8 +78,10 @@
                         <input name="fldID<%=i%>" id="fldID<%=i%>" type="hidden" value="<%=table==null?"":""+table.getId()%>">
                         <input name="fldName<%=i%>" id="fldName<%=i%>" type="hidden" value="<%=(String)tableNames.get(i)%>">
                     <%=(String)tableNames.get(i)%></td>
-                    <td align="center" class="dataGreyBorder" ><input name="fldEditable<%=i%>" id="fldEditable<%=i%>" 
-                               type="checkbox" <%=(table==null?"":(table.isEditable()? "checked":""))%>></td>
+                    <td align="center" class="dataGreyBorder" ><input name="fldDisplayed<%=i%>" id="fldDisplayed<%=i%>" 
+                               type="checkbox" <%=(table==null?"":(table.isDisplayed()? "checked":""))%>></td>
+                    <td align="center" class="dataGreyBorder" ><input name="fldAllowDelete<%=i%>" id="fldAllowDelete<%=i%>" 
+                               type="checkbox" <%=(table==null?"":(table.isAllowDelete()? "checked":""))%>></td>
                 </tr>
 <%
     }

@@ -1,17 +1,16 @@
 <%@ page language="java" %>
-<%@ page import="com.vodafone.gdma.*,
-                 com.vodafone.gdma.dbaccess.*,
+<%@ page import="com.vodafone.gdma.dbaccess.*,
                  java.util.ArrayList"%>
 <%
     ServerRegistrationFactory obj = ServerRegistrationFactory.getInstance();    
-    ArrayList servers = obj.getServerRegistrations();
+    ArrayList servers = obj.getList();
     ServerRegistration reg = null;
 %>
 <!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
 <html>
     <head>
         <style type="text/css" media="all">
-            @import "<%=Config.getProperty("app_path")%>/css/style.css";
+            @import "css/style.css";
         </style>
         <title>List Servers</title>
         <script language="javascript" src="js/general.js"></script>

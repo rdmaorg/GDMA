@@ -11,7 +11,7 @@ package com.vodafone.gdma.dbaccess;
  * 
  * 14-Mar-2004
  */
-public class ODBCProvider {
+public class ODBCProvider implements Comparable{
     private long id;
 	private String name;
 	private String SQLGetTables;
@@ -91,4 +91,16 @@ public class ODBCProvider {
     public void setConnectionClass(String connectionClass) {
         this.connectionClass = connectionClass;
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) throws ClassCastException {
+        if (o == null || !(o instanceof ODBCProvider)) { throw new ClassCastException(
+                "Cannot compare ODBCProvider with "
+                        + o.getClass().getName()); }
+        return name.compareTo(((ODBCProvider) o).getName());
+    }    
 }

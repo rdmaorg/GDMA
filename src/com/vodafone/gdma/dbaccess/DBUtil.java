@@ -7,6 +7,7 @@
 package com.vodafone.gdma.dbaccess;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -19,7 +20,7 @@ import com.vodafone.gdma.Config;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class Connection {
+public class DBUtil {
 
     private static String connectionClass;
 
@@ -27,7 +28,7 @@ public class Connection {
 
     private static Properties connectionProp;
 
-    public static java.sql.Connection getConnection()
+    public static Connection getConnection()
             throws ClassNotFoundException, SQLException, IOException, Exception {
 
         //load the propertis for the conenction (only done th first time
@@ -42,7 +43,7 @@ public class Connection {
 
     private static void loadProperties() throws IOException, Exception {
         if (connectionProp == null) {
-            synchronized (Connection.class) {
+            synchronized (DBUtil.class) {
                 if (connectionProp == null) {
                     // Load properties file
                     connectionProp = new Properties();
@@ -55,7 +56,8 @@ public class Connection {
         }
     }
     
-    public static java.sql.Connection getConnection(String conenctionClass, String user, String pass, String url) throws SQLException, ClassNotFoundException{
+    public static Connection getConnection(String conenctionClass, 
+            String user, String pass, String url) throws SQLException, ClassNotFoundException{
   
         Class.forName(conenctionClass);
 
@@ -67,4 +69,18 @@ public class Connection {
         // Connect to the database
         return DriverManager.getConnection(url, prop);
     }
+    
+    public static Connection getConnection(ServerRegistration reg) throws Exception{
+        ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(
+                reg.getOdbcTypeID());
+        Class.forName(odbc.getConnectionClass());
+
+        // setup the properties
+        Properties prop = new Properties();
+        prop.put("user", reg.getUsername());
+        prop.put("password", reg.getPassword());
+
+        // Connect to the database
+        return DriverManager.getConnection(reg.getConnectionURL(), prop);
+    }    
 }

@@ -80,6 +80,13 @@ BODY {
 	font-size: 10px;	
 }
 
+.dataHolder{
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;	
+	border-bottom: 1px solid #FFFFFF;	
+	border-right: 1px solid #FFFFFF;
+}
+
 .dataGreyBorder{
 	border-bottom: 1px solid #D4D0C8;
 	border-right: 1px solid #D4D0C8;
@@ -111,6 +118,7 @@ BODY {
 	color: #000000;
 	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10px;	
+	width:25px;
 }
 
 .greyButtonHover{
@@ -120,15 +128,48 @@ BODY {
 	border-right: 1px solid #808080;	
 	color: #000000;
 	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
-	font-size: 10px;	
+	font-size: 10px;
+    width:25px;	
+}
+
+.greyTextButton{
+	border-top: 1px solid #D4D0C8;
+	border-left: 1px solid #D4D0C8;	
+	border-bottom: 1px solid #D4D0C8;	
+	border-right: 1px solid #D4D0C8;	
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+    width:60px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.greyTextButtonHover{
+	border-top: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;	
+	border-bottom: 1px solid #808080;	
+	border-right: 1px solid #808080;	
+	color: #000000;
+	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	width:60px;	
+	font-weight:bold;	
+    cursor:pointer;
 }
 
 .toolBar{
-	border: none;
+	border-top: 1px solid #FFFFFF;
+	border-left: none;	
+	border-bottom: 1px solid #808080;	
+	border-right: none;
+		
 	color: #000000;
 	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size: 10px;	
 	background-color: #D4D0C8;	
+	
+	
 }
 
 .formHeader{

@@ -7,6 +7,7 @@
 package com.vodafone.gdma.dbaccess;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,7 +21,7 @@ import org.apache.log4j.Logger;
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class TableFactory {
+public class TableFactory extends DBFactory {
 
     private static TableFactory instance = null;
 
@@ -44,153 +45,118 @@ public class TableFactory {
         return instance;
     }
 
-    public static void main(String args[]) {
-        TableFactory o;
-        try {
-            o = TableFactory.getInstance();
-            ArrayList a = o.getTables();
-            for (int i = 0; i < a.size(); i++)
-                logger.debug(((Table) a.get(i)).getName());
-        } catch (Exception e) {
-            logger.error(e);
+    private TableFactory() throws Exception {
+        buildList();
+    }
+
+    public Table getTable(Long id) {
+        Table table = null;
+        
+        if(id == null)
+            return null;
+        
+        for (int i = 0; i <= list.size(); i++) {
+            table = (Table) list.get(i);
+            if (id.equals(table.getId())) return table;
         }
+        return null;
     }
 
-    private ArrayList tables;
-
-    private TableFactory() throws ClassNotFoundException, SQLException,
-            IOException, Exception {
-        buildTablesList();
-    }
-
-    public synchronized void buildTablesList() throws ClassNotFoundException,
+    public synchronized void buildList() throws ClassNotFoundException,
             SQLException, IOException, Exception {
         // Create the TreeMap whcih will hold the Providers
         java.sql.Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
+        String query = "select * from gdma_table order by name";
         // Create the TreeMap whcih will hold the ServerRegistrations
-        tables = new ArrayList();
+        list = new ArrayList();
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
-            rs = stmt
-                    .executeQuery("SELECT id, server_id, name, editable FROM dbo.gdma_table order by name");
+            rs = stmt.executeQuery(query);
 
             while (rs != null && rs.next()) {
                 Table table = new Table();
 
-                table.setId(rs.getLong("id"));
-                table.setServerID(rs.getLong("server_id"));
+                table.setId(new Long(rs.getLong("id")));
+                table.setServerID(new Long(rs.getLong("server_id")));
                 table.setName(rs.getString("name"));
-                table.setEditable("Y".equals(rs.getString("editable")));
-
-                //                logger.debug(odbc.toString());
-                tables.add(table);
+                table.setDisplayed("Y".equals(rs.getString("displayed")));
+                table.setAllowDelete("Y".equals(rs.getString("allowdelete")));
+                list.add(table);
             }
+        } catch (Exception e) {
+            logger.error(e);
+            throw e;
         } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (con != null) con.close();
+            closeAll(con, stmt, rs);
         }
 
     }
 
-    public Table getTable(long id) {
-        for (int i = 0; i <= tables.size(); i++) {
-            if (((Table) tables.get(i)).getId() == id)
-                    return (Table) tables.get(i);
-        }
-        return null;
-    }
+    public void addTable(Table table) throws Exception {
 
-    public ArrayList getTables() {
-        return tables;
-    }
-
-    public ArrayList getTablesForServer(long serverId) {
-        ArrayList temp = new ArrayList();
-
-        for (int i = 0; i < tables.size(); i++) {
-            if (((Table) tables.get(i)).getServerID() == serverId)
-                    temp.add(tables.get(i));
-        }
-        return temp;
-    }
-
-    public ArrayList getEditableTablesForServer(long serverId) {
-        ArrayList temp = new ArrayList();
-
-        for (int i = 0; i < tables.size(); i++) {
-            if (((Table) tables.get(i)).getServerID() == serverId
-                    && ((Table) tables.get(i)).isEditable())
-                    temp.add(tables.get(i));
-        }
-        return temp;
-    }
-
-    public void addTable(long serverID, String name, boolean editable)
-            throws Exception {
-
-        java.sql.Connection con = null;
+        Connection con = null;
         Statement stmt = null;
         StringBuffer sbInsert = new StringBuffer();
 
         sbInsert.append("INSERT INTO gdma_table  ");
-        sbInsert.append("(server_id,name,editable) VALUES (");
-        sbInsert.append(serverID);
+        sbInsert.append("(server_id,name,displayed,allowdelete) VALUES (");
+        sbInsert.append(table.getServerID());
         sbInsert.append(",'");
-        sbInsert.append(name);
+        sbInsert.append(table.getName());
         sbInsert.append("','");
-        sbInsert.append(editable ? 'Y' : 'N');
+        sbInsert.append(table.isDisplayed() ? 'Y' : 'N');
+        sbInsert.append("','");
+        sbInsert.append(table.isAllowDelete() ? 'Y' : 'N');
         sbInsert.append("')");
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
-            if (stmt != null) stmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
             throw e;
         } finally {
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
 
         //now refresh our local list
-        buildTablesList();
+        buildList();
 
     }
 
-    public void updateTable(long id, long serverID, String name,
-            boolean editable) throws Exception {
+    public void updateTable(Table table) throws Exception {
 
-        java.sql.Connection con = null;
+        Connection con = null;
         Statement stmt = null;
         StringBuffer sbInsert = new StringBuffer();
 
         sbInsert.append("UPDATE gdma_table SET server_id=");
-        sbInsert.append(serverID);
+        sbInsert.append(table.getServerID());
         sbInsert.append(",name='");
-        sbInsert.append(name);
-        sbInsert.append("',editable='");
-        sbInsert.append(editable ? 'Y' : 'N');
+        sbInsert.append(table.getName());
+        sbInsert.append("',displayed='");
+        sbInsert.append(table.isDisplayed() ? 'Y' : 'N');
+        sbInsert.append("',allowdelete='");
+        sbInsert.append(table.isAllowDelete() ? 'Y' : 'N');
         sbInsert.append("' WHERE id =");
-        sbInsert.append(id);
+        sbInsert.append(table.getId());
 
         try {
-            con = Connection.getConnection();
+            con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbInsert.toString());
-            if (stmt != null) stmt.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
             throw e;
         } finally {
-            if (con != null) con.close();
+            closeAll(con, stmt, null);
         }
 
-        buildTablesList();
+        buildList();
     }
 }
