@@ -1,6 +1,7 @@
 <%@ page language="java" %>
 <%@ page import="com.vodafone.gdma.dbaccess.*,
                  com.vodafone.gdma.util.*,
+                 com.vodafone.gdma.security.*,
                  java.util.ArrayList,
                  java.util.Date"%>
 <%                 
@@ -51,8 +52,7 @@
                     script.append(" inserted.');\n");
                 else if ("DELETE".equals(strMode))
                     script.append(" deleted.');\n");
-                script.append("window.location.href='ViewData.jsp?server_id="+serverID+"&table_id="+tableID+"&ts="+(new Date()).getTime()+"'" );
-
+                script.append("window.location.href='ViewData.jsp?server_id="+serverID+"&table_id="+tableID+"&BACK=1&mode=ALL&ts="+(new Date()).getTime()+"'");
             }catch(Exception e){
                 script.append("alert('An exception occurred while try to update the database.\\n");
                 script.append(Formatter.escapeAll(e.getMessage()));
@@ -73,24 +73,29 @@
     for(int i= 0; i < columns.size(); i++){
         column = (Column)columns.get(i);
         if("INSERT".equals(strMode)){
-           style = column.isAllowInsert() ? "formInput": "formInputDisabled"; 
-           disbaled = column.isAllowInsert() ? "": "DISABLED"; 
+            style = !"N".equalsIgnoreCase(column.getSpecial()) || !column.isAllowInsert() ? "formInputDisabled": "formInput"; 
+            disbaled = !"N".equalsIgnoreCase(column.getSpecial()) || !column.isAllowInsert() ? "readonly='true'":""; 
         }
         else
         if("UPDATE".equals(strMode)){
-            style = column.isAllowUpdate() ? "formInput": "formInputDisabled"; 
-            disbaled = column.isAllowUpdate()? "": "DISABLED"; 
+            style = !"N".equalsIgnoreCase(column.getSpecial()) || !column.isAllowInsert()  ? "formInputDisabled": "formInput"; 
+            disbaled = !"N".equalsIgnoreCase(column.getSpecial()) || !column.isAllowUpdate() ? "readonly='true'":"";             
         }
         else{
             style = "formInputDisabled"; 
-            disbaled = "DISABLED";
+            disbaled = "readonly='true'";
         }
 %>       
     <tr>
         <td class="formLabel"><%=column.getName()%></td>
         <td class="formValue">
-<%      
-        if(request.getParameter("new_"+ column.getName()) == null){
+<%      if("U".equalsIgnoreCase(column.getSpecial())){
+           value = ((User)session.getAttribute("USER")).getUserName();
+        }
+        else if("D".equalsIgnoreCase(column.getSpecial())){
+           value = Formatter.formatDate(new Date ());
+        }
+        else if(request.getParameter("new_"+ column.getName()) == null){
             value =request.getParameter("old_"+ column.getName());
             if(value != null && !"".equals(value.trim()) && 
                DBUtil.isDate(column.getColumnType())){
@@ -110,7 +115,7 @@
                    name="new_<%=column.getName()%>" 
                    id="new_<%=column.getName()%>" 
                    value="<%=value%>"
-                   <%=disbaled%>>
+                   <%=disbaled%> onkeypress="doKeyPress(event);">
 
 <%
     }
@@ -127,7 +132,7 @@
         <tr>
             <td colspan="2" align="right"><input type="button" id="btnBack" 
                 name="btnBack" value="Back" class="button" 
-                onclick="window.location.href='ViewData.jsp?server_id=<%=serverID%>&table_id=<%=tableID%>&ts=<%=(new Date()).getTime()%>'">&nbsp;
+                onclick="window.location.href='ViewData.jsp?server_id=<%=serverID%>&table_id=<%=tableID%>&BACK=1&mode=ALL&ts=<%=(new Date()).getTime()%>'">&nbsp;
 <%
         if("INSERT".equals(strMode) || "UPDATE".equals(strMode)){
 %>           

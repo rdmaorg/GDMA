@@ -1,6 +1,6 @@
 <%@ page language="java" %>
 <%@ page import="com.vodafone.gdma.security.*"%>
-<!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
 <html>
     <head>
         <style type="text/css" media="all">
@@ -18,22 +18,32 @@
         if(user.isAdmin()){
 %>            
             <td valign="middle"><a href="ListServerRegistration.jsp" 
+                title="Add or Edit the list of available servers"
                 target="main" class="topnav">Servers</a></td>
             <td valign="middle"><a href="SQLConsoleFrame.jsp" 
+                title="A basic SQL console"
                 target="main" class="topnav">SQL Console</a></td> 
 <%
     }
 %>                            
             <td valign="middle"><a href="javascript:document.forms[0].submit();" 
+                title="Log out of the application"
                 class="topnav">Logout</a></td>            
 <%
     }else{
 %>   
-            <td valign="middle"><a href="javascript:document.forms[0].submit();" 
+            <td valign="middle"><a href="javascript:document.forms[0].submit();"
+                title="Login to the application"
                 class="topnav">Login</a></td>     
 <%
     }
-%>           
+%>    
+            <td valign="middle"><a href="help.jsp" 
+                title="View the help page"
+                class="topnav">Help</a></td> 
+                   
+            <td valign="middle"><div id="divLoading" name="divLoading" 
+            style="display:none;"><img src="images/loading.gif"></div></td> 
         </tr>
     </table>
     <form action="Login.jsp" method="post" id="frmLogout" target="_top">

@@ -27,13 +27,27 @@
         <style type="text/css" media="all">
             @import "css/style.css";
         </style>
-        <title>Generic Data Maintenance Application - Logon</title
-        <script language="javascript" src="js/EditData.js"></script>        
+        <title>Generic Data Maintenance Application - Logon</title>
+        <script>
+          if(window.Event) //mozilla
+            window.captureEvents(Event.KEYPRESS)
+          document.onkeypress=  onKeyPress;
+          function onKeyPress(e)
+          {
+            var n;
+            (window.Event) ? n= e.which : n=event.keyCode
+            if( n == 13)
+              document.getElementById("frmLogin").submit();
+          }
+        </script>        
     </head>
-<body>
-<form method="POST">
+<body onload="document.getElementById('username').focus();">
 <br><br><br><br><br><br>
+<form id="frmLogin" name="frmLogin" method="POST">
 <table border="0" cellpadding="3" cellspacing="2" width="100%">
+  <tr>
+    <td class="formHeader" align="center" style="font-size:16px;font-weight:bold">MIS</td>
+  </tr> 
   <tr>
     <td class="formHeader" align="center" >Generic Data Maintenance Application - Logon</td>
   </tr> 
@@ -42,7 +56,7 @@
       <table border="0" cellpadding="3" cellspacing="2">
         <tr>
           <td class="formLabel">Username </td>
-          <td class="formValue"><input class="formValue" type="text" name="username" value="" style="width:150px"></td>
+          <td class="formValue"><input class="formValue" type="text" name="username" id="username" value="" style="width:150px"></td>
         </tr>
         <tr>
           <td class="formLabel">Password </td>
@@ -83,6 +97,7 @@
     </td>
   <tr>
 </table>
+</form>
 <%
     if(message != null){
 %>
@@ -91,14 +106,6 @@
     </script>    
 <%
     }
-%>
-<!--
-    <script language="Javascript">
-        document.getElementById('username').value = 'tomcatadmin';
-        document.getElementById('password').value = 'password';
-        document.getElementById('domain').value = 'localhost';
-        document.forms[0].submit();
-    </script>  
--->    
+%>  
 </body>
 </html>

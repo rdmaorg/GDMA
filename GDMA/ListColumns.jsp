@@ -35,6 +35,7 @@
             column.setAllowInsert(request.getParameter("fldAllowInsert" + i) != null);
             column.setAllowUpdate(request.getParameter("fldAllowUpdate" + i) != null);
             column.setNullable("true".equals(request.getParameter("fldNullable" + i)));
+            column.setSpecial(request.getParameter("fldSpecial" + i));
             colFac.save(column);    //new column
         }
         colFac.refreshList();
@@ -73,7 +74,8 @@
                     <td class="dataHeader">Displayed</td>                    
                     <td class="dataHeader">Allow Insert</td>                                        
                     <td class="dataHeader">Allow Update</td>                                        
-                    <td class="dataHeader">Lookup</td>                                        
+                    <td class="dataHeader">Lookup</td>
+                    <td class="dataHeader">Special</td>
                 </tr>
 <%
     //convert tables ArrayList to a HashMap for easier look ups
@@ -113,6 +115,12 @@
                     <td class="dataGreyBorder" nowrap><input name="fldAllowLookup<%=i%>" id="fldAllowLookup<%=i%>" 
                                type="checkbox" <%=(column==null?"":(column.getDropDownColumnDisplay() == null ? "":"checked"))%> 
                                onclick="toggleColumnLookup(<%=i%>);"></td>  
+                    <td class="dataGreyBorder" nowrap>
+                        <select name="fldSpecial<%=i%>" id="fldSpecial<%=i%>" >
+                            <option value="N" <%=(column==null ? "selected":(column.getSpecial() == null || "N".equalsIgnoreCase(column.getSpecial())? "selected":""))%>>No</option>
+                            <option value="U" <%=(column==null ? "selected":("U".equalsIgnoreCase(column.getSpecial())? "selected":""))%>>User</option>
+                            <option value="D" <%=(column==null ? "selected":("D".equalsIgnoreCase(column.getSpecial())? "selected":""))%>>Date</option>
+                        </select></td>                                 
                 </tr>
 <%
     ServerRegistration columnServer = null;
@@ -121,21 +129,21 @@
     Column colDropDownColumnStore = null;
     if(column!=null && column.getDropDownColumnDisplay() != null)
     {
-        colDropDownColumnDisplay = colFac.getColumn(column.getDropDownColumnStore().longValue());
+        colDropDownColumnDisplay = colFac.getColumn(column.getDropDownColumnDisplay().longValue());
         colDropDownColumnStore = colFac.getColumn(column.getDropDownColumnStore().longValue());
         columnTable = TableFactory.getInstance().getTable(colDropDownColumnDisplay.getTableID());
         columnServer = servFac.getServerRegistration(columnTable.getServerID());
     }
 %> 
                 <tr id="trLookup<%=i%>" <%=column==null || column.getDropDownColumnDisplay() == null?"style=\"display:none\"":""%> class="dataBody">               
-                    <td colspan="6">
-                        <table border="1" cellpadding="0" cellspacing="0" width="100%">
+                    <td colspan="7">
+                        <table border="1" cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid black">
                             <tr>
                                 <td class="dataHeader">Server</td>
                                 <td class="dataHeader">Table</td>
                                 <td class="dataHeader">Display Column</td>
                                 <td class="dataHeader">Stored Column</td>
-                                <td class="dataHeader"><input type="button" value="..." onclick="doDDLookup(<%=i%>)";></td>
+                                <td class="dataHeader"><input type="button" value="..." onclick="doDDLookup(<%=i%>)"; style="height:15px;border:0px;font-weight:bold"></td>
                             </tr>                         
                             <tr class="dataBody">
                                 <td class="dataGreyBorder">
