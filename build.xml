@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+<project name="GDMA - V2" default="init">
+
+    <property file="./local.properties"/>
+
+    <property name="app.name" value="GDMA"/>
+
+    <property name="build" value="build"/>
+    <property name="src" value="src"/>
+    <property name="web" value="GDMA"/>
+    <property name="log" value="${web}/logs"/>
+    <property name="etc" value="src"/>
+    <property name="lib" value="lib"/>
+    <property name="classes" value="${build}/classes"/>
+    <property name="dist" value="${build}/dist"/>
+
+    <path id="project.lib.classpath">
+        <fileset dir="${lib}" includes="*.jar"/>
+        <fileset dir="${TOMCAT.HOME}/${SERVLET.PATH}" includes="${SERVLET.JAR}"/>
+        <fileset dir="${TOMCAT.HOME}/${SERVLET.PATH}" includes="${JSP.JAR}"/>
+    </path>
+
+    <property name="libClasspath" refid="project.lib.classpath"/>
+    <property name="localClasspath" value="${classes}:${src}:${ojb}:${config}"/>
+
+  <!-- ******************** initiation ******************** -->
+    <target name="init" description="Init Application">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${log}"/>
+        <mkdir dir="${classes}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+  <!-- ******************** clean ******************** -->
+    <target name="clean" depends="clean.log, clean.classes" description="Clean classes, logs, javadocs"/>
+    
+    <target name="clean.classes" description="Clean classes">
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${classes}" includes="**/*.class"/>
+        </delete>
+    </target>
+
+    <target name="clean.log" description="Clean logs">
+        <delete>
+            <fileset dir="${log}" includes="**/*.log"/>
+        </delete>
+    </target>
+  
+  <!-- ******************** zip ******************** -->
+    <target name="archive" description="archive all the sources">
+        <zip zipfile="${app.name}.zip">
+            <zipfileset dir="${basedir}" excludes="${build}/**, ${doc}/**, ${log}/**"/>
+        </zip>
+    </target>
+  <!-- ******************** compile ******************** -->
+    <target name="compile" depends="init" description="Compile modules">
+        <echo message="compiling..."/>
+        <javac classpath="${libClasspath}:${localClasspath}" destdir="${classes}" debug="on" deprecation="on">
+            <src path="${src}"/>
+        </javac>
+    </target>
+
+  <!-- ******************** prepare dist ******************** -->
+    <target name="dist" depends="compile" description="Prepare distribution">
+        <echo message="copying web ..."/>
+        <copy todir="${dist}">
+            <fileset dir="${web}"/>
+        </copy>
+        <echo message="copying classes ..."/>
+        <copy todir="${dist}/WEB-INF">
+            <fileset dir="${build}" includes="classes/**/*.*"/>
+            <fileset dir="." includes="lib/**/*.*"/>
+        </copy>
+        <echo message="copying props ..."/>
+        <copy todir="${dist}/WEB-INF/classes">
+            <fileset dir="${etc}"/>
+        </copy>
+    </target>
+
+  <!-- ******************** build war ******************** -->
+    <target name="war" depends="dist" description="war modules">
+        <war destfile="${build}/${app.name}.war" webxml="${dist}/WEB-INF/web.xml">
+            <fileset dir="${dist}"/>
+        </war>
+    </target>
+    
+  <!-- ******************** build war ******************** -->
+    <target name="deploy.copy" depends="dist" description="deploy to Tomcat (copy over)">
+        <copy todir="${TOMCAT.HOME}/webapps/${app.name}">
+            <fileset dir="${dist}"/>
+        </copy>
+    </target>
+</project>
+
+

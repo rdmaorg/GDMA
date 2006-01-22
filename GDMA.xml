@@ -13,7 +13,5 @@
 	useNaming="true" 
 	wrapperClass="org.apache.catalina.core.StandardWrapper" 
 	path="/GDMA" 
-	docBase="C:/Dev/projects/source/Vodafone/SQLTool/GDMA"	
-	workDir="C:/Dev/projects/source/Vodafone/SQLTool/j2src/org/apache/jsp/"
-	>
+	docBase="E:/JavaProjects/GDMA/GDMA">
 </Context>
