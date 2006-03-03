@@ -3,6 +3,11 @@
                  java.util.*"%>
 <%
 //TODO: Error checking
+
+//SOCO
+// There's probab;y an issue with the dsc/asc order feature after a search
+// The where clause is lost and the sort takes places on ALL records not just the filtered...
+
     if(session.getAttribute("USER") == null){
         %><jsp:forward page="NotLoggedIn.jsp"/><%
     }        
@@ -41,40 +46,36 @@
                 <tr height="25px">
                     <td width="5px" >&nbsp;</td>
 <%
-    if(table !=null){
+    if(table !=null)
+    {
 %>                     
-                    <td class="formLabel" align="left" valign="middle" 
-                        nowrap><%=reg.getName()%> - <%=table.getName()%> | </td> 
-                    <td><a onclick="doAllRecords();" href="#" class="greyTextButton"
-                           title="Show all records in the table">Show All<a></td>
-                    <td id="tdSearchButton"><a onclick="doToggleSearch();" href="#" class="greyTextButton"
-                           title="Search for a particular record in the table">Search<a></td>                        
+         <td class="formLabel" align="left" valign="middle" nowrap><%=reg.getName()%> - <%=table.getName()%> | </td> 
+         <td><a onclick="doAllRecords();" href="#" class="greyTextButton" title="Show all records in the table">Show All<a></td>
+         <td id="tdSearchButton"><a onclick="doToggleSearch();" href="#" class="greyTextButton" title="Search for a particular record in the table">Search<a></td>                        
 <%
-        if(table.isAllowInsert()){
+        if(table.isAllowInsert())
+        {
 %>                                                                   
-                    <td><a onclick="doInsert();" href="#" class="greyTextButton"
-                           title="Insert a new record into the table">Insert<a></td>
+             <td><a onclick="doInsert();" href="#" class="greyTextButton" title="Insert a new record into the table">Insert<a></td>
 <%
         }
-        if("ALL".equals(strMode) || "SEARCH".equals(strMode) ){
-            if(table.isAllowUpdate()){
+        if("ALL".equals(strMode) || "SEARCH".equals(strMode) )
+        {
+            if(table.isAllowUpdate())
+            {
 %>    
-                    <td><a onclick="doEdit();" href="#" class="greyTextButton"
-                           title="Edit a record in the table">Update<a></td>
+                <td><a onclick="doEdit();" href="#" class="greyTextButton" title="Edit a record in the table">Update<a></td>
 <%
             }
-            if(table.isAllowDelete()){
+            if(table.isAllowDelete())
+            {
 %>                          
-                    <td><a onclick="doDelete();" href="#" class="greyTextButton"
-                           title="Delete a particular record from the table">Delete<a></td>
+                 <td><a onclick="doDelete();" href="#" class="greyTextButton" title="Delete a particular record from the table">Delete<a></td>
 <%
             }
 %>         
-
-                    <td><a onclick="doDownload('export.xml');" href="#" class="greyTextButton"
-                           title="Download an XML version of the table">XML<a></td>
-                    <td><a onclick="doDownload('export.csv');" href="#" class="greyTextButton" 
-                           title="Copy To Excel">CSV<a></td>
+            <td><a onclick="doDownload('export.xml');" href="#" class="greyTextButton" title="Download an XML version of the table">XML<a></td>
+            <td><a onclick="doDownload('export.csv');" href="#" class="greyTextButton" title="Copy To Excel">CSV<a></td>
 <%
         }
     }
@@ -93,19 +94,21 @@
                     <td align="right" colspan="3" >
                         <input type="button" class="button" value="Close" onclick="doToggleSearch();">&nbsp;                    
                         <input type="button" class="button" value="Reset" onclick="clearSearch();">&nbsp;
-                        <input type="button" class="button" id="btnSearch" name="btnSearch" 
-                            value="Search" onclick='doSearch()'>
+                        <input type="button" class="button" id="btnSearch" name="btnSearch" value="Search" onclick='doSearch()'>
                     </td>
                 </tr>                 
+<%-- SEARCH FORM --%>
 <%
-    if(table !=null){
+    if(table !=null)
+    {
         ArrayList columns = table.getDisplayedColumns();
         HashMap oldSearch = (HashMap) request.getSession().getAttribute("OLD_WHERE_VALUES");
         String value;
         String name;
         Column column;
         
-        for(int i = 0; i < columns.size(); i++){
+        for(int i = 0; i < columns.size(); i++)
+        {
             column = (Column)columns.get(i);  
             name = "search_" + column.getName();  
             if(request.getParameter(name) != null)
@@ -121,18 +124,19 @@
                     <td align="left" valign="top" class="formLabel"><%=column.getName()%></td>                                        
                     <td class="formInput">
 <%
-            if(column!=null && column.getDropDownColumnDisplay() != null){
+            if(column!=null && column.getDropDownColumnDisplay() != null)
+            {
                 Column colDropDownColumnDisplay = ColumnFactory.getInstance().getColumn(column.getDropDownColumnDisplay().longValue());
                 Column colDropDownColumnStore = ColumnFactory.getInstance().getColumn(column.getDropDownColumnStore().longValue());
                 EditData ed = new EditData();
                 out.println(ed.generateSelect(colDropDownColumnDisplay,colDropDownColumnStore,name,value));
-            }else{  
-%>                            
-                    <input type="text" value="<%=value%>" id="<%=name%>" name="<%=name%>" onkeypress="doKeyPress(event);">
-<%
             }
+            else
+            {  
+%>             <input type="text" value="<%=value%>" id="<%=name%>" name="<%=name%>" onkeypress="doKeyPress(event);">
+<%          }
 %>                </td>                                                          
-                </tr>
+               </tr>
 <%
         }
 %>  
@@ -140,33 +144,45 @@
                     <td align="right" colspan="3" >
                         <input type="button" class="button" value="Close" onclick="doToggleSearch();">&nbsp;                    
                         <input type="button" class="button" value="Reset" onclick="clearSearch();">&nbsp;
-                        <input type="button" class="button" id="btnSearch" name="btnSearch" 
-                            value="Search" onclick='doSearch()'>
+                        <input type="button" class="button" id="btnSearch" name="btnSearch" value="Search" onclick='doSearch()'>
                     </td>
                 </tr>
 <%        
     }
-%>                  
+%>  
+<%-- END SEARCH FORM --%> 
+       
             </table>
         </td>
     </tr>     
     <tr>
+
+<%-- SHOW RESULTS TABLE --%>
         <td class="dataHolder" height="100%" valign="top">
 <%
-    if(reg != null && table != null && 
-        ("ALL".equals(strMode) || "SEARCH".equals(strMode) ) ){
-        EditData ed = new EditData();
-        try{
-            out.print(ed.select(reg,table,request,"HTML"));
-        }catch(Exception e){
+        if(reg != null && table != null &&  ("ALL".equals(strMode) || "SEARCH".equals(strMode) ) )
+        {
+        	EditData ed = new EditData();
+        	try
+			{
+            	out.print(ed.select(reg,table,request,"HTML"));
+        	}
+			catch(Exception e)
+			{
             e.printStackTrace();
-        }
-    }          
+        	}
+    	}  
+            
+        String orderby = (String) request.getAttribute("orderby"); 
+        String descending = (String) request.getAttribute("descending");    
 %>  
-            <input type="hidden" id="mode" name="mode" value="">
-            <input type="hidden" id="server_id" name="server_id" value="<%=serverID%>">
-            <input type="hidden" id="table_id" name="table_id" value="<%=tableID%>">
+          <input type="hidden" id="orderby" name="orderby" value="<%=orderby%>">
+          <input type="hidden" id="descending" name="descending" value="<%=descending%>">
+          <input type="hidden" id="mode" name="mode" value="">
+          <input type="hidden" id="server_id" name="server_id" value="<%=serverID%>">
+          <input type="hidden" id="table_id" name="table_id" value="<%=tableID%>">
         </td>
+<%-- END SHOW RESULTS TABLE --%>
     </tr>
 </table>
 </form> 
