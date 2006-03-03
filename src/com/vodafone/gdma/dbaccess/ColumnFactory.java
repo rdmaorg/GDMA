@@ -196,17 +196,29 @@ public class ColumnFactory extends DBFactory {
             con = DBUtil.getConnection();
             stmt = con
                     .prepareStatement("UPDATE gmda_column SET dd_lookup_column_display=?,dd_lookup_column_store=?,displayed=?,allowinsert=?,allowupdate=?,nullable=?,special=? WHERE table_id =?");
-            stmt.setNull(1, Types.NUMERIC);
-            stmt.setNull(2, Types.NUMERIC);
-            stmt.setString(3, "N");
-            stmt.setString(4, "N");
-            stmt.setString(5, "N");
-            stmt.setString(6, "N");
-            stmt.setString(7, "N");
-            stmt.setLong(8, lngTableID.longValue());
+            stmt.setNull(1, Types.NUMERIC); //dd_lookup_column_display
+            stmt.setNull(2, Types.NUMERIC); //dd_lookup_column_store=
+            stmt.setString(3, "N"); //displayed
+            stmt.setString(4, "N"); //allowinsert
+            stmt.setString(5, "N"); //allowupdate
+            stmt.setString(6, "N"); //nullable
+            stmt.setString(7, "N"); //special
+            stmt.setLong(8, lngTableID.longValue()); //table_id
+
+           // System.out.println("STMT1 : UPDATE gmda_column SET dd_lookup_column_display=?," +
+           // 		"dd_lookup_column_store=?," +
+           // 		"displayed=?," +
+           // 		"allowinsert=?," +
+           // 		"allowupdate=?," +
+           // 		"nullable=?," +
+           // 		"special=? " +
+           //		"WHERE table_id =?");                  
+            
             stmt.executeUpdate();
             
-        } catch (Exception e) {
+        }
+        catch (Exception e) 
+        {
             logger.error(e.getMessage(),e);
             throw e;
         } finally {
