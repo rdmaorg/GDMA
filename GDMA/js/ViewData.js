@@ -71,7 +71,23 @@ function doSearch(){
   doSubmit('ViewData.jsp','');  
 }
 
+// SOCO change request 25/01/06 (add ability to change sort order of results) 
+function refreshResultsOrderby(column, desc)
+{
+  document.getElementById("orderby").value=column;
+  document.getElementById("descending").value=desc;
+ 
+  doDisplayLoading()
+	
+   document.getElementById("mode").value='ALL';
+   document.getElementById("frmMain").action='ViewData.jsp';
+   
+   doSubmit('ViewData.jsp','');
+}
+// END SOCO
+
 function doAllRecords(){
+
   doDisplayLoading()
 	clearSearch();
 	document.getElementById("mode").value='ALL';
