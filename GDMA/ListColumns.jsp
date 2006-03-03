@@ -63,6 +63,17 @@
         <td width="50px">&nbsp;</td> 
         <td class="formHeader" ><%=reg.getName()%> - <%=table.getName()%> - Columns</td>
     </tr>
+
+ <%-- SOCO 24/01/2006 COPY of buttons for top of screen--%>
+        <tr>
+        <td width="50px">&nbsp;</td>
+        <td align="right"> 
+          <input type="button" class="button" id="btnBack" name="btnBack" value="Back" onclick="window.location.href='ListTables.jsp?server_id=<%=serverID%>&ts=<%=(new Date()).getTime()%>'">&nbsp;        
+          <input type="submit" class="button" id="btnSave" name="btnSave" value="Save" >&nbsp;
+        </td>
+    </tr>
+ <%-- END SOCO 24/01/2006 --%>
+
     <tr>
         <td width="50px">&nbsp;</td> 
         <td>
