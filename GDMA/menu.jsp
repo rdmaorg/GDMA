@@ -23,6 +23,12 @@
             <td valign="middle"><a href="SQLConsoleFrame.jsp" 
                 title="A basic SQL console"
                 target="main" class="topnav">SQL Console</a></td> 
+
+           <%-- SOCO 03/03/06 ADD LINK TO UserMaintenance.jsp --%>
+            <td valign="middle"><a href="UserMaintenance.jsp" 
+                title="User Maintenance Screen"
+                target="main" class="topnav">User Maintenance</a></td> 
+            <%-- END SOCO --%>
 <%
     }
 %>                            
