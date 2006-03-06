@@ -92,6 +92,53 @@ public class GDMAUserFactory extends DBFactory {
     }
     
     /*
+     * Method to find permissions from this table using Userlist from db
+     */
+    public synchronized void buildAccessList(Long tableId) throws ClassNotFoundException, SQLException, IOException, Exception 
+    {
+    	Connection con = null;
+	    Statement stmt = null;
+	    try 
+        {
+            con = DBUtil.getConnection();
+            stmt = con.createStatement();
+	    	ArrayList users = getList();
+	    	for(int i=0; i< users.size(); i++)
+	    	{
+	    		StringBuffer query = new StringBuffer();
+	    	
+	    		GDMAUser user = (GDMAUser)users.get(i);
+	    		query.append("select * from GDMA_USER_TABLE_ACCESS ");
+	    		query.append(" where USER_ID= ");
+	    		query.append(user.getId());
+	    		query.append(" and TABLE_ID= ");
+	    		query.append(tableId);
+
+	    		ResultSet rs = null;
+	    		rs = stmt.executeQuery(query.toString());
+
+	            if(rs.next()) // record exists 
+	            {
+	            	user.setAllowedAccess(true);
+	            }
+	            else
+	            {
+	            	user.setAllowedAccess(false);
+	            }
+	    	}	
+        } 
+        catch (Exception e) 
+        {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } 
+        finally 
+        {
+            closeAll(con, stmt, null);
+        }
+    }
+    
+    /*
      * Method to check is a username is unique
      * (not checking same user i.e. update)
      */
@@ -221,8 +268,6 @@ public class GDMAUserFactory extends DBFactory {
      */
     public void deleteGDMAUser(GDMAUser user) throws Exception 
     {
-    	
-
         Connection con = null;
         Statement stmt = null;
         StringBuffer sbDelete = new StringBuffer();
@@ -239,6 +284,70 @@ public class GDMAUserFactory extends DBFactory {
             throw e;
         } finally {
             con.commit(); 
+            closeAll(con, stmt, null);
+        }
+    
+    }
+    
+    /*
+     * Remove User/Table permissions 
+     * 
+     */
+    public void removePermissions(Long tableId) throws Exception 
+    {   
+    	 Connection con = null;
+         Statement stmt = null;
+         StringBuffer sbDelete = new StringBuffer();
+         
+         sbDelete.append("DELETE FROM GDMA_USER_TABLE_ACCESS WHERE TABLE_ID=");
+         sbDelete.append(tableId);
+         
+         try {
+             con = DBUtil.getConnection();
+             stmt = con.createStatement();
+             stmt.executeUpdate(sbDelete.toString());
+         } catch (Exception e) {
+             logger.error(e.getMessage(),e);
+             throw e;
+         } finally {
+             con.commit(); 
+             closeAll(con, stmt, null);
+         }
+         
+    }
+    
+    /*
+     * Save User/Table permissions 
+     * 
+     */
+    public void savePermissions(Long tableId, Long userId) throws Exception 
+    {    	
+    	  
+        Connection con = null;
+        Statement stmt = null;
+                
+        StringBuffer sbInsert = new StringBuffer();
+
+        sbInsert.append("INSERT INTO GDMA_USER_TABLE_ACCESS  ");
+        sbInsert.append("(USER_ID, TABLE_ID) VALUES ( ");
+        sbInsert.append(userId);
+        sbInsert.append(", ");
+        sbInsert.append(tableId);
+        sbInsert.append(")");
+        
+        try 
+        {
+            con = DBUtil.getConnection();
+            stmt = con.createStatement();
+            stmt.executeUpdate(sbInsert.toString());
+        } 
+        catch (Exception e) 
+        {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } 
+        finally 
+        {
             closeAll(con, stmt, null);
         }
     
