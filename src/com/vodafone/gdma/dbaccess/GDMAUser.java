@@ -11,6 +11,9 @@ public class GDMAUser {
     private String firstName;
     private String lastName;
     private String userName;
+    
+    // boolean set to true if user has access to the table selected.
+    private boolean allowedAccess;
           
     /**
      * @return Returns the id.
@@ -48,7 +51,16 @@ public class GDMAUser {
 	{
 		this.userName = userName;
 	}
-    
+    		
+	public boolean isAllowedAccess()
+	{
+		return allowedAccess;
+	}
+	public void setAllowedAccess(boolean accessToThisTable)
+	{
+		this.allowedAccess = accessToThisTable;
+	}
+	
 	public String toString()
 	{
 		
