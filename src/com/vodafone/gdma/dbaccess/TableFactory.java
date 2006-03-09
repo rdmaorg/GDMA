@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import com.vodafone.gdma.security.User;
+
 /**
  * @author RGILL
  * 
@@ -65,7 +67,9 @@ public class TableFactory extends DBFactory {
     }
 
     protected synchronized void buildList() throws ClassNotFoundException,
-            SQLException, IOException, Exception {
+            SQLException, IOException, Exception 
+    {
+    	
         // Create the TreeMap whcih will hold the Providers
         java.sql.Connection con = null;
         Statement stmt = null;
@@ -96,6 +100,55 @@ public class TableFactory extends DBFactory {
             closeAll(con, stmt, rs);
         }
 
+    }
+    
+    /**
+     * SOCO MARCH 2006
+     * Method to find permissions from this userId for all tables.
+     * Uses the tables list to set table.setUserAllowedAccess(true);
+     */
+    public synchronized void buildAccessList(Long userId) throws ClassNotFoundException, SQLException, IOException, Exception 
+    {
+    	Connection con = null;
+	    Statement stmt = null;
+	    try 
+        {
+            con = DBUtil.getConnection();
+            stmt = con.createStatement();
+	    	ArrayList tables = getList();
+	    	for(int i=0; i< tables.size(); i++)
+	    	{
+	    		StringBuffer query = new StringBuffer();
+	    	
+	    		Table table = (Table)tables.get(i);
+	    		query.append("select * from GDMA_USER_TABLE_ACCESS ");
+	    		query.append(" where USER_ID= ");
+	    		query.append(userId);
+	    		query.append(" and TABLE_ID= ");
+	    		query.append(table.getId());
+	    		
+	    		ResultSet rs = null;
+	    		rs = stmt.executeQuery(query.toString());
+
+	            if(rs.next()) // record DOES exists 
+	            {
+	            	table.setUserAllowedAccess(true);
+	            }
+	            else
+	            {
+	            	table.setUserAllowedAccess(false);
+	            }
+	    	}	
+        } 
+        catch (Exception e) 
+        {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } 
+        finally 
+        {
+            closeAll(con, stmt, null);
+        }
     }
 
     public void save(Table table) throws Exception {
