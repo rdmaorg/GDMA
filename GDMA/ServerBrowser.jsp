@@ -1,8 +1,15 @@
 <%@ page language="java" %> 
 <%@ page import="com.vodafone.gdma.dbaccess.*,
+                 com.vodafone.gdma.security.*,
                  java.util.ArrayList,
                  java.util.Date"%>
-<%
+
+<%    
+    User user = (User)session.getAttribute("USER");             
+    if(user == null){
+        %><jsp:forward page="NotLoggedIn.jsp"/><%
+    }
+
     ServerRegistration reg = null; 
     Table table = null;
     Column column = null;
@@ -21,7 +28,13 @@
         <script language="javascript" src="js/index.js"></script>                  
 		<title>Generic Data Maintenance Application - Server Browser</title>
 		<script language="javascript">
-		    function toggleDisplay(id){
+		    function toggleDisplay(id, tablesSize, server)
+            {
+                if(tablesSize == 0)
+                {
+                   alert(server+"\nNo tables currently assigned. \nPlease contact your administrator.");
+                }
+
 		        if( document.getElementById('tr'+id )){
 		            if( document.getElementById('tr'+id).style.display == 'none'){
 		                document.getElementById('tr'+id).style.display = 'block';
@@ -66,22 +79,29 @@
     }
     else
     {
-      
-        for(int i = 0; i < servers.size() ; i++){
+       TableFactory.getInstance().buildAccessList(user.getUserId());
+        
+        for(int i = 0; i < servers.size() ; i++)
+        {
             reg = (ServerRegistration)servers.get(i);
+            tables = reg.getDisplayedTablesForThisUser();
+            //tables = reg.getDisplayedTables();
+           
+           
 %>
+
   <tr>
     <td>
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
             <tr width="100%">
-                <td width="20px" valign="top"><a href="javascript:toggleDisplay('Tables<%=i%>');" 
+                <td width="20px" valign="top"><a href="javascript:toggleDisplay('Tables<%=i%>', <%=tables.size()%>, '<%=reg.getName()%>');" 
                         style="cursor:pointer"><img 
                         width="20px" border="0" id="imgTables<%=i%>"
                         src="images/plus.gif" style="cursor:pointer"></a></td>
                 <td width="20px"><img width="20px" border="0"
                         src="images/db.gif"></td>
                 <td align="left" width="100%" valign="bottom"><a 
-                        href="javascript:toggleDisplay('Tables<%=i%>');" 
+                        href="javascript:toggleDisplay('Tables<%=i%>', <%=tables.size()%>,'<%=reg.getName()%>');" 
                         class="aServer"><%=reg.getName()%></a></td>
             </tr>
             <tr width="100%">
@@ -90,8 +110,8 @@
                            style="display:none" id="trTables<%=i%>" >
 <%
             
-            tables = reg.getDisplayedTables();
-            for(int j = 0; j < tables.size() ; j++){
+            for(int j = 0; j < tables.size() ; j++)
+            {
                 table = (Table)tables.get(j);
 %>                      
                         <tr>
@@ -105,7 +125,7 @@
                                 target="main" class="aServer"><%=table.getName()%></a></td>
                         </tr>
 <%
-            }
+            } // TABLES LOOP
 %>                        
                     </table>
                 </td>
@@ -117,9 +137,9 @@
         </table>
     </td>
   </tr>
-<%        
-        }
-    }
+<%       
+       }// SERVERS LOOP
+    }// else SERVER > 0
 %>
 
 </table>
