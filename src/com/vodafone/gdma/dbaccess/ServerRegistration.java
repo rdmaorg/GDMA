@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import com.vodafone.gdma.security.User;
+
 /**
  * @author Ronan Gill
  */
@@ -22,7 +24,7 @@ public class ServerRegistration implements Comparable {
     private String name;
 
     private String username;
-
+    
     private String password;
 
     private String connectionURL;
@@ -94,8 +96,8 @@ public class ServerRegistration implements Comparable {
     public void setUsername(String username) {
         this.username = username;
     }
-
-    /**
+      
+	/**
      * @return Returns the tables.
      */
     public ArrayList getTables() throws Exception {
@@ -117,16 +119,40 @@ public class ServerRegistration implements Comparable {
     /**
      * @return Returns the tables.
      */
-    public ArrayList getDisplayedTables() throws Exception {
+    public ArrayList getDisplayedTables() throws Exception 
+    {
         ArrayList list = TableFactory.getInstance().getList();
         ArrayList temp = new ArrayList();
         Table table = null;
         for (int i = 0; i < list.size(); i++) {
             table = (Table) list.get(i);
-            if (id.equals(table.getServerID()) && table.isDisplayed()) temp.add(table);
+            if (id.equals(table.getServerID()) && table.isDisplayed())
+            {            	            	
+            	temp.add(table);
+            }
         }
         return temp;
     }
+    
+    /**
+     * @return Returns the tables assigned to this user
+     */
+    public ArrayList getDisplayedTablesForThisUser() throws Exception 
+    {
+    	ArrayList list = TableFactory.getInstance().getList();
+        ArrayList temp = new ArrayList();
+        Table table = null;
+        for (int i = 0; i < list.size(); i++) 
+        {
+            table = (Table) list.get(i);
+            if (id.equals(table.getServerID()) && table.isDisplayed() && table.isUserAllowedAccess())
+            {   	            	
+            	temp.add(table);
+            }
+        }
+        return temp;
+    }
+   
 
     /**
      * @return Returns the id.
