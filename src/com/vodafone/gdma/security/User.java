@@ -14,6 +14,8 @@ package com.vodafone.gdma.security;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class User {
+	
+    private Long userId;
     private String userName;
     private String password;
     private boolean admin;
@@ -77,9 +79,19 @@ public class User {
             this.userName = null; 
     }
     
-    public String toString(){
+    
+    
+    public Long getUserId()
+	{
+		return userId;
+	}
+	public void setUserId(Long userId)
+	{
+		this.userId = userId;
+	}
+	public String toString(){
         StringBuffer sbTemp = new StringBuffer();
-        sbTemp.append("Username      :");
+        sbTemp.append("\nUsername      :");
         sbTemp.append(userName);
         sbTemp.append("\nPassword      :");
         sbTemp.append(password);
@@ -87,6 +99,8 @@ public class User {
         sbTemp.append(domain);
         sbTemp.append("\nIsAdmin       :");
         sbTemp.append(admin);
+        sbTemp.append("\nUserId       :");
+        sbTemp.append(userId);
         return sbTemp.toString();
     }
 }
