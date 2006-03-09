@@ -29,6 +29,9 @@ public class Table implements Comparable {
     private boolean displayed;
 
     private boolean allowDelete;
+    
+    // DOES THE USER LOGGED IN HAVE ACCESS TO THIS TABLE?
+    private boolean userAllowedAccess;
 
     /**
      * @return Returns the id.
@@ -45,7 +48,19 @@ public class Table implements Comparable {
         this.id = id;
     }
 
-    /**
+    
+    
+    public boolean isUserAllowedAccess()
+	{
+		return userAllowedAccess;
+	}
+
+	public void setUserAllowedAccess(boolean userAccess)
+	{
+		this.userAllowedAccess = userAccess;
+	}
+
+	/**
      * @param dropDownColumnStore
      *            The dropDownColumnStore to set.
      */
@@ -187,6 +202,8 @@ public class Table implements Comparable {
         sb.append(displayed);
         sb.append("\nallowdelete      : ");
         sb.append(allowDelete);
+        sb.append("\naccess      : ");
+        sb.append(userAllowedAccess);
 
         return sb.toString();
     }
