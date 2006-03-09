@@ -6,9 +6,15 @@
  */
 package com.vodafone.gdma.security;
 
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 
 import com.tagish.auth.win32.NTSystem;
+import com.vodafone.gdma.dbaccess.DBUtil;
+import com.vodafone.gdma.dbaccess.GDMAUserFactory;
 import com.vodafone.gdma.util.Config;
 
 /**
@@ -32,10 +38,8 @@ public class Security {
         else {
             try {
                 NTSystem ntSystem = new NTSystem();
-                ntSystem.logon(user.getUserName(), user.getPassword()
-                        .toCharArray(), user.getDomain());
-                logger
-                        .debug("User [" + user.getUserName()
+                ntSystem.logon(user.getUserName(), user.getPassword().toCharArray(), user.getDomain());
+                logger.debug("GDMAUser [" + user.getUserName()
                                 + "] validated using domain ["
                                 + user.getDomain() + "]");
                 //Now that the user was validated - we don't need the password
@@ -43,18 +47,31 @@ public class Security {
                 //see if the user is allowed access and is admin
                 String[] groups = ntSystem.getGroupNames(false);
                 for(int i = 0; i < groups.length; i++){
-                    logger.debug("User [" + user.getUserName()
+                    logger.debug("GDMAUser [" + user.getUserName()
                                 + "] in Group ["
                                 + groups[i] +"]");
                 }
                 if(!isMemberOf(groups,Config.getProperty("UserGroup")))
-                    throw new Exception(" User ["+ user.getUserName() +  "] is not member of the group ["+ Config.getProperty("UserGroup") +  "]");
+                    throw new Exception(" GDMAUser ["+ user.getUserName() +  "] is not member of the group ["+ Config.getProperty("UserGroup") +  "]");
+               
                 user.setAdmin(isMemberOf(groups,Config.getProperty("AdminGroup")));
-            } catch (Exception e) {
+                
+                // valid NT User check if Valid GDMA user by getting ID
+                Long userId  = Security.getGDMAUserIdFromDatabase(user.getUserName().trim());
+
+                if (userId == null)
+                { 	ret = "Username entered is not a valid GDMA username.";                
+                	throw new Exception(ret);
+                }
+                               
+                user.setUserId(userId);                
+            } 
+            catch (Exception e) 
+            {
                 ret = e.getMessage();
                 logger.error(e.getMessage(),e);
                 logger.debug("Exception in logon - " + e.getMessage());
-                logger.debug(user.toString());
+                //logger.debug(user.toString());
             }
         }
         return ret;
@@ -70,5 +87,52 @@ public class Security {
                 return true;
         }
         return false;
+    }
+    
+    // GET THE GDMA USERID FROM THE GDMA_USERS TABLE
+    public static Long getGDMAUserIdFromDatabase(String username) throws Exception 
+    {
+        java.sql.Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String query = "select USER_ID from GDMA_USERS where USERNAME='"+username+"'";
+                
+        try {
+            con = DBUtil.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+
+            if(rs.next()) // record exists 
+            {
+            	return new Long(rs.getLong("USER_ID"));
+            }
+            else
+            {
+            	return null;
+            }
+            
+        } 
+        catch (Exception ex) 
+        {
+            logger.error(ex.getMessage(),ex);
+            throw ex;
+        } 
+        finally {
+        	 try {
+                 if (rs != null) rs.close();
+             } catch (Exception e) {
+                 logger.error("Exception while closing ResultSet", e);
+             }
+             try {
+                 if (stmt != null) stmt.close();
+             } catch (Exception e) {
+                 logger.error("Exception while closing Statement", e);
+             }
+             try {
+                 if (con != null) con.close();
+             } catch (Exception e) {
+                 logger.error("Exception while closing Connection", e);
+             }
+        }        		 
     }
 }
