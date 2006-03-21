@@ -260,13 +260,23 @@ public class GDMAUserFactory extends DBFactory {
         }
     
     }
+    /*
+     * DELETE a GDMAUser in GDMA_USERS
+     * DELETE a GDMAUser's Priviledges in GDMA_USER_TABLE_ACCESS 
+     * 
+     */
+    public void deleteGDMAUser(GDMAUser user) throws Exception 
+    {
+    	deleteGDMAUserEntry(user);
+    	deleteGDMAUserPriviledges(user);
+    }
     
     /*
      * DELETE a GDMAUser in GDMA_USERS
      * DELETE FROM GDMA_USERS WHERE USER_ID= ...
      * 
      */
-    public void deleteGDMAUser(GDMAUser user) throws Exception 
+    public void deleteGDMAUserEntry(GDMAUser user) throws Exception 
     {
         Connection con = null;
         Statement stmt = null;
@@ -275,19 +285,56 @@ public class GDMAUserFactory extends DBFactory {
         sbDelete.append("DELETE FROM GDMA_USERS WHERE USER_ID=");
         sbDelete.append(user.getId());
 
-        try {
+        try 
+        {
             con = DBUtil.getConnection();
             stmt = con.createStatement();
             stmt.executeUpdate(sbDelete.toString());
-        } catch (Exception e) {
+        } 
+        catch (Exception e) 
+        {
             logger.error(e.getMessage(),e);
             throw e;
-        } finally {
+        } 
+        finally 
+        {
             con.commit(); 
             closeAll(con, stmt, null);
-        }
-    
+        }    
     }
+    
+    /*
+     * DELETE a GDMAUser's Priviledges in GDMA_USER_TABLE_ACCESS 
+     * DELETE FROM GDMA_USER_TABLE_ACCESS  WHERE USER_ID= ...
+     * 
+     */
+    public void deleteGDMAUserPriviledges(GDMAUser user) throws Exception 
+    {
+        Connection con = null;
+        Statement stmt = null;
+        StringBuffer sbDelete = new StringBuffer();
+        
+        sbDelete.append("DELETE FROM GDMA_USER_TABLE_ACCESS WHERE USER_ID=");
+        sbDelete.append(user.getId());
+
+        try 
+        {
+            con = DBUtil.getConnection();
+            stmt = con.createStatement();
+            stmt.executeUpdate(sbDelete.toString());
+        } 
+        catch (Exception e) 
+        {
+            logger.error(e.getMessage(),e);
+            throw e;
+        } 
+        finally 
+        {
+            con.commit(); 
+            closeAll(con, stmt, null);
+        }    
+    }
+    
     
     /*
      * Remove User/Table permissions 
