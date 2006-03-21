@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  */
 public class Table implements Comparable {
 
-    private static Logger logger = Logger.getLogger(Column.class);
+    private static Logger logger = Logger.getLogger(Table.class);
 
     private Long id;
 
