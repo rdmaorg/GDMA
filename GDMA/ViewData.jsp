@@ -4,10 +4,6 @@
 <%
 //TODO: Error checking
 
-//SOCO
-// There's probab;y an issue with the dsc/asc order feature after a search
-// The where clause is lost and the sort takes places on ALL records not just the filtered...
-
     if(session.getAttribute("USER") == null){
         %><jsp:forward page="NotLoggedIn.jsp"/><%
     }        
