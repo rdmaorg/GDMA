@@ -3,6 +3,7 @@ package com.vodafone.gdma.dbaccess;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -76,10 +77,13 @@ public class ServerRegistrationFactory extends DBFactory{
 
         try {
             con = DBUtil.getConnection();
-            stmt = con.createStatement();
-            rs = stmt.executeQuery(query);
 
-            while (rs != null && rs.next()) {
+            stmt = con.createStatement();
+            
+            rs = stmt.executeQuery(query);
+           
+            while (rs != null && rs.next()) 
+            {
                 reg = new ServerRegistration();
 
                 reg.setId(new Long(rs.getLong("id")));
@@ -93,11 +97,24 @@ public class ServerRegistrationFactory extends DBFactory{
                     reg.setPrefix(null);
 
                 list.add(reg);
+                
+                logger.debug(" ServerRegistration :: \n"+reg);
+                
             }
-        } catch (Exception e) {
+        }
+        catch (SQLException e) 
+        {
+            logger.error(e.getMessage(),e);
+            e.printStackTrace();
+            throw e;
+        }
+        catch (Exception e) 
+        {
             logger.error(e.getMessage(),e);
             throw e;
-        } finally {
+        }
+        finally 
+        {
             closeAll(con, stmt, null);
         }
     }
@@ -197,20 +214,23 @@ public class ServerRegistrationFactory extends DBFactory{
         buildList();
     }
 
-    public ArrayList getTablesFromDB(ServerRegistration reg) throws Exception {
-        ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(
-                reg.getOdbcTypeID());
+    public ArrayList getTablesFromDB(ServerRegistration reg) throws Exception 
+    {
+        ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(reg.getOdbcTypeID());
+    
         ArrayList tables = new ArrayList();
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
         String table;
 
-        try {
-            con = DBUtil.getConnection(odbc.getConnectionClass(), reg
-                    .getUsername(), reg.getPassword(), reg.getConnectionURL());
+        try 
+        {        	
+        	
+            con = DBUtil.getConnection(odbc.getConnectionClass(), reg.getUsername(), reg.getPassword(), reg.getConnectionURL());
+            
             stmt = con.createStatement();
-
+             
             rs = stmt.executeQuery(odbc.getSQLGetTables());
 
             while (rs != null && rs.next()) {
@@ -231,8 +251,7 @@ public class ServerRegistrationFactory extends DBFactory{
 
     public ArrayList getColumnsFromDB(ServerRegistration reg, String tableName)
             throws Exception {
-        ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(
-                reg.getOdbcTypeID());
+        ODBCProvider odbc = ODBCProviderFactory.getInstance().getODBCProvider(reg.getOdbcTypeID());
         ArrayList columns = new ArrayList();
         Connection con = null;
         Statement stmt = null;
@@ -250,14 +269,23 @@ public class ServerRegistrationFactory extends DBFactory{
             quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
 
             sbQuery.append("select * from ");
-            sbQuery.append(quotedIdentifer);
+            
+           // SOCO commented out:
+           // sbQuery.append(quotedIdentifer);// original
+            
             sbQuery.append(reg.getPrefix());
-            sbQuery.append(quotedIdentifer);
+            
+           // SOCO commented out:            
+           // sbQuery.append(quotedIdentifer);// original
+            
             sbQuery.append(".");
             sbQuery.append(quotedIdentifer);
             sbQuery.append(tableName);
             sbQuery.append(quotedIdentifer);
-            sbQuery.append(" where 1 = 0");
+            
+           // SOCO commented out: THIS OK ???? only looking for COLUMNS NAMES ?
+            sbQuery.append(" where 1 = 0");// original
+            
             logger.debug(sbQuery.toString());
 
             rs = stmt.executeQuery(sbQuery.toString());
@@ -288,5 +316,7 @@ public class ServerRegistrationFactory extends DBFactory{
 
         return columns;
     }
- 
+    
+    
+    
 }
