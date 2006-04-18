@@ -37,15 +37,14 @@ import com.vodafone.gdma.util.Formatter;
 public class EditData {
 
     // Log4j logger
-    private static Logger logger = Logger
-            .getLogger("EditData");
+    private static Logger logger = Logger.getLogger("EditData");
 
     private ODBCProvider odbc = null;
 
     private Connection con = null;
 
     private String quotedIdentifer = "";
-
+    
     private ServerRegistration reg = null;
 
     private Table table = null;
@@ -57,11 +56,16 @@ public class EditData {
     private HashMap valuesWhere = null;
 
     private ArrayList columnsWhere = null;
-
+    
     private ArrayList columnsNew = null;
 
     private User user = null;
-
+    
+    // SOCO change request 25/01/06 (add ability to change sort order of results) 
+    private static String orderby = null;
+    private static boolean descending = false;
+    // END SOCO
+    
     public int save(ServerRegistration reg, Table table,
             HttpServletRequest request) throws Exception {
 
@@ -76,7 +80,10 @@ public class EditData {
                 reg.getOdbcTypeID());
         con = DBUtil.getConnection(odbc.getConnectionClass(),
                 reg.getUsername(), reg.getPassword(), reg.getConnectionURL());
-        quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
+       
+        // SOCO COMMENTED OUT
+        //quotedIdentifer = con.getMetaData().getIdentifierQuoteString(); // original
+        quotedIdentifer = ""; // soco
 
         String strMode = request.getParameter("mode");
         if ("INSERT".equals(strMode)) {
@@ -101,8 +108,10 @@ public class EditData {
                 reg.getOdbcTypeID());
         con = DBUtil.getConnection(odbc.getConnectionClass(),
                 reg.getUsername(), reg.getPassword(), reg.getConnectionURL());
-        quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
-
+        // SOCO COMMENTED OUT        
+        //quotedIdentifer = con.getMetaData().getIdentifierQuoteString(); // original
+        quotedIdentifer = ""; // soco
+        
         return selectData(mode);
     }
 
@@ -123,14 +132,17 @@ public class EditData {
         con = DBUtil.getConnection(odbc.getConnectionClass(),
                 reg.getUsername(), reg.getPassword(), reg.getConnectionURL());
 
-        quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
+        // SOCO COMMENTED OUT        
+        //quotedIdentifer = con.getMetaData().getIdentifierQuoteString(); // original
+        quotedIdentifer = ""; // soco
 
         columnsNew = new ArrayList();
         columnsWhere = new ArrayList();
         columnsNew.add(display);
         columnsNew.add(store);
 
-        stmt = con.prepareStatement(createSelectStatement() + createOrderBy());
+        // SOCO 13/04/06 CHANGED THIS
+        stmt = con.prepareStatement(createSelectStatement());
 
         rs = stmt.executeQuery();
         sbTemp.append("<select value=\"");
@@ -177,24 +189,41 @@ public class EditData {
         PreparedStatement stmt = null;
         Column column = null;
         ResultSet rs = null;
-
-        try {
+       
+        // SOCO change request 25/01/06 (add ability to change sort order of results) 
+        if(null!=orderby && orderby.equals((String)request.getParameter("orderby")))
+        	toggleDescending();
+        else
+        {
+        	// reset descending
+        	descending = false;
+        }
+        
+        orderby = (String)request.getParameter("orderby");
+        // END SOCO
+                
+        try 
+        {
             columnsNew = table.getDisplayedColumns();
             columnsWhere = table.getDisplayedColumns();
-            if (table.getDisplayedColumns().size() > 0) {
-                if (request.getParameter("BACK") != null
-                        && request.getSession().getAttribute("OLD_WHERE") != null) {
-                    columnsWhere = (ArrayList) request.getSession()
-                            .getAttribute("OLD_WHERE");
-                    valuesWhere = (HashMap) request.getSession().getAttribute(
-                            "OLD_WHERE_VALUES");
-                } else {
+            
+          
+            if (table.getDisplayedColumns().size() > 0) 
+            {
+                if (request.getParameter("BACK") != null && request.getSession().getAttribute("OLD_WHERE") != null) 
+                {
+                    columnsWhere = (ArrayList) request.getSession().getAttribute("OLD_WHERE");
+                    valuesWhere = (HashMap) request.getSession().getAttribute("OLD_WHERE_VALUES"); 
+                } 
+                else 
+                {
                     getSearchValues();
                 }
 
+                request.setAttribute("orderby", orderby);
+                request.setAttribute("descending", descending+"");
                 request.getSession().setAttribute("OLD_WHERE", columnsWhere);
-                request.getSession().setAttribute("OLD_WHERE_VALUES",
-                        valuesWhere);
+                request.getSession().setAttribute("OLD_WHERE_VALUES", valuesWhere);
 
                 stmt = con.prepareStatement(createSelectStatement());
                 rs = stmt.executeQuery();
@@ -217,6 +246,19 @@ public class EditData {
         }
     }
 
+    /* SOCO 
+     * NEW method to toggle the sort order from asceding to descending
+     */
+    private void toggleDescending()
+    {
+    	
+    	if(new Boolean((String)request.getParameter("descending")).booleanValue())
+    	  descending = false;
+    	if(!new Boolean((String)request.getParameter("descending")).booleanValue())
+      	  descending = true;
+    	
+    }
+    
     private int updateData() throws Exception {
         PreparedStatement stmt = null;
         Column column = null;
@@ -224,6 +266,7 @@ public class EditData {
         try {
             columnsWhere = table.getDisplayedColumns();
             columnsNew = table.getUpdateColumns();
+            
             getOldValues();
             getNewValues();
             stmt = con.prepareStatement(createUpdateStatement());
@@ -299,7 +342,7 @@ public class EditData {
 
         try {
             columnsWhere = table.getDisplayedColumns();
-
+            
             getOldValues();
             stmt = con.prepareStatement(createDeleteStatement());
             setWhereValues(stmt, 0);
@@ -338,9 +381,12 @@ public class EditData {
         valuesWhere = new HashMap();
         Column column = null;
         String value;
+        
+        
         for (int i = 0; i < columnsWhere.size(); i++) {
             column = (Column) columnsWhere.get(i);
             value = request.getParameter("search_" + column.getName());
+            
             if (value != null) {
                 if ("".equals(value)) value = null;
 
@@ -356,6 +402,7 @@ public class EditData {
         valuesWhere = new HashMap();
         Column column = null;
         String value;
+        
         for (int i = 0; i < columnsWhere.size(); i++) {
             column = (Column) columnsWhere.get(i);
             value = request.getParameter("old_" + column.getName());
@@ -404,6 +451,7 @@ public class EditData {
             throws Exception {
         Column column;
         String value;
+        
         for (int i = 0; i < columnsWhere.size(); i++) {
             column = (Column) columnsWhere.get(i);
             value = (String) valuesWhere.get(column.getName());
@@ -422,6 +470,7 @@ public class EditData {
         for (int i = 0; i < size; i++) {
             column = (Column) columnsWhere.get(i);
             value = (String) valuesWhere.get(column.getName());
+            
             sbStatement.append(" (");
             sbStatement.append(quotedIdentifer);
             sbStatement.append(column.getName());
@@ -439,6 +488,7 @@ public class EditData {
         return sbStatement.toString();
     }
 
+    
     private String createSelectWhereClause() {
 
         Column column;
@@ -451,6 +501,7 @@ public class EditData {
         for (int i = 0; i < size; i++) {
             column = (Column) columnsWhere.get(i);
             value = (String) valuesWhere.get(column.getName());
+            
             if (value != null && !"".equals(value.trim())) {
                 sbStatement.append(firstWhereClause ? "" : " AND ");
                 if (column != null && 
@@ -483,7 +534,7 @@ public class EditData {
             sbStatement.insert(0, " WHERE ( ");
             sbStatement.append(") ");
         }
-
+        
         return sbStatement.toString();
     }
 
@@ -522,7 +573,6 @@ public class EditData {
 
         Column column;
         int size = columnsNew.size();
-
         StringBuffer sbSelect = new StringBuffer("SELECT ");
 
         for (int i = 0; i < size; i++) {
@@ -548,34 +598,76 @@ public class EditData {
         sbSelect.append(quotedIdentifer);
 
         sbSelect.append(createSelectWhereClause());
-
+        
+        // SOCO ON THURSDAY COMMENTED THIS OUT 13/04/06
+        sbSelect.append(createSelectOrderByClause());      
+        
         logger.debug(sbSelect);
         return sbSelect.toString();
     }
+    
+    
 
-    private String createOrderBy() {
+    /**
+     * SOCO
+     * NEW method to add "order by" to select SQL statment
+     */
+    private String createSelectOrderByClause() 
+    {      
+        StringBuffer statement = new StringBuffer();
+        if(null!=orderby && !orderby.trim().equals(""))
+        {   
+        	boolean orderByOk = false;
+        	for (int i = 0; i < columnsNew.size(); i++) 
+        	{
+        		Column column = (Column) columnsNew.get(i);
+        		
+                if(column.getName().equalsIgnoreCase(orderby))
+	           	{
+	                orderByOk = true;
+	           		break;
+	           	}
 
-        Column column;
-        int size = columnsNew.size();
-
-        StringBuffer sbOrderBy = new StringBuffer("ORDER BY ");
-
-        for (int i = 0; i < size; i++) {
-            column = (Column) columnsNew.get(i);
-            sbOrderBy.append(quotedIdentifer);
-            sbOrderBy.append(table.getName());
-            sbOrderBy.append(quotedIdentifer);
-            sbOrderBy.append(".");
-            sbOrderBy.append(quotedIdentifer);
-            sbOrderBy.append(column.getName());
-            sbOrderBy.append(quotedIdentifer);
-            sbOrderBy.append(i == (size - 1) ? "" : ",");
+	         }
+        	
+        	 if(orderByOk)
+        	 {
+        	    statement.append(" order by "+orderby); 
+        	    if(descending)
+                  statement.append(" desc ");
+        	 }
         }
-
-        logger.debug(sbOrderBy);
-        return sbOrderBy.toString();
+        
+        return statement.toString();
     }
 
+
+    // METHOD NO LONGER USED ????
+    private String createOrderBy() {
+
+       
+	         Column column;
+	         int size = columnsNew.size();
+	
+	         StringBuffer sbOrderBy = new StringBuffer(" ORDER BY ");
+	
+	         for (int i = 0; i < size; i++) {
+	            column = (Column) columnsNew.get(i);
+	            sbOrderBy.append(quotedIdentifer);
+	            sbOrderBy.append(table.getName());
+	            sbOrderBy.append(quotedIdentifer);
+	            sbOrderBy.append(".");
+	            sbOrderBy.append(quotedIdentifer);
+	            sbOrderBy.append(column.getName());
+	            sbOrderBy.append(quotedIdentifer);
+	            sbOrderBy.append(i == (size - 1) ? "" : ",");
+	         }
+	
+	         logger.debug(sbOrderBy);
+	         return sbOrderBy.toString();
+       
+    }
+   
     private String createInsertStatement() {
 
         Column column;
@@ -909,17 +1001,23 @@ public class EditData {
         int columnCount;
         int rowCount = 0;
         int maxRowCount = Integer.parseInt(Config.getProperty("max_row_count"));
-        sbTemp
-                .append("      <table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"dataTable\">\n");
+        sbTemp.append("      <table border=\"0\" cellpadding=\"2\" cellspacing=\"0\" class=\"dataTable\">\n");
         if (rs != null) {
             rsmd = rs.getMetaData();
             columnCount = rsmd.getColumnCount();
             sbTemp.append("    <tr id=\"trHeader\">\n");
-            sbTemp
-                    .append("      <td class=\"dataHeader\" width=\"30px\" nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
+            sbTemp.append("      <td class=\"dataHeader\" width=\"30px\" nowrap>&nbsp;&nbsp;&nbsp;</td>\n");
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = rsmd.getColumnName(i);
-                sbTemp.append("      <td class=\"dataHeader\" nowrap >");
+                sbTemp.append(" <td class=\"dataHeader\" nowrap style=\"cursor: hand;\" ");
+                // SOCO add orderby onclick
+                sbTemp.append(" ondblclick=\"refreshResultsOrderby('");
+                sbTemp.append(columnName);
+                sbTemp.append("', "+descending+");\"");
+                sbTemp.append(" onclick=\"refreshResultsOrderby('");
+                sbTemp.append(columnName);
+                sbTemp.append("', "+descending+");\"");
+                sbTemp.append(" >");
                 sbTemp.append(columnName);
                 //add hidden columns to take values when editing
                 sbTemp.append("<input type=\"hidden\" value=\"\" id=\"old_");
