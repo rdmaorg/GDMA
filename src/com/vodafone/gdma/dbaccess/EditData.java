@@ -82,7 +82,7 @@ public class EditData {
                 reg.getUsername(), reg.getPassword(), reg.getConnectionURL());
        
         // SOCO COMMENTED OUT
-        //quotedIdentifer = con.getMetaData().getIdentifierQuoteString(); // original
+       // quotedIdentifer = con.getMetaData().getIdentifierQuoteString(); // original
         quotedIdentifer = ""; // soco
 
         String strMode = request.getParameter("mode");
@@ -115,8 +115,8 @@ public class EditData {
         return selectData(mode);
     }
 
-    public String generateSelect(Column display, Column store, String name,
-            String value) throws Exception {
+    public String generateSelect(Column display, Column store, String name, String value) throws Exception {
+    	
         PreparedStatement stmt = null;
         Column column = null;
         ResultSet rs = null;
@@ -142,7 +142,8 @@ public class EditData {
         columnsNew.add(store);
 
         // SOCO 13/04/06 CHANGED THIS
-        stmt = con.prepareStatement(createSelectStatement());
+        boolean useDefault = true;
+        stmt = con.prepareStatement(createSelectStatement(useDefault));
 
         rs = stmt.executeQuery();
         sbTemp.append("<select value=\"");
@@ -185,7 +186,8 @@ public class EditData {
         return sbTemp.toString();
     }
 
-    private String selectData(String mode) throws Exception {
+    private String selectData(String mode) throws Exception 
+    {    	 
         PreparedStatement stmt = null;
         Column column = null;
         ResultSet rs = null;
@@ -206,8 +208,7 @@ public class EditData {
         {
             columnsNew = table.getDisplayedColumns();
             columnsWhere = table.getDisplayedColumns();
-            
-          
+                      
             if (table.getDisplayedColumns().size() > 0) 
             {
                 if (request.getParameter("BACK") != null && request.getSession().getAttribute("OLD_WHERE") != null) 
@@ -225,7 +226,9 @@ public class EditData {
                 request.getSession().setAttribute("OLD_WHERE", columnsWhere);
                 request.getSession().setAttribute("OLD_WHERE_VALUES", valuesWhere);
 
-                stmt = con.prepareStatement(createSelectStatement());
+                boolean useDefault = false;
+                stmt = con.prepareStatement(createSelectStatement(useDefault));  // added boolean to specify defualt order by
+               
                 rs = stmt.executeQuery();
             }
             if ("XML".equals(mode))
@@ -569,7 +572,7 @@ public class EditData {
         return sbUpdate.toString();
     }
 
-    private String createSelectStatement() {
+    private String createSelectStatement(boolean useDefault) {
 
         Column column;
         int size = columnsNew.size();
@@ -600,7 +603,14 @@ public class EditData {
         sbSelect.append(createSelectWhereClause());
         
         // SOCO ON THURSDAY COMMENTED THIS OUT 13/04/06
-        sbSelect.append(createSelectOrderByClause());      
+        if(useDefault)
+        {
+        	sbSelect.append(createOrderBy());  // default  
+        }      
+        else
+        {
+        	sbSelect.append(createSelectOrderByClause());    // user  
+        }
         
         logger.debug(sbSelect);
         return sbSelect.toString();
@@ -613,7 +623,7 @@ public class EditData {
      * NEW method to add "order by" to select SQL statment
      */
     private String createSelectOrderByClause() 
-    {      
+    {     
         StringBuffer statement = new StringBuffer();
         if(null!=orderby && !orderby.trim().equals(""))
         {   
@@ -645,7 +655,6 @@ public class EditData {
     // METHOD NO LONGER USED ????
     private String createOrderBy() {
 
-       
 	         Column column;
 	         int size = columnsNew.size();
 	
