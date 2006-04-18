@@ -266,24 +266,20 @@ public class ServerRegistrationFactory extends DBFactory{
             con = DBUtil.getConnection(odbc.getConnectionClass(), reg
                     .getUsername(), reg.getPassword(), reg.getConnectionURL());
             stmt = con.createStatement();
-            quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
 
+            // SOCO commented out:
+           // quotedIdentifer = con.getMetaData().getIdentifierQuoteString();
+            quotedIdentifer = ""; // SOCO
+            
             sbQuery.append("select * from ");
             
-           // SOCO commented out:
-           // sbQuery.append(quotedIdentifer);// original
-            
-            sbQuery.append(reg.getPrefix());
-            
-           // SOCO commented out:            
-           // sbQuery.append(quotedIdentifer);// original
-            
+            sbQuery.append(quotedIdentifer);// original            
+            sbQuery.append(reg.getPrefix());                        
+            sbQuery.append(quotedIdentifer);// original            
             sbQuery.append(".");
             sbQuery.append(quotedIdentifer);
             sbQuery.append(tableName);
             sbQuery.append(quotedIdentifer);
-            
-           // SOCO commented out: THIS OK ???? only looking for COLUMNS NAMES ?
             sbQuery.append(" where 1 = 0");// original
             
             logger.debug(sbQuery.toString());
