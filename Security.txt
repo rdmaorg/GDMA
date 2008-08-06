@@ -4,5 +4,6 @@ Steps to set up tagish
    login.config.url.1=file:${java.home}/lib/security/tagish.login
 3. Copy the file lib/NTSystem.dll to ${java.home}/bin folder
 4. Set the properties AdminGroup, UserGroup and DomainList in 
-   the properties file. Domain list is comma seperated. The first
+   the default.properties file. Domain list is comma seperated. The first
    value in the list will be selected as default.
+   

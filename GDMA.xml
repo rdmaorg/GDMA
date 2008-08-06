@@ -13,5 +13,5 @@
 	useNaming="true" 
 	wrapperClass="org.apache.catalina.core.StandardWrapper" 
 	path="/GDMA" 
-	docBase="E:/JavaProjects/GDMA/GDMA">
+	docBase="C:/Sarah/Development/GDMA">	
 </Context>
