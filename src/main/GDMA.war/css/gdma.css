@@ -1,0 +1,543 @@
+body {
+    background-color: #FFFFFF;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    color: #000000;
+    text-decoration: none;
+    margin: 0px;
+    padding: 0px;
+    font-family: Arial, sans-serif;
+}
+
+.button {
+    font-weight: bold;
+    color: #FFFFFF;
+    cursor: pointer;
+    cursor: hand;
+    background: #ff0000
+}
+
+div.clear {
+    float: none;
+    clear: both;
+    height: 0px;
+}
+
+div.footer {
+    text-align: center;
+    color: #888888;
+    font-size: 10px;
+}
+
+img {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+    color: #000000;
+}
+
+.loginform {
+    width: 400px;
+    margin: auto;
+    text-align: center;
+    
+}
+
+.loginform fieldset {
+    width: 280px;
+    border: 0px;
+    text-align: left;
+    padding-left: 60px;
+    
+}
+
+h1.logon {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.loginform legend {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.loginform label {
+    float: left;
+    width: 100px;
+    padding-bottom: 14px;
+    font-weight: bold;
+}
+
+.loginform .error {
+    color: red;
+    margin-left: 6px;
+    font-weight: bold;
+    font-size: 120%;
+    text-align: right;
+    width: 100px;
+    clear: both;
+    float: none;
+}
+
+.loginform input {
+    width: 150px;
+    float: none;
+}
+
+.loginform select {
+    width: 154px;
+}
+
+.loginform br {
+    clear: both;
+    float: none;
+}
+
+.loginform #reset {
+    margin-left: 100px;
+}
+
+.loginform .button {
+    width: 80px;
+}
+
+.icon-server {
+    display: block;
+    height: 22px;
+    padding-left: 20px;
+    background: transparent url(../images/server.gif) no-repeat;
+}
+
+.icon-table {
+    display: block;
+    height: 22px;
+    padding-left: 20px;
+    background: transparent url(../images/table.gif) no-repeat;
+}
+
+.icon-column {
+    display: block;
+    height: 22px;
+    padding-left: 20px;
+    background: transparent url(../images/column.gif) no-repeat;
+}
+
+#divInnerHeader {
+    height: 80px;
+    width: 100%;
+    position: relative;
+    border-right: 5px yellow solid;
+    margin: 0px;
+    background: url(../images/vf_logo.gif) left top no-repeat;
+}
+
+#divInnerHeader ul {
+    border: solid red 2px;
+    width: 100%;
+    background-color: #ff0000;
+    position: absolute;
+    top: 48px;
+    margin-left: 120px;
+}
+
+#divInnerHeader li {
+    float: left;
+    vertical-align: bottom;
+}
+
+#divInnerHeader li span{
+    display: block;
+    width: auto;
+    height: 30px;
+    margin-left:50px;
+    text-decoration: none;
+    font-style: italic;
+    font-size: 11px;
+    vertical-align: bottom;
+    padding-top: 14px;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #ff0000;
+}
+
+#divInnerHeader a {
+    display: block;
+    width: auto;
+    text-decoration: none;
+    font-size: 12px;
+    border-right: 1px #FFFFFF solid;
+    padding: 6px 12px 6px 12px;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #ff0000;
+}
+
+#divInnerHeader a:hover {
+    background-color: #CC0202;
+}
+
+#divServerTable {
+    margin: 0px;
+}
+
+#divToolbar {
+    border: 1px solid black;
+    margin: 0px;
+    padding: 2px 3px;
+    background: url(../images/sprite.gif) repeat-x scroll 0 0;
+}
+#divToolbar .first-child{
+    padding-left: 10px;
+}
+
+#divToolbar #btnAdd .first-child {
+    background: url(../images/add.gif) left center no-repeat;
+}
+
+#divToolbar #btnDelete .first-child {
+    background: url(../images/delete.gif) left center no-repeat;
+}
+
+#divToolbar #btnSave .first-child {
+    background: url(../images/check.gif) left center no-repeat;
+}
+
+#divToolbar #btnCancel .first-child {
+    background: url(../images/cancel.gif) left center no-repeat;
+}
+
+#divToolbar #btnRefresh .first-child {
+    background: url(../images/refresh.gif) left center no-repeat;
+}
+
+#divToolbar #btnReset .first-child {
+    background: url(../images/refresh.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divToolbar #btnFilter .first-child {
+    background: url(../images/search.gif) left center no-repeat;
+}
+
+#divToolbar #btnMulti .first-child {
+    background: url(../images/columns.gif) left center no-repeat;
+}
+
+#divToolbar #btnTables .first-child {
+    background: url(../images/tables.gif) left center no-repeat;
+}
+
+#divToolbar #btnServers .first-child {
+    background: url(../images/server.gif) left center no-repeat;
+}
+
+#divToolbar #btnColumns .first-child {
+    background: url(../images/columns.gif) left center no-repeat;
+}
+
+#divToolbar #btnAccess .first-child {
+    background: url(../images/login.gif) left center no-repeat;
+}
+
+#divToolbar #btnUsers .first-child {
+    background: url(../images/user.gif) left center no-repeat;
+}
+
+#divToolbar #btnConfig .first-child {
+    background: url(../images/config.gif) left center no-repeat;
+}
+
+#divToolbar #btnExecute .first-child {
+    background: url(../images/execute.gif) left center no-repeat;
+}
+
+#divToolbar #btnDownload .first-child {
+    background: url(../images/download.gif) left center no-repeat;
+}
+
+#divToolbar #btnClear .first-child {
+    background: url(../images/clear.gif) left center no-repeat;
+}
+.gdma-toolbar .yui-button,.gdma-toolbar .yui-button .first-child {
+    border-color: transparent;
+}
+
+.gdma-toolbar .yui-button-hover,.gdma-toolbar .yui-button-hover .first-child {
+    border-color: #808080;
+}
+
+.gdma-toolbar .yui-button {
+    background: none;
+}
+
+.gdma-toolbar .yui-button-hover {
+    background: transparent url(../images/sprite.gif) repeat-x scroll 0 -1300px;
+}
+
+#divDlgAccessBottom, #divDlgPopupFormBottom, #divLoginButtons, #divDlgColumnsLayoutButtons  {
+    text-align: right;
+}
+
+#divDlgAccessCenter{
+    padding-top: 40px;
+}
+
+#divDlgColumnsLayout {
+    text-align: left;
+}
+    
+#divDlgColumnsLayoutTreeview{
+    height: 300px;
+    overflow: auto;
+}
+        
+#divDlgAccessCenter .yui-button {
+    background: none;
+    margin: 0px 0px 6px 16px;
+}
+
+#divDlgAccessCenter .yui-button-hover {
+    background: transparent url(../images/sprite.gif) repeat-x scroll 0 -1300px;
+}
+
+#divDlgAccessCenter .yui-button button {
+    width: 80px;
+    text-align: left;
+    outline: none;
+}
+
+#divDlgAccessCenter .yui-button .first-child {
+    padding-left: 10px;
+}
+
+#divDlgAccessCenter #btnAllMoveRight .first-child {
+    background: url(../images/right-all.gif) left center no-repeat;
+}
+
+#divDlgAccessCenter #btnMoveRight .first-child {
+    background: url(../images/right.gif) left center no-repeat;
+}
+
+#divDlgAccessCenter #btnMoveLeft .first-child {
+    background: url(../images/left.gif) left center no-repeat;
+}
+
+#divDlgAccessCenter #btnAllMoveLeft .first-child {
+    background: url(../images/left-all.gif) left center no-repeat;
+}
+
+
+#divDlgAccessLayout #btnAccessListSave,#divDlgPopupFormLayout #btnPopupFormSave {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgAccessLayout #btnAccessListSave .first-child,#divDlgPopupFormLayout #btnPopupFormSave .first-child {
+    background: url(../images/check.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgAccessLayout #btnAccessListCancel,#divDlgPopupFormLayout #btnPopupFormCancel {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgAccessLayout #btnAccessListCancel .first-child,#divDlgPopupFormLayout #btnPopupFormCancel .first-child {
+    background: url(../images/cancel.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgPopupFormBottom #btnPopupFormClear .first-child {
+    background: url(../images/refresh.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgColumnsLayoutButtons #btnColumnServerBrowserCleare {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgColumnsLayoutButtons #btnColumnServerBrowserClear .first-child {
+    background: url(../images/blck16_1.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgColumnsLayoutButtons #btnColumnServerBrowserSave {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgColumnsLayoutButtons #btnColumnServerBrowserSave .first-child {
+    background: url(../images/check.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgColumnsLayoutButtons #btnColumnServerBrowserCancel {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgColumnsLayoutButtons #btnColumnServerBrowserCancel .first-child {
+    background: url(../images/cancel.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgPopupFormBottom #btnPopupFormClear .first-child {
+    background: url(../images/refresh.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgPopupFormCenter h1 {
+    font-size: 110%;
+    font-weight: bold;
+    text-align: left;
+    float: none;
+    clear: both;
+    margin: 14px 0px 6px 5px;
+}
+
+#divDlgColumnsLayoutButtons .yui-button {
+    background: none;
+}
+
+#divDlgColumnsLayoutDropdowns {
+    margin: 10px 0px 10px 0px;
+}
+
+#ddDisplay,#ddStore {
+    width: 150px;
+    margin-right: 20px;
+}
+
+#divDlgColumnsLayoutButtons .yui-button-hover {
+    background: transparent url(../images/sprite.gif) repeat-x scroll 0 -1300px;
+}
+
+#loading .bd {
+    padding: 0px;
+}
+
+#divDlgAccessLeft {
+    height: 100%;
+}
+
+#divDlgAccessRight {
+    height: 100%;
+}
+
+#divDlgAccess select {
+    width: 100%;
+    height: 100%;
+}
+
+#divDlgPopupFormCenter p {
+    padding: 0px 15px 0px 15px;
+    margin: 0px;
+    clear: both;
+    vertical-align: middle;
+}
+
+#divDlgPopupFormCenter label {
+    float: left;
+    width: 150px;
+    height: 18px;
+    padding-right: 15px;
+    padding-left: 5px;
+    vertical-align: middle;
+}
+
+#divDlgPopupFormCenter input {
+    height: 18px;
+    vertical-align: middle;
+    float: none;
+    width: auto;
+}
+
+#divDlgPopupFormCenter span {
+    margin: 0px 5px 0px 10px;
+}
+
+#divLoginButtons{
+    margin-top: 15px;
+}
+
+#divLoginButtons #btnReset .first-child {
+    background: url(../images/cancel.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divLoginButtons #btnSubmit .first-child {
+    background: url(../images/check.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+.yui-dt-bd tbody{
+    color: #696969;
+    font-style: italic;
+}
+    
+.yui-dt-editable{
+    color: #000000;
+    font-style: normal;    
+}
+
+.yui-skin-sam tr.yui-dt-selected .yui-dt-editable{
+    color: #FFFFFF;
+    font-style: normal;    
+}
+
+.chkCheckAll {
+    #margin: 0px 0px 0px 5px;
+}
+
+#divDlgPopupFormCenterButtons{
+    padding-top: 40px;
+}
+
+#divDlgPopupFormCenterButtons .yui-button {
+    background: none;
+    margin: 0px 0px 6px 16px;
+}
+#divDlgPopupFormCenterButtons .yui-button-hover {
+    background: transparent url(../images/sprite.gif) repeat-x scroll 0 -1300px;
+}
+
+#divDlgPopupFormCenterButtons .yui-button button {
+    width: 60px;
+    text-align: left;
+    outline: none;
+}
+
+#divDlgPopupFormCenterButtons .yui-button .first-child {
+    padding-left: 10px;
+}
+
+#divDlgPopupFormCenterButtons #btnMoveTop .first-child {
+    background: url(../images/movetop.gif) left center no-repeat;
+}
+
+#divDlgPopupFormCenterButtons #btnMoveUp .first-child {
+    background: url(../images/moveup.gif) left center no-repeat;
+}
+
+#divDlgPopupFormCenterButtons #btnMoveDown .first-child {
+    background: url(../images/movedown.gif) left center no-repeat;
+}
+
+#divDlgPopupFormCenterButtons #btnMoveBottom .first-child {
+    background: url(../images/movebottom.gif) left center no-repeat;
+}
+
+
+#selServers{
+    margin: -6px 20px 0px 0px;
+}
+
+#divPager{
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}

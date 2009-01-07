@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.vodafone.gdma.domain">
+    <class name="Table" table="GDMA2_TABLE">
+        <id name="id" column="ID" type="long">
+            <generator class="sequence">
+                <param name="sequence">SEQ_GDMA2_TABLE</param>
+            </generator>
+        </id>
+        <property name="name" column="NAME" type="string" />
+        <property name="displayed" column="DISPLAYED" type="yes_no" />
+        <property name="allowDelete" column="ALLOWDELETE" type="yes_no" />
+        
+        <set name="users" table="GDMA2_USER_TABLE_ACCESS" order-by="USER_ID asc" cascade="all">
+            <key column="TABLE_ID"/>
+            <many-to-many column="USER_ID" class="User" />
+        </set>
+        
+        <set name="columns" table="GDMA2_COLUMN" order-by="ORDERBY asc, ID asc" cascade="all-delete-orphan">
+            <key column="TABLE_ID" not-null="true"/>
+            <one-to-many class="Column"/>
+        </set>        
+
+    </class>
+
+</hibernate-mapping>

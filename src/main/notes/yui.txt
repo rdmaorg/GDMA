@@ -1,0 +1,5 @@
+editDropdown : function(oEditor, oSelf) - comparison to check value and set selectedindex  is flawed -
+			changed === to == as the type was changing from a number to string.
+
+datatable-beta-debug.js
+	line 5024: changed if(lang.isUndefined(o)) to if(o ==null || lang.isUndefined(o))

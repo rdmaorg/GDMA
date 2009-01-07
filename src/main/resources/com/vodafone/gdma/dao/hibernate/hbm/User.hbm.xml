@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.vodafone.gdma.domain">
+    <class name="User" table="GDMA2_USERS" lazy="false">
+        <id name="id" column="USER_ID" type="long">
+            <generator class="sequence">
+                <param name="sequence">SEQ_GDMA2_USERS</param>
+            </generator>
+        </id>
+        <property name="firstName" column="FIRST_NAME" type="string" />
+        <property name="lastName" column="LAST_NAME" type="string" />
+        <property name="userName" column="USERNAME" type="string" />
+        <property name="admin" column="ISADMIN" type="yes_no" />
+        <property name="locked" column="ISLOCKED" type="yes_no" />
+        <set name="tables" table="GDMA2_USER_TABLE_ACCESS" order-by="TABLE_ID asc" inverse="true" cascade="save-update">
+            <key column="USER_ID" not-null="true"/>
+            <many-to-many column="TABLE_ID" class="Table" />
+        </set>        
+    </class>
+</hibernate-mapping>

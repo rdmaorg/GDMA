@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%p][%t][%c.%M()] - %m%n" />
+		</layout>
+	</appender>
+	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="E:/Program Files/Apache Software Foundation/Tomcat 6.0/logs/gdma.log" />
+		<param name="MaxFileSize" value="1MB" />
+		<param name="MaxBackupIndex" value="10" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%d{dd MMM yyyy HH:mm:ss.SSS}][%t][%p][%c] - %m%n%n" />
+		</layout>
+	</appender>
+	<appender name="DB" class="com.vodafone.gdma.util.GdmaJdbcAppender">
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="WARN" />
+			<param name="LevelMax" value="FATAL" />
+		</filter>
+	</appender>
+	<appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="CONSOLE" />
+	</appender>
+	<category name="com">
+		<priority value="WARN" />
+	</category>
+	<category name="com.vodafone">
+		<priority value="DEBUG" />
+	</category>
+	<category name="com.vodafone.gdma.web.view.ExcelDownloaderViewe">
+		<priority value="WARN" />
+	</category>
+	<category name="org">
+		<priority value="WARN" />
+	</category>
+	<category name="com.oracle">
+		<priority value="WARN" />
+	</category>
+	<category name="org.directwebremoting">
+		<priority value="FATAL" />
+	</category>
+	<category name="org.springframework">
+		<priority value="WARN" />
+	</category>
+	<category name="org.springframework.aop">
+		<priority value="WARN" />
+	</category>
+	<category name="org.springframework.security">
+		<priority value="WARN" />
+	</category>
+	<category name="org.hibernate">
+		<priority value="WARN" />
+	</category>
+	<category name="org.hibernate.SQL">
+		<priority value="WARN" />
+	</category>
+	<root>
+        <appender-ref ref="ASYNC" />
+	</root>
+</log4j:configuration>

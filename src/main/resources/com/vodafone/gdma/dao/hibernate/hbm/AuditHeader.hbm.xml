@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.vodafone.gdma.domain">
+    <class name="AuditHeader" table="GDMA2_AUDIT_HEADER">
+        <id name="id" column="ID" type="long">
+            <generator class="sequence">
+                <param name="sequence">SEQ_GDMA2_AUDIT_HEADER</param>
+            </generator>
+        </id>
+        <property name="tableID" column="TABLE_ID" type="long" />
+        <property name="type" column="TYPE" type="char" />
+        <property name="modifiedBy" column="MODIFIED_BY" type="string" />
+        <property name="modifiedOn" column="MODIFIED_ON" type="timestamp" />
+    </class>
+
+</hibernate-mapping>

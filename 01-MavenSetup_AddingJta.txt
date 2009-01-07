@@ -1,0 +1,15 @@
+= Adding JTA jars to Maven =
+
+ * [http://java.sun.com/products/jta/ download] the Class Files 1.0.1B file
+ * run the following command = which assumes jta-1_0_1B-classes.zip is in the current directory
+{{{
+mvn install:install-file -DgroupId=javax.transaction \
+                         -DartifactId=jta \
+                         -Dversion=1.0.1B \
+                         -Dpackaging=jar \
+                         -Dfile=jta-1_0_1B-classes.zip \
+                         -DgeneratePom=true 
+
+
+
+}}}

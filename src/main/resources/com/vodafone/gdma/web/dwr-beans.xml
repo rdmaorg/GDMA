@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.directwebremoting.org/schema/spring-dwr http://www.directwebremoting.org/schema/spring-dwr-2.0.xsd">
+    <bean id="gdmaAdminAjaxFacade" class="com.vodafone.gdma.web.GdmaAdminAjaxFacade">
+        <property name="gdmaFacade" ref="gdmaFacade" />
+        <property name="serverUtil" ref="serverUtil" />
+        <dwr:remote javascript="GdmaAdmin" />
+    </bean>
+    <bean id="gdmaAjaxFacade" class="com.vodafone.gdma.web.GdmaAjaxFacade">
+        <property name="gdmaFacade" ref="gdmaFacade" />
+        <dwr:remote javascript="GdmaAjax" />
+    </bean>
+    <dwr:configuration>
+        <dwr:convert type="bean" class="com.vodafone.gdma.domain.Server" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.domain.Table" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.domain.Column" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.domain.User" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.domain.ConnectionType" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.AccessLists" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.TableUserAccess" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.PaginatedRequest" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.PaginatedResponse" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.PaginatedSqlRequest" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.PaginatedSqlResponse" />        
+        <dwr:convert type="enum" class="com.vodafone.gdma.web.command.PaginatedSortDir" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.Filter" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.ColumnUpdate" />
+        <dwr:convert type="bean" class="com.vodafone.gdma.web.command.UpdateRequest" />
+        <dwr:convert type="exception" class="java.lang.Exception">
+            <dwr:exclude method="stackTrace" />
+        </dwr:convert>
+    </dwr:configuration>
+</beans>

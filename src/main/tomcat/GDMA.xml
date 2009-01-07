@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context 
+        path="GDMA" 
+        docBase="/data/dev/projects/GDMA/gdma/src/main/GDMA.war" 
+        reloadable="true">
+    <Resource 
+            name="jdbc/GdmaDB" 
+            auth="Container" 
+            type="oracle.jdbc.pool.OracleDataSource" 
+            driverClassName="oracle.jdbc.driver.OracleDriver"
+            factory="oracle.jdbc.pool.OracleDataSourceFactory" 
+            maxActive="20" 
+            maxIdle="10" 
+            maxWait="-1" 
+            user="app_meta"
+            password="app_meta" 
+            url="jdbc:oracle:thin:@iecsbi01:1521:MSDB2" />
+</Context>

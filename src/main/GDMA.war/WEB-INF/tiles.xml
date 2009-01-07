@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+    <definition name="login" template="/WEB-INF/jsp/login.jsp"/>
+
+    <definition name="layout" template="/WEB-INF/jsp/layout.jsp">
+        <put-attribute name="title" value="${title}" />
+        <put-attribute name="header" value="/WEB-INF/jsp/header.jsp" />        
+        <put-attribute name="footer" value="/WEB-INF/jsp/footer.jsp"/>
+    </definition>
+
+    <definition name="index" extends="layout">
+        <put-attribute name="title" value="Data Grid" />
+        <put-attribute name="left" value="/WEB-INF/jsp/serverBrowser.jsp" />
+        <put-attribute name="right" value="dataGrid" />
+    </definition>
+
+    <definition name="admin/admin" extends="layout">
+        <put-attribute name="title" value="Admin" />
+        <put-attribute name="left" value="" />
+        <put-attribute name="right" value="/WEB-INF/jsp/admin.jsp" />
+    </definition>
+    
+    <definition name="admin/sql" extends="layout">
+        <put-attribute name="title" value="SQL Console" />
+        <put-attribute name="left" value="" />
+        <put-attribute name="right" value="/WEB-INF/jsp/sql.jsp" />
+    </definition>    
+
+    <definition name="dataGrid" template="/WEB-INF/jsp/dataGrid.jsp"/>
+
+
+</tiles-definitions>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:flow="http://www.springframework.org/schema/webflow-config"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-1.0.xsd">
+
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+        <property name="order" value="1"/>
+        <property name="basename" value="views"/>
+    </bean>
+    
+
+
+    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/tiles.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="urlMapping"
+        class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <value>
+                /login.htm=loginController
+                /index.htm=indexController
+                /admin/admin.htm=adminController
+                /admin/sql.htm=sqlController
+                /serverBrowser.htm=serverBrowserController
+                /serverList.htm=serverListController
+                /download.xls=downloadController
+                /download.csv=downloadController
+            </value>
+        </property>
+    </bean>
+
+    <bean id="loginController" class="com.vodafone.gdma.web.controllers.LoginController">
+        <property name="formView" value="login" />
+        <property name="successView" value="index.htm" />
+    </bean>
+    
+    <bean id="downloadController" class="com.vodafone.gdma.web.controllers.DownloadController">
+        <property name="gdmaFacade" ref="gdmaFacade" />
+    </bean>
+    
+    <bean id="indexController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+    
+    <bean id="adminController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+    
+    <bean id="sqlController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+    
+    <bean id="serverBrowserController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+    
+    <bean id="serverListController" class="com.vodafone.gdma.web.ServerListController">
+        <property name="gdma" ref="gdmaFacade" />
+        <property name="view" ref="serverListJsonView" />
+    </bean>
+
+    <bean name="serverListJsonView" class="com.vodafone.gdma.web.view.ServerListJsonView" />
+
+
+</beans>
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.vodafone.gdma.domain">
+    <class name="ConnectionType" table="GDMA2_ODBC_TYPES">
+        <id name="id" column="ID" type="long">
+            <generator class="sequence">
+                <param name="sequence">SEQ_GDMA2_ODBC_TYPES</param>
+            </generator>
+        </id>
+        <property name="name" column="NAME" type="string" />
+        <property name="SQLGetTables" column="SELECT_GET_TABLES" type="string" />
+        <property name="connectionClass" column="CONNECTIONCLASS" type="string" />
+        <property name="dialectClass" column="DIALECTCLASS" type="string" />
+    </class>
+
+</hibernate-mapping>

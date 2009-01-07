@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.vodafone.gdma.domain">
+    <class name="Column" table="GDMA2_COLUMN">
+        <id name="id" column="ID" type="long">
+            <generator class="sequence">
+                <param name="sequence">SEQ_GDMA2_COLUMN</param>
+            </generator>
+        </id>
+
+        <property name="name" column="NAME" type="string" />
+        <property name="columnType" column="TYPE" type="int" />
+        <property name="columnTypeString" column="TYPESTRING" type="string" />
+        <many-to-one name="dropDownColumnDisplay" column="DD_LOOKUP_COLUMN_DISPLAY" cascade="all"/>
+        <many-to-one name="dropDownColumnStore" column="DD_LOOKUP_COLUMN_STORE" cascade="all"/>
+        <property name="displayed" column="DISPLAYED" type="yes_no" />
+        <property name="allowInsert" column="ALLOWINSERT" type="yes_no" />
+        <property name="allowUpdate" column="ALLOWUPDATE" type="yes_no" />
+        <property name="nullable" column="NULLABLE" type="yes_no" />
+        <property name="special" column="SPECIAL" type="string" />
+        <property name="primarykey" column="PRIMARYKEY" type="yes_no" />
+        <property name="maxWidth" column="MAXWIDTH" type="integer" />
+        <property name="minWidth" column="MINWIDTH" type="integer" />
+        <property name="orderby" column="ORDERBY" type="integer"/>
+
+    </class>
+
+</hibernate-mapping>

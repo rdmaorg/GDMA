@@ -1,0 +1,66 @@
+/*YUI over rides*/
+.yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
+    background-color: #ffffff;
+}
+
+.yui-skin-sam .yui-layout .yui-layout-hd {
+    background-color: #ff0000;
+}
+
+/*
+.yui-skin-sam .yui-panel .hd {
+    background:transparent url(../images/sprite.png) repeat-x scroll 0pt -200px;
+}
+*/
+
+.yui-skin-sam .container-close {
+    background:transparent url(../images/sprite.png) no-repeat scroll 0pt -300px;
+}
+
+.yui-simple-dialog .bd span.blckicon {
+    background:transparent url(../images/blck16_1.gif) no-repeat scroll 0%;
+}
+
+.yui-simple-dialog .bd span.infoicon {
+    background:transparent url(../images/info16_1.gif) no-repeat scroll 0%;
+}
+
+.yui-simple-dialog .bd span.alrticon {
+    background:transparent url(../images/alrt16_1.gif) no-repeat scroll 0%;
+}
+
+.yui-tt{
+    z-index: 10000000;
+}
+
+.yui-skin-sam .yui-calendar .calnavright {
+    background:transparent url(../images/sprite.png) no-repeat scroll 0pt -500px;
+}
+
+.yui-skin-sam .yui-calendar .calnavleft {
+    background:transparent url(../images/sprite.png) no-repeat scroll 0pt -450px;
+}
+
+.yui-skin-sam .yui-dt th {
+    background:#D8D8DA url(../images/sprite.png) repeat-x scroll 0pt 0pt;
+    padding:1px 3px;
+    font-weight: bold;
+}
+
+.yui-skin-sam .yui-dt-liner {
+    margin:0pt;
+    padding:2px 4px;
+}
+
+.yui-skin-sam th.yui-dt-asc .yui-dt-liner {
+    background:transparent url(../images/dt-arrow-up.png) no-repeat scroll right center;
+}
+
+.yui-skin-sam th.yui-dt-desc .yui-dt-liner {
+    background:transparent url(../images/dt-arrow-down.png) no-repeat scroll right center;
+}
+
+.yui-skin-sam .yui-button {
+    background:transparent url(../images/sprite.png) repeat-x scroll 0pt 0pt;
+}
+
