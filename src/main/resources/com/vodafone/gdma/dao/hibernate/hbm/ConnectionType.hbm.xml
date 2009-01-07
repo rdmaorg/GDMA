@@ -13,7 +13,6 @@
         <property name="name" column="NAME" type="string" />
         <property name="SQLGetTables" column="SELECT_GET_TABLES" type="string" />
         <property name="connectionClass" column="CONNECTIONCLASS" type="string" />
-        <property name="dialectClass" column="DIALECTCLASS" type="string" />
     </class>
 
 </hibernate-mapping>

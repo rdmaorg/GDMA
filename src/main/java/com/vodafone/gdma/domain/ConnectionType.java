@@ -20,8 +20,6 @@ public class ConnectionType {
 
     private String connectionClass;
 
-    private String dialectClass;
-
     public long getId() {
         return id;
     }
@@ -65,14 +63,6 @@ public class ConnectionType {
 
     public int hashCode() {
         return name.hashCode();
-    }
-
-    public String getDialectClass() {
-        return dialectClass;
-    }
-
-    public void setDialectClass(String dialectClass) {
-        this.dialectClass = dialectClass;
     }
 
 }
