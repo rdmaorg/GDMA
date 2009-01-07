@@ -53,7 +53,7 @@ public class GdmaAjaxFacadeTest extends BaseSpringImplTest {
 
     @Test
     public void getServerTableList() {
-        List<Server> servers = gdmaAjaxFacade.getServerTableList("admin");
+        List<Server> servers = gdmaAjaxFacade.getServerTableList();
         assertNotNull("Returned list of servers is null", servers);
         assertTrue("Returned list of servers is empty", CollectionUtils.isNotEmpty(servers));
         for (Server server : servers) {
