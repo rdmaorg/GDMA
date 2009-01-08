@@ -7,7 +7,7 @@
 		</layout>
 	</appender>
 	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
-		<param name="File" value="E:/Program Files/Apache Software Foundation/Tomcat 6.0/logs/gdma.log" />
+		<param name="File" value="logs/gdma.log" />
 		<param name="MaxFileSize" value="1MB" />
 		<param name="MaxBackupIndex" value="10" />
 		<layout class="org.apache.log4j.PatternLayout">
