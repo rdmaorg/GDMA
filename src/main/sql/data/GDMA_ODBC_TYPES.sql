@@ -8,5 +8,7 @@ insert into GDMA2_ODBC_TYPES (ID, NAME, SELECT_GET_TABLES, CONNECTIONCLASS)
 values (3, 'JDBC Oracle 8/9', 'select table_name as TABLE_NAME from user_tables', 'oracle.jdbc.OracleDriver');
 insert into GDMA2_ODBC_TYPES (ID, NAME, SELECT_GET_TABLES, CONNECTIONCLASS)
 values (4, 'ODBC Teradata 8/9', 'SELECT TABLENAME AS TABLE_NAME  FROM DBC.TABLES ORDER BY TABLENAME', 'sun.jdbc.odbc.JdbcOdbcDriver');
+insert into GDMA2_ODBC_TYPES (ID, NAME, SELECT_GET_TABLES, CONNECTIONCLASS)
+values (5, 'JDBC Teradata 8/9', 'SELECT TABLENAME AS TABLE_NAME  FROM DBC.TABLES ORDER BY TABLENAME', 'com.ncr.teradata.TeraDriver');
 commit;
 
