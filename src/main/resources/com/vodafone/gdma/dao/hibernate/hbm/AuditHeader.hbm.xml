@@ -6,7 +6,7 @@
 <hibernate-mapping package="com.vodafone.gdma.domain">
     <class name="AuditHeader" table="GDMA2_AUDIT_HEADER">
         <id name="id" column="ID" type="long">
-            <generator class="sequence">
+            <generator class="native">
                 <param name="sequence">SEQ_GDMA2_AUDIT_HEADER</param>
             </generator>
         </id>

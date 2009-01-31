@@ -4,10 +4,10 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="com.vodafone.gdma.domain">
-    <class name="Server" table="GDMA2_SERVER_REGISTRATION" rowid="rowid">
+    <class name="Server" table="GDMA2_SERVER_REGISTRATION">
         
         <id name="id" column="ID" type="long" >
-            <generator class="sequence">
+            <generator class="native">
                 <param name="sequence">SEQ_GDMA2_SERVER_REGISTRATION</param>
             </generator>
         </id>

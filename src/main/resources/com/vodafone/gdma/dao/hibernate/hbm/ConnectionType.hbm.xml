@@ -6,7 +6,7 @@
 <hibernate-mapping package="com.vodafone.gdma.domain">
     <class name="ConnectionType" table="GDMA2_ODBC_TYPES">
         <id name="id" column="ID" type="long">
-            <generator class="sequence">
+            <generator class="native">
                 <param name="sequence">SEQ_GDMA2_ODBC_TYPES</param>
             </generator>
         </id>
