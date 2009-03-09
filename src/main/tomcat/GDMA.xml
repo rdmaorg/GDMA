@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context 
         path="GDMA" 
-        docBase="/home/svu/Desktop/GDMA/src/main/GDMA.war/" 
+        docBase="/home/svu/Desktop/ClientSolutions/GDMA/src/main/GDMA.war/" 
         reloadable="true">
     <Resource 
             name="jdbc/GdmaDB" 
