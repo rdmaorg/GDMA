@@ -33,7 +33,7 @@ BODY {
 }
 
 .redBackground {
-	background-color:#FF0000;
+	background-color:navy;
 }
 
 .button{
@@ -47,7 +47,7 @@ BODY {
 	border-left:1 solid #FF9999;
 	color : #FFFFFF;
 	width:80px;
-	background-color: #FF0000;
+	background-color: navy;
 	cursor: pointer;
 	cursor: hand;
 }
@@ -163,10 +163,10 @@ BODY {
 
 
 .topnav {
-	border-top: 1px solid #FF0000;
-	border-left: 1px solid #FF0000;	
-	border-bottom: 1px solid #FF0000;	
-	border-right: 1px solid #FF0000;	
+	border-top: 1px solid navy;
+	border-left: 1px solid navy;	
+	border-bottom: 1px solid navy;	
+	border-right: 1px solid navy;	
 	font-family :  Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size:12px;
 	font-weight:bold;

@@ -1,0 +1,34 @@
+<list>
+  <ie.clients.gdma.domain.Server>
+    <id>1</id>
+    <name>server1</name>
+    <tables>
+      <ie.clients.gdma.domain.Table>
+        <id>1</id>
+        <name>table1</name>
+        <users/>
+      </ie.clients.gdma.domain.Table>
+      <ie.clients.gdma.domain.Table>
+        <id>1</id>
+        <name>table2</name>
+        <users/>
+      </ie.clients.gdma.domain.Table>
+    </tables>
+  </ie.clients.gdma.domain.Server>
+  <ie.clients.gdma.domain.Server>
+    <id>2</id>
+    <name>server2</name>
+    <tables>
+      <ie.clients.gdma.domain.Table>
+        <id>3</id>
+        <name>table3</name>
+        <users/>
+      </ie.clients.gdma.domain.Table>
+      <ie.clients.gdma.domain.Table>
+        <id>4</id>
+        <name>table4</name>
+        <users/>
+      </ie.clients.gdma.domain.Table>
+    </tables>
+  </ie.clients.gdma.domain.Server>
+</list>

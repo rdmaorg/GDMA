@@ -5,7 +5,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value> 
-        	classpath:com/vodafone/gdma/applicationContext.xml 
+        	classpath:ie/clients/gdma/applicationContext.xml 
         </param-value>
     </context-param>
     

@@ -43,12 +43,12 @@
         </property>
     </bean>
 
-    <bean id="loginController" class="com.vodafone.gdma.web.controllers.LoginController">
+    <bean id="loginController" class="ie.clients.gdma.web.controllers.LoginController">
         <property name="formView" value="login" />
         <property name="successView" value="index.htm" />
     </bean>
     
-    <bean id="downloadController" class="com.vodafone.gdma.web.controllers.DownloadController">
+    <bean id="downloadController" class="ie.clients.gdma.web.controllers.DownloadController">
         <property name="gdmaFacade" ref="gdmaFacade" />
     </bean>
     
@@ -60,12 +60,12 @@
     
     <bean id="serverBrowserController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
     
-    <bean id="serverListController" class="com.vodafone.gdma.web.ServerListController">
+    <bean id="serverListController" class="ie.clients.gdma.web.ServerListController">
         <property name="gdma" ref="gdmaFacade" />
         <property name="view" ref="serverListJsonView" />
     </bean>
 
-    <bean name="serverListJsonView" class="com.vodafone.gdma.web.view.ServerListJsonView" />
+    <bean name="serverListJsonView" class="ie.clients.gdma.web.view.ServerListJsonView" />
 
 
 </beans>

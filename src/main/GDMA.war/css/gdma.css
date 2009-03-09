@@ -15,7 +15,7 @@ body {
     color: #FFFFFF;
     cursor: pointer;
     cursor: hand;
-    background: #ff0000
+    background: navy
 }
 
 div.clear {
@@ -134,13 +134,13 @@ h1.logon {
     position: relative;
     border-right: 5px yellow solid;
     margin: 0px;
-    background: url(../images/vf_logo.gif) left top no-repeat;
+    background: url(../images/logo.jpg) left top no-repeat;
 }
 
 #divInnerHeader ul {
-    border: solid red 2px;
+    border: solid navy 2px;
     width: 100%;
-    background-color: #ff0000;
+    background-color: navy;
     position: absolute;
     top: 48px;
     margin-left: 120px;
@@ -164,7 +164,7 @@ h1.logon {
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
-    background-color: #ff0000;
+    background-color: navy;
 }
 
 #divInnerHeader a {
@@ -177,7 +177,7 @@ h1.logon {
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
-    background-color: #ff0000;
+    background-color: navy;
 }
 
 #divInnerHeader a:hover {

@@ -9,15 +9,15 @@
     <!--
         Master App context
     -->
-    <import resource="com/vodafone/gdma/web/web-beans.xml" />
-    <import resource="com/vodafone/gdma/web/dwr-beans.xml" />
-    <import resource="com/vodafone/gdma/aop.xml" />
+    <import resource="ie/clients/gdma/web/web-beans.xml" />
+    <import resource="ie/clients/gdma/web/dwr-beans.xml" />
+    <import resource="ie/clients/gdma/aop.xml" />
     
-    <import resource="com/vodafone/gdma/dao/hibernate/hibernate-beans.xml" />
-    <import resource="com/vodafone/gdma/dao/jdbc/jdbc-beans.xml" />
+    <import resource="ie/clients/gdma/dao/hibernate/hibernate-beans.xml" />
+    <import resource="ie/clients/gdma/dao/jdbc/jdbc-beans.xml" />
 
     
-    <bean id="dataSourcePool" class="com.vodafone.gdma.util.DataSourcePoolImpl" />
+    <bean id="dataSourcePool" class="ie.clients.gdma.util.DataSourcePoolImpl" />
     
      <bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource">
         <property name="URL" value="jdbc:oracle:thin:@192.168.1.187:1521:orcl" />
@@ -40,12 +40,12 @@
             </list>
         </property>
     </bean>
-    <bean id="serverUtil" class="com.vodafone.gdma.util.ServerUtil">
+    <bean id="serverUtil" class="ie.clients.gdma.util.ServerUtil">
         <property name="serverDao" ref="serverDao" />
         <property name="tableDao" ref="tableDao" />
         <property name="dataSourcePool" ref="dataSourcePool" />
     </bean>
-    <bean id="gdmaFacade" class="com.vodafone.gdma.GdmaFacade">
+    <bean id="gdmaFacade" class="ie.clients.gdma.GdmaFacade">
         <property name="serverDao" ref="serverDao" />
         <property name="tableDao" ref="tableDao" />
         <property name="columnDao" ref="columnDao" />

@@ -15,7 +15,7 @@
 				value="[%d{dd MMM yyyy HH:mm:ss.SSS}][%t][%p][%c] - %m%n%n" />
 		</layout>
 	</appender>
-	<appender name="DB" class="com.vodafone.gdma.util.GdmaJdbcAppender">
+	<appender name="DB" class="ie.clients.gdma.util.GdmaJdbcAppender">
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMin" value="WARN" />
 			<param name="LevelMax" value="FATAL" />
@@ -28,10 +28,10 @@
 	<category name="com">
 		<priority value="WARN" />
 	</category>
-	<category name="com.vodafone">
+	<category name="ie.clients">
 		<priority value="DEBUG" />
 	</category>
-	<category name="com.vodafone.gdma.web.view.ExcelDownloaderViewe">
+	<category name="ie.clients.gdma.web.view.ExcelDownloaderViewe">
 		<priority value="WARN" />
 	</category>
 	<category name="org">

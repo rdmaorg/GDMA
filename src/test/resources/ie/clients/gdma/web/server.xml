@@ -1,0 +1,10 @@
+<ie.clients.gdma.domain.Server>
+  <name>junit-gdma</name>
+  <username>GDMA</username>
+  <password>GDMA</password>
+  <connectionUrl>jdbc:oracle:thin:@localhost:1521:orcl</connectionUrl>
+  <connectionType>
+    <id>3</id>
+  </connectionType>
+  <prefix>gdma</prefix>
+</ie.clients.gdma.domain.Server>
