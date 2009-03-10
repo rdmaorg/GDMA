@@ -35,6 +35,7 @@
         p:defaultDomain="CLIENTS"
         p:defaultRole="ROLE_USER"
         p:adminRole="ROLE_ADMIN"
+        p:expirationDate="01-Apr-2009"
         p:userDao-ref="userDao">
         
         <sec:custom-authentication-provider/>

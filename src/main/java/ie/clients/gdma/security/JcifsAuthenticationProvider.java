@@ -4,6 +4,8 @@ import ie.clients.gdma.dao.UserDao;
 import ie.clients.gdma.domain.User;
 
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,13 +38,15 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
     private String adminRole;
 
     private UserDao userDao;
+    
+    private Date expirationDate;
 
     public JcifsAuthenticationProvider() {
         Config.setProperty("jcifs.smb.client.soTimeout", "300000");
         Config.setProperty("jcifs.netbios.cachePolicy", "1200");
     }
 
-    protected void doAfterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() throws Exception {
         Assert.notNull(this.domainController, "A Domain controller must be set");
         Assert.notNull(this.defaultDomain, "A Default Domain must be set");
         Assert.notNull(this.userDao, "A User Dao must be set");
@@ -50,14 +54,15 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
         Assert.notNull(this.adminRole, "An admin role must be set");
     }
 
-    public void afterPropertiesSet() throws Exception {
-        Assert.notNull(this.domainController, "A Domain controller must be set");
-
-    }
-
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if (!(authentication instanceof UsernamePasswordAuthenticationToken)) {
             return null;
+        }
+            
+        if (expirationDate != null) {
+       		if (new Date().after(expirationDate)) {
+       			throw new AccessException("The application is expired");
+       		}
         }
 
         NtlmPasswordAuthentication npa = getNtlmPasswordAuthentication((UsernamePasswordAuthenticationToken) authentication);
@@ -162,5 +167,9 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
     public void setAdminRole(String adminRole) {
         this.adminRole = adminRole;
     }
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
 
 }

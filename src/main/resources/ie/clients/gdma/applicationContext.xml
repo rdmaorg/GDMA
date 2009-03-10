@@ -23,6 +23,17 @@
     <jee:jndi-lookup id="dataSource" jndi-name="/jdbc/GdmaDB" resource-ref="true" />
     <bean id="dataSourcePool" class="ie.clients.gdma.util.DataSourcePoolImpl" />
     
+    <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="customEditors">
+            <map>
+                <entry key="java.util.Date">
+                    <bean class="ie.clients.gdma.util.DateEditor">
+                        <property name="format" value="dd-MMM-yyyy"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>    
     
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="alwaysUseMessageFormat" value="true" />
@@ -45,4 +56,5 @@
         <property name="userDao" ref="userDao" />
         <property name="dynamicDao" ref="dynamicDao" />
     </bean>
+    
 </beans>
