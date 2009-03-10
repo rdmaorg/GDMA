@@ -5,7 +5,7 @@
 	<groupId>ie.clients.gdma</groupId>
 	<artifactId>GDMA</artifactId>
 	<packaging>war</packaging>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<ciManagement>
 		<system>continuum</system>
 		<notifiers>
@@ -28,10 +28,10 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:svn:https://gdma.jajoro.com/svn/repo/trunk/GDMA</connection>
-		<developerConnection>scm:svn:https://gdma.jajoro.com/svn/repo/trunk/GDMA</developerConnection>
+		<connection>scm:cvs|pserver|svu@cvs.clients.local|/home/cvsroot|GDMA</connection>
+		<developerConnection>>scm:cvs|pserver|svu@cvs.clients.local|/home/cvsroot|GDMA</developerConnection>
 		<tag>HEAD</tag>
-		<url>http://gdma.jajoro.com/browser/trunk/GDMA</url>
+		<url>http://cvs.clients.local/cgi-bin/viewcvs.cgi/GDMA</url>
 	</scm>
 	<build>
 		<defaultGoal>war:inplace</defaultGoal>
@@ -114,6 +114,14 @@
 					<downloadJavadocs>true</downloadJavadocs>
 					<wtpversion>2.0</wtpversion>
 					<outputDirectory>${basedir}/src/main/GDMA.war/WEB-INF/classes/</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
 				</configuration>
 			</plugin>
 		</plugins>
