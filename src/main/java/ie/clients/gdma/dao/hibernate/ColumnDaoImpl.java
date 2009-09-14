@@ -41,11 +41,6 @@ public class ColumnDaoImpl extends HibernateDaoSupport implements ColumnDao {
             column.setSpecial("N");
         }
 
-        if (!column.isNullable()) {
-            column.setAllowInsert(true);
-
-        }
-
         if (column.isAllowInsert()) {
             column.setDisplayed(true);
         }
