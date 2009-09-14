@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
  */
 public class SqlUtil {
 
-    private static Logger LOG = Logger.getLogger("SqlUtil");
+    private static Logger LOG = Logger.getLogger(SqlUtil.class);
 
     public static String createSelect(Server server, Table table, Column sortColumn, String dir, List<Filter> filters) {
         StringBuilder stringBuilder = new StringBuilder(table.getColumns().size() * 20);
@@ -472,10 +472,14 @@ public class SqlUtil {
     }
 
     public static boolean isDate(String sqlDataType) {
+        sqlDataType = sqlDataType.toUpperCase();
         boolean blnReturn = false;
 
         if (StringUtils.hasText(sqlDataType)) {
-            blnReturn = "DATE".equals(sqlDataType) || "TIME".equals(sqlDataType) || "TIMESTAMP".equals(sqlDataType);
+            blnReturn = "DATE".equals(sqlDataType) || 
+            			"DATETIME".equals(sqlDataType) || 
+            			"TIME".equals(sqlDataType) || 
+            			"TIMESTAMP".equals(sqlDataType);
         }
         return blnReturn;
     }
