@@ -32,11 +32,11 @@
     
    <bean id="authenticationProvider"
         class="ie.clients.gdma.security.JcifsAuthenticationProvider"
-        p:domainController="192.168.36.10"
+        p:domainController="vmgdma"
         p:defaultDomain="CLIENTS"
         p:defaultRole="ROLE_USER"
         p:adminRole="ROLE_ADMIN"
-        p:expirationDate="01-Apr-2009"
+        p:expirationDate="01-Jan-2010"
         p:userDao-ref="userDao">
         
         <sec:custom-authentication-provider/>
