@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context 
         path="GDMA" 
-        docBase="/home/svu/Desktop/ClientSolutions/GDMA/src/main/GDMA.war/" 
+	docBase="/home/svu/workspace/GDMA/target/GDMA-0.3.0/"
         reloadable="true">
 <!-- <Resource 
             name="jdbc/GdmaDB" 
@@ -26,5 +26,6 @@
             maxWait="-1" 
             user="gdma"
             password="gdma" 
+	    explicitUrl="true"
             url="jdbc:mysql://vmgdma:3306/gdma?autoreconnect=true" />
 </Context>
