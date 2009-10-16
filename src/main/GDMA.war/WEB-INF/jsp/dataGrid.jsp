@@ -6,6 +6,8 @@
           version="2.0">           
     <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
+    <jsp:include page="features.jsp" flush="true"/>    
+
     <div id="divToolbar" class="yui-skin-sam gdma-toolbar">&#xA0;</div>
     <div id="divDataTable" class="yui-skin-sam">&#xA0;</div>
     <div id="divPager" class="yui-skin-sam">&#xA0;</div>

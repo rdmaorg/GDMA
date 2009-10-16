@@ -263,6 +263,10 @@ h1.logon {
     background: url(../images/download.gif) left center no-repeat;
 }
 
+#divToolbar #btnImport .first-child {
+    background: url(../images/bulk_import.gif) left center no-repeat;
+}
+
 #divToolbar #btnClear .first-child {
     background: url(../images/clear.gif) left center no-repeat;
 }

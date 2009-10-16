@@ -5,6 +5,7 @@ import ie.clients.gdma.domain.Column;
 import ie.clients.gdma.domain.Server;
 import ie.clients.gdma.domain.Table;
 import ie.clients.gdma.domain.User;
+import ie.clients.gdma.web.command.BulkImportRequest;
 import ie.clients.gdma.web.command.PaginatedRequest;
 import ie.clients.gdma.web.command.PaginatedResponse;
 import ie.clients.gdma.web.command.UpdateRequest;
@@ -64,5 +65,10 @@ public class GdmaAjaxFacade {
 
     public List getDropDownData(Column display, Column store) {
         return gdmaFacade.getDynamicDao().getDropDownData(display, store);
+    }
+    
+    public int bulkImport(BulkImportRequest request) {
+    	LOG.info("ajaxish bulk update for " + request.getFile());
+    	return 0;
     }
 }
