@@ -33,7 +33,7 @@
    <bean id="authenticationProvider"
         class="ie.clients.gdma.security.JcifsAuthenticationProvider"
         p:domainController="vmgdma"
-        p:defaultDomain="CLIENTS"
+        p:defaultDomain="GDMA_TEST"
         p:defaultRole="ROLE_USER"
         p:adminRole="ROLE_ADMIN"
         p:expirationDate="01-Jan-2010"
