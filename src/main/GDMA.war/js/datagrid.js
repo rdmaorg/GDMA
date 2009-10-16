@@ -746,20 +746,32 @@ YAHOO.GDMA.datagrid.downloadRecords = function() {
 
 YAHOO.GDMA.datagrid.doBulkImport = function(){
 
-    var updateRequest = {
-            serverId: YAHOO.GDMA.datagrid.paginatedRequest.serverId,
-            tableId: YAHOO.GDMA.datagrid.paginatedRequest.tableId,
-            updates: []
-    }
-    
-    var file = document.getElementById("fiOpenFile").value;
-    updateRequest.file = file;
-    
-    GdmaAjax.bulkImport(updateRequest, function() {
-         YAHOO.GDMA.dialog.showInfoDialog("Saved!", "Imported successfully");
-         YAHOO.GDMA.datagrid.refreshData();         
-         YAHOO.GDMA.datagrid.popFormPanel.destroy();
-     });
+        var theFile = document.getElementById("fiOpenFile");
+        var fileParent = theFile.parentNode;
+        var theDiv = document.createElement('div');
+        theDiv.style.display = 'none';
+        theDiv.innerHTML =
+            '<iframe id="hidden_frame" name="hidden_frame" src=""></iframe>' +
+            '<form id="hidden_form" target="hidden_frame" action="bulkImport.htm" enctype="multipart/form-data" method="post"></form>';
+
+        document.body.appendChild(theDiv);
+        var hiddenForm = document.getElementById("hidden_form");
+        fileParent.removeChild(theFile);
+        hiddenForm.appendChild(theFile);
+        hiddenForm.submit();
+        hiddenForm.removeChild(theFile);
+        fileParent.appendChild(theFile);
+        
+};
+
+YAHOO.GDMA.datagrid.doBulkImportDone = function(error, numRecords){
+	if (error == '') {
+        YAHOO.GDMA.dialog.showInfoDialog("Saved!", "" + numRecords + " record(s) imported successfully");
+        YAHOO.GDMA.datagrid.refreshData();
+	} else {
+        YAHOO.GDMA.dialog.showInfoDialog("Error!", "Import error: " + error);
+	}
+    YAHOO.GDMA.datagrid.popFormPanel.destroy();
 };
 
 YAHOO.GDMA.datagrid.bulkImport = function() {
