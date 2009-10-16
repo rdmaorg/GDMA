@@ -4,7 +4,6 @@ import ie.clients.gdma.dao.UserDao;
 import ie.clients.gdma.domain.User;
 
 import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -79,7 +78,7 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
         } catch (SmbAuthException e) {
             LOG.error("SmbAuthException: " + npa.getName() + ": 0x"
                     + jcifs.util.Hexdump.toHexString(e.getNtStatus(), 8) + ": " + e, e);
-            if (e.getNtStatus() == e.NT_STATUS_ACCESS_VIOLATION) {
+            if (e.getNtStatus() == SmbAuthException.NT_STATUS_ACCESS_VIOLATION) {
                 throw new AccessViolationException("Access violation");
             } else {
                 throw new AccessException(e.getMessage());
@@ -105,7 +104,7 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
         NtlmPasswordAuthentication npa = new NtlmPasswordAuthentication(domain, username, password);
         if (LOG.isDebugEnabled()) {
             LOG.debug("NtlmPasswordAuthentication = domain[" + domain + "], user[" + username + "], password["
-                    + password + "]");
+                    + password + "], host[" + domainController + "]");
         }
 
         return npa;
