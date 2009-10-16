@@ -19,7 +19,7 @@ YAHOO.util.Event.onDOMReady( function(){
 // end layout
 
 //Error handlers for DWR
-YAHOO.GDMA.datagrid.dwrErrorHandler = function(message, exception) {
+YAHOO.GDMA.datagrid.nodwrErrorHandler = function(message, exception) {
     YAHOO.GDMA.dialog.loading.hide();
     YAHOO.GDMA.datagrid.dwrLastException = exception;
     if (exception && exception.mostSpecificCause) {
@@ -591,7 +591,13 @@ YAHOO.GDMA.datagrid.init = function(serverId, tableId) {
     YAHOO.GDMA.datagrid.updateRequest.tableId = tableId;
     YAHOO.GDMA.datagrid.updateRequest.updates = [];
     
-    YAHOO.GDMA.datagrid.createDatasource();    
+    YAHOO.GDMA.datagrid.createDatasource();
+    
+    // Enable optional features
+    if (!enabledFeatures['ie.clients.gdma.BulkImport']) {
+    	YAHOO.GDMA.datagrid.toolbarButtons[9].defaultMode = "hide";
+    }
+    
     YAHOO.GDMA.toolbar.createToolbar(YAHOO.GDMA.datagrid.toolbarButtons);
 };
 
@@ -736,6 +742,47 @@ YAHOO.GDMA.datagrid.downloadRecords = function() {
     
     };
     YAHOO.GDMA.datagrid.createPopupform( popupformConfig );
+};
+
+YAHOO.GDMA.datagrid.doBulkImport = function(){
+
+    var updateRequest = {
+            serverId: YAHOO.GDMA.datagrid.paginatedRequest.serverId,
+            tableId: YAHOO.GDMA.datagrid.paginatedRequest.tableId,
+            updates: []
+    }
+    
+    var file = document.getElementById("fiOpenFile").value;
+    updateRequest.file = file;
+    
+    GdmaAjax.bulkImport(updateRequest, function() {
+         YAHOO.GDMA.dialog.showInfoDialog("Saved!", "Imported successfully");
+         YAHOO.GDMA.datagrid.refreshData();         
+         YAHOO.GDMA.datagrid.popFormPanel.destroy();
+     });
+};
+
+YAHOO.GDMA.datagrid.bulkImport = function() {
+    YAHOO.GDMA.datagrid.dataTable.cancelCellEditor();
+    var popupformBulkImport = {
+            width: 300,
+            height: 200,
+            title: 'Bulk import for table ' + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name,
+            submit: YAHOO.GDMA.datagrid.doBulkImport,
+            submitLabel: 'Import',
+            cancel: YAHOO.GDMA.datagrid.cancelPopupForm,
+            body: function(container){
+                        
+                var h = YAHOO.GDMA.utilities.createElement("h1", null, container);
+                h.innerHTML = "Bulk Import"
+                    
+                var p = YAHOO.GDMA.utilities.createElement("p", null, container);
+                
+                p.innerHTML = "<label for=\"fiOpenFile\">File:</label> <input id=\"fiOpenFile\" name=\"fiOpenFile\" type=\"file\"> "; 
+            }
+    
+    };
+    YAHOO.GDMA.datagrid.createPopupform( popupformBulkImport );
 };
 
 YAHOO.GDMA.datagrid.addRecordSave = function() {
@@ -1106,5 +1153,10 @@ YAHOO.GDMA.datagrid.toolbarButtons =  [
         fn: YAHOO.GDMA.datagrid.downloadRecords,
         defaultMode: "show",
         tooltip: "download records"
+    },{
+        name: "Import",
+        fn: YAHOO.GDMA.datagrid.bulkImport,
+        defaultMode: "show",
+        tooltip: "import data from csv file"
     }
 ];
