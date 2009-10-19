@@ -68,5 +68,6 @@
 	<classpathentry kind="lib" path="target/GDMA-0.3.0/WEB-INF/lib/xpp3_min-1.1.3.4.O.jar"/>
 	<classpathentry kind="lib" path="target/GDMA-0.3.0/WEB-INF/lib/xstream-1.2.2.jar"/>
 	<classpathentry kind="lib" path="target/GDMA-0.3.0/WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
+	<classpathentry kind="lib" path="target/GDMA-0.3.0/WEB-INF/lib/opencsv-2.0.1.jar"/>
 	<classpathentry kind="output" path="src/main/GDMA.war/WEB-INF/classes"/>
 </classpath>
