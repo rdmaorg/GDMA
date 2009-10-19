@@ -1,30 +1,28 @@
 package ie.clients.gdma.web.controllers;
 
+import ie.clients.gdma.GdmaFacade;
+import ie.clients.gdma.domain.Server;
+import ie.clients.gdma.domain.Table;
+import ie.clients.gdma.web.command.PaginatedRequest;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import ie.clients.gdma.GdmaFacade;
-
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.validation.BindException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import au.com.bytecode.opencsv.CSVReader;
-
-public class BulkImportController extends AbstractController {
+public class BulkImportController extends SimpleFormController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
@@ -38,63 +36,42 @@ public class BulkImportController extends AbstractController {
 		this.gdmaFacade = gdmaFacade;
 	}
 
-	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
+	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws ServletException,
+	        IOException {
 
-		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		logger.info("multipart: " + isMultipart);
+		final BulkImportBean bean = (BulkImportBean) command;
 
-		final Map<String, Object> results = new HashMap<String, Object>();
+		final Map<String, String> results = new HashMap<String, String>();
 		results.put("error", "");
 		results.put("numRecords", "0");
 
-		if (isMultipart) {
-			// Create a factory for disk-based file items
-			final FileItemFactory factory = new DiskFileItemFactory();
+		try {
+			// Parse the request
+			final MultipartFile file = bean.getFiDataFile();
 
-			// Create a new file upload handler
-			final ServletFileUpload upload = new ServletFileUpload(factory);
+			logger.info("file: " + file.getOriginalFilename());
 
-			try {
-				// Parse the request
-				List<FileItem> items = (List<FileItem>) upload.parseRequest(request);
-				for (FileItem fi : items) {
-					logger.info("file: " + fi.getName());
-					if (!fi.getName().endsWith(".csv")) {
-						results.put("error", "Invalid file type");
-						break;
-					}
-					logger.info("type: " + fi.getContentType());
-					logger.info("stream: " + fi.getInputStream());
-					logger.info("size: " + fi.getSize());
+			if (!file.getOriginalFilename().endsWith(".csv")) {
+				results.put("error", "Invalid file type");
+			} else {
+				logger.info("type: " + file.getContentType());
+				logger.info("stream: " + file.getInputStream());
+				logger.info("size: " + file.getSize());
 
-					final int numRows = importData(fi.getInputStream());
-					results.put("numRecords", numRows);
-					break;
-				}
-			} catch (IOException ex) {
-				results.put("error", "Could not read the data: " + ex);
-			} catch (FileUploadException ex) {
-				results.put("error", "Could not upload the data: " + ex);
+				final JSONObject jsonObject = JSONObject.fromObject(bean.getTxtPaginatedRequest());
+				final PaginatedRequest paginatedRequest = (PaginatedRequest) JSONObject.toBean(jsonObject, PaginatedRequest.class);
+				final Server server = gdmaFacade.getServerDao().get(paginatedRequest.getServerId());
+				final Table table = gdmaFacade.getTableDao().get(paginatedRequest.getTableId());
+
+				final int numRows = gdmaFacade.getDynamicDao().bulkImport(server, table, file.getInputStream());
+				results.put("numRecords", "" + numRows);
 			}
+		} catch (IOException ex) {
+			results.put("error", "Could not read the data: " + ex);
+			logger.error("Could not read the data", ex);
 		}
-		return new ModelAndView("bulkImportResults", "results", results);
 
-	}
+		return new ModelAndView(getSuccessView(), "results", results);
 
-	private int importData(InputStream inputStream) throws IOException {
-		final CSVReader rdr = new CSVReader(new InputStreamReader(inputStream));
-		final String[] headers = rdr.readNext();
-		logger.debug("Headers starting with: " + headers[0]);
-		int counter = 0;
-		if (headers != null) {
-			String[] data;
-			data = rdr.readNext();
-			while (data != null) {
-				logger.debug("Row starting with: " + data[0]);
-				counter++;
-				data = rdr.readNext();
-			}
-		}
-		return counter;
 	}
 }

@@ -19,7 +19,7 @@ YAHOO.util.Event.onDOMReady( function(){
 // end layout
 
 //Error handlers for DWR
-YAHOO.GDMA.datagrid.nodwrErrorHandler = function(message, exception) {
+YAHOO.GDMA.datagrid.dwrErrorHandler = function(message, exception) {
     YAHOO.GDMA.dialog.loading.hide();
     YAHOO.GDMA.datagrid.dwrLastException = exception;
     if (exception && exception.mostSpecificCause) {
@@ -746,7 +746,7 @@ YAHOO.GDMA.datagrid.downloadRecords = function() {
 
 YAHOO.GDMA.datagrid.doBulkImport = function(){
 
-        var theFile = document.getElementById("fiOpenFile");
+        var theFile = document.getElementById("fiDataFile");
         var fileParent = theFile.parentNode;
         var theDiv = document.createElement('div');
         theDiv.style.display = 'none';
@@ -758,6 +758,11 @@ YAHOO.GDMA.datagrid.doBulkImport = function(){
         var hiddenForm = document.getElementById("hidden_form");
         fileParent.removeChild(theFile);
         hiddenForm.appendChild(theFile);
+        
+        var txtPaginatedRequest = YAHOO.GDMA.utilities.createElement("input","txtPaginatedRequest", hiddenForm, "hidden");
+        txtPaginatedRequest.name = "txtPaginatedRequest";
+        txtPaginatedRequest.value = YAHOO.lang.JSON.stringify(YAHOO.GDMA.datagrid.paginatedRequest);
+        
         hiddenForm.submit();
         hiddenForm.removeChild(theFile);
         fileParent.appendChild(theFile);
@@ -790,7 +795,7 @@ YAHOO.GDMA.datagrid.bulkImport = function() {
                     
                 var p = YAHOO.GDMA.utilities.createElement("p", null, container);
                 
-                p.innerHTML = "<label for=\"fiOpenFile\">File:</label> <input id=\"fiOpenFile\" name=\"fiOpenFile\" type=\"file\"> "; 
+                p.innerHTML = "<label for=\"fiDataFile\">File:</label> <input id=\"fiDataFile\" name=\"fiDataFile\" type=\"file\"> "; 
             }
     
     };

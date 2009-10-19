@@ -53,8 +53,13 @@
         <property name="gdmaFacade" ref="gdmaFacade" />
     </bean>
     
+    <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+    
     <bean id="bulkImportController" class="ie.clients.gdma.web.controllers.BulkImportController">
         <property name="gdmaFacade" ref="gdmaFacade" />
+        <property name="commandClass" value="ie.clients.gdma.web.controllers.BulkImportBean"/>
+        <property name="successView" value="bulkImportResults"/>
     </bean>
     
     <bean id="indexController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
