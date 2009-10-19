@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -38,9 +39,12 @@ import java.util.regex.Pattern;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
+import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.security.Authentication;
@@ -448,6 +452,9 @@ public class DynamicDaoImpl implements DynamicDao {
 		if (headers != null) {
 
 			final Set<Column> columns = table.getColumns();
+			final List<SqlParameter> params = new ArrayList<SqlParameter>();
+			String tableList = null;
+			String patternList = null;
 			for (String h : headers) {
 				h = h.trim();
 				Column theColumn = null;
@@ -459,17 +466,35 @@ public class DynamicDaoImpl implements DynamicDao {
 				}
 				if (theColumn == null)
 					throw new IOException("The column \"" + h + "\" does not exist in " + table.getName());
+
+				if (tableList == null) {
+					tableList = "\"" + h + "\"";
+					patternList = "?";
+				} else {
+					tableList += ",\"" + h + "\"";
+					patternList += ",?";
+				}
+				// using varchar because all values from CSV are strings
+				params.add(new SqlParameter(Types.VARCHAR));
 			}
+
+			final String sql = "INSERT INTO " + table.getName() + " (" + tableList + ") VALUES (" + patternList + ")";
+			LOG.debug("Preparing sql: [" + sql + "]");
+			final PreparedStatementCreatorFactory psc = new PreparedStatementCreatorFactory(sql, params);
 
 			String[] row = rdr.readNext();
-			while (row != null) {
-				LOG.debug("Row starting with: " + row[0]);
-				counter++;
-				row = rdr.readNext();
-			}
+			final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourcePool.getTransactionManager(server).getDataSource());
 
-			// gdmaFacade.getDynamicDao().executeSelectGetColumns(server.getId(),
-			// "boo");
+			try {
+				while (row != null) {
+					LOG.debug("Row starting with: " + row[0]);
+					jdbcTemplate.update(sql, psc.newPreparedStatementSetter(row));
+					counter++;
+					row = rdr.readNext();
+				}
+			} catch (DataAccessException ex) {
+				throw new IOException("Could not import data:" + ex.getMessage(), ex);
+			}
 		}
 		return counter;
 	}
