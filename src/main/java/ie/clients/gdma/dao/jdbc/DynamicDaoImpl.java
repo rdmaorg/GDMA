@@ -108,6 +108,9 @@ public class DynamicDaoImpl implements DynamicDao {
 		}
 
 		PreparedStatementCreatorFactory psc = new PreparedStatementCreatorFactory(sql);
+
+		declareSqlParameters(psc, paginatedRequest.getFilters());
+
 		psc.setResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE);
 		psc.setUpdatableResults(false);
 
@@ -115,14 +118,55 @@ public class DynamicDaoImpl implements DynamicDao {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourcePool.getTransactionManager(server).getDataSource());
 
 		PaginatedResponse paginatedResponse = new PaginatedResponse();
-		paginatedResponse.setRecords((List) jdbcTemplate.query(psc.newPreparedStatementCreator(Collections.EMPTY_LIST), new PagedResultSetExtractor(
-		        new RowMapper(), paginatedRequest.getRecordOffset(), paginatedRequest.getRowsPerPage())));
+
+		final List<Object> params = convertFiltersToSqlParameterValues(paginatedRequest.getFilters());
+
+		paginatedResponse.setRecords((List) jdbcTemplate.query(psc.newPreparedStatementCreator(params), new PagedResultSetExtractor(new RowMapper(),
+		        paginatedRequest.getRecordOffset(), paginatedRequest.getRowsPerPage())));
 		paginatedResponse.setTotalRecords(getCount(server, table, paginatedRequest.getFilters()));
 		paginatedResponse.setStartIndex(paginatedRequest.getRecordOffset());
 		paginatedResponse.setKey("" + paginatedRequest.getSortedByColumnId());
 		paginatedResponse.setSortDir(paginatedRequest.getDir());
 
 		return paginatedResponse;
+	}
+
+	private void declareSqlParameters(PreparedStatementCreatorFactory psc, List<Filter> filters) {
+		for (Filter filter : filters) {
+			if (filter.isNullValue() || filter.isBlank())
+				continue;
+			if (StringUtils.hasText(filter.getFilterValue())) {
+				psc.addParameter(new SqlParameter(filter.getColumnType()));
+			}
+		}
+	}
+
+	private List<Object> convertFiltersToSqlParameterValues(List<Filter> filters) {
+		final List<Object> params = new ArrayList<Object>();
+		for (Filter filter : filters) {
+			if (filter.isNullValue() || filter.isBlank())
+				continue;
+
+			if (StringUtils.hasText(filter.getFilterValue())) {
+				Object param = filter.getFilterValue();
+				if (SqlUtil.isNumeric(filter.getColumnType())) {
+					LOG.debug("Number as string as parameter: " + param);
+				} else if (SqlUtil.isDate(filter.getColumnType())) {
+					try {
+						param = new java.sql.Date(Formatter.parseDate(filter.getFilterValue()).getTime());
+						LOG.debug("Date as parameter: " + param);
+					} catch (Exception ex) {
+						LOG.error("Could not parse the date: " + filter.getFilterValue(), ex);
+					}
+				} else {
+					// For LIKE stmt
+					param = "%" + param + "%";
+					LOG.debug("Generic parameter: " + param);
+				}
+				params.add(param);
+			}
+		}
+		return params;
 	}
 
 	/*
@@ -137,9 +181,13 @@ public class DynamicDaoImpl implements DynamicDao {
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourcePool.getTransactionManager(server).getDataSource());
 
-		String sql = SqlUtil.createCount(server, table, filters);
+		final String sql = SqlUtil.createCount(server, table, filters);
 
-		return jdbcTemplate.queryForLong(sql);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("SQL USED for count: " + sql);
+		}
+
+		return jdbcTemplate.queryForLong(sql, convertFiltersToSqlParameterValues(filters).toArray());
 	}
 
 	/*
