@@ -156,9 +156,9 @@ public class SqlUtil {
 						if (isNumeric(filter.getColumnType()) || isDate(filter.getColumnType())) {
 							stringBuilder.append(" = ?");
 						} else {
-							stringBuilder.append(table.getName());
-							stringBuilder.append('.');
-							stringBuilder.append(filter.getColumnName());
+							//stringBuilder.append(table.getName());
+							//stringBuilder.append('.');
+							//stringBuilder.append(filter.getColumnName());
 							stringBuilder.append(" LIKE ?");
 						}
 					}
