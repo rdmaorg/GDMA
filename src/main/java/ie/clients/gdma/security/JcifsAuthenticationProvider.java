@@ -104,7 +104,7 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
         NtlmPasswordAuthentication npa = new NtlmPasswordAuthentication(domain, username, password);
         if (LOG.isDebugEnabled()) {
             LOG.debug("NtlmPasswordAuthentication = domain[" + domain + "], user[" + username + "], password["
-                    + password + "], host[" + domainController + "]");
+                    + "*****" + "], host[" + domainController + "]");
         }
 
         return npa;
