@@ -36,8 +36,17 @@ public class DataSourcePoolImpl implements DataSourcePool {
             basicDataSource.setUrl(server.getConnectionUrl());
             basicDataSource.setUsername(server.getUsername());
             basicDataSource.setPassword(server.getPassword());
+          
             basicDataSource.setDriverClassName(server.getConnectionType().getConnectionClass());
+          //BH todo get these from property file, just doing it fast now for o2
+            // Teradata closes connection after 15 minuites idle time so we want to remove from pool before this.
+            basicDataSource.setMinEvictableIdleTimeMillis(24000);//4 min *60*100
+            basicDataSource.setTimeBetweenEvictionRunsMillis(60000);//10 min *60*100
+            
+            // BH
+            
             DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(basicDataSource);
+           
             dataSoucePool.put(server.getId(), transactionManager);
 
             server.setConnected(true);
