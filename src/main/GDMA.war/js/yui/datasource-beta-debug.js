@@ -553,19 +553,10 @@ YAHOO.util.DataSource.convertNumber = function(oData) {
  * @static
  */
 YAHOO.util.DataSource.parseDate = function(oData) {
-    var date = null;
-    
-    //Convert to date
-    if(!(oData instanceof Date)) {
-        date = new Date(oData);
-    }
-    else {
-        return oData;
-    }
     
     // Validate
-    if(date instanceof Date) {
-        return date;
+    if(oData instanceof Date) {
+        return oData;
     }
     else {
         YAHOO.log("Could not convert data " + YAHOO.lang.dump(oData) + " to type Date", "warn", this.toString());
