@@ -84,6 +84,9 @@ version: 2.5.1
 /* editing */
 .yui-dt-editable {
     cursor:pointer;
+    font-size:11px;
+    font-style:normal;
+    font-weight:bold;
 }
 .yui-dt-editor {
     text-align:left;
