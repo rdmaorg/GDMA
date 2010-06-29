@@ -308,7 +308,7 @@ YAHOO.GDMA.datagrid.buildTable = function(datasource) {
                     paginator              : YAHOO.GDMA.datagrid.paginator,
                     sortedBy               : {
                                                 key:    ("" + YAHOO.GDMA.datagrid.paginatedRequest.sortedByColumnId), 
-                                                dir:    YAHOO.widget.DataTable.CLASS_ASC
+                                                dir:    YAHOO.widget.DataTable.CLASS_DESC
                                             }
             });
     
@@ -459,7 +459,7 @@ YAHOO.GDMA.datagrid.createDatasource = function(){
                         formatter:      YAHOO.GDMA.utilities.getFormatter(columns[i].columnType),
                         sortable:       true,
                         sortOptions: {
-                            defaultOrder: "asc"
+                            defaultOrder: "desc"
                         },
                         resizeable:     true
                 };
@@ -509,7 +509,7 @@ YAHOO.GDMA.datagrid.createDatasource = function(){
         //set the first column as the sort column for the initial request
         if(columns[0]){
             YAHOO.GDMA.datagrid.paginatedRequest.sortedByColumnId = columns[0].id;
-            YAHOO.GDMA.datagrid.paginatedRequest.dir = YAHOO.widget.DataTable.CLASS_ASC ;
+            YAHOO.GDMA.datagrid.paginatedRequest.dir = YAHOO.widget.DataTable.CLASS_DESC ;
         }
         
 
@@ -548,7 +548,7 @@ YAHOO.GDMA.datagrid.init = function(serverId, tableId) {
         rowsPerPage: 25,
         recordOffset:0,
         sortedByColumnId: "",
-        dir: "asc",
+        dir: "desc",
         filters: []
     };
 
