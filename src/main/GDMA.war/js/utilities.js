@@ -309,7 +309,8 @@ YAHOO.GDMA.utilities.validateTime = function(oData) {
 	
     var regex= /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9]):([0-5]?[0-9])$/;
     var time = "" + oData;
-    if (null != time && time.match(regex)) 
+    
+    if (null == time || time == "" || time.match(regex)) 
     {
         return oData;
     }
