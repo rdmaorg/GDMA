@@ -183,4 +183,17 @@ public class Column {
         this.primarykey = primarykey;
     }
 
+    public String toString() {
+        return "Column [allowInsert=" + allowInsert + ", allowUpdate="
+                + allowUpdate + ", columnType=" + columnType
+                + ", columnTypeString=" + columnTypeString + ", displayed="
+                + displayed + ", dropDownColumnDisplay="
+                + dropDownColumnDisplay + ", dropDownColumnStore="
+                + dropDownColumnStore + ", id=" + id + ", maxWidth=" + maxWidth
+                + ", minWidth=" + minWidth + ", name=" + name + ", nullable="
+                + nullable + ", orderby=" + orderby + ", primarykey="
+                + primarykey + ", special=" + special + ", table=" + table
+                + "]";
+    }
+
 }

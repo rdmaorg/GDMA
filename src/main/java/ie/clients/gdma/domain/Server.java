@@ -132,4 +132,14 @@ public class Server {
     public int hashCode() {
         return name.hashCode();
     }
+
+    public String toString() {
+        return "Server [connected=" + connected + ", connectionType="
+                + connectionType + ", connectionUrl=" + connectionUrl + ", id="
+                + id + ", lastError=" + lastError + ", name=" + name
+                + ", password=" + password + ", prefix=" + prefix + ", tables="
+                + tables + ", username=" + username + "]";
+    }
+    
+    
 }
