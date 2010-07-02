@@ -351,7 +351,6 @@ public class SqlUtil {
 					}
 					break;
 				case Types.DATE:
-				case Types.TIME:
 				case Types.TIMESTAMP:
 					try {
 						if (StringUtils.hasText(data)) {
@@ -363,6 +362,17 @@ public class SqlUtil {
 						throw new TypeMismatchDataAccessException("Vaule [" + data + "] could not be parsed as a date. ");
 					}
 					break;
+                case Types.TIME:
+                    try {
+                        if (StringUtils.hasText(data)) {
+                            oReturn = Formatter.parseTime(data);
+                        } else {
+                            return null;
+                        }
+                    } catch (Exception e) {
+                        throw new TypeMismatchDataAccessException("Vaule [" + data + "] could not be parsed as a time. ");
+                    }
+                    break;
 				default:
 					LOG.error("Unknow datatype[" + sqlDataType + "] - using String");
 					oReturn = data;
