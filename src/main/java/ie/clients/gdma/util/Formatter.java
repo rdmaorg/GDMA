@@ -22,10 +22,14 @@ public class Formatter {
 
     public static String dateFormat2 = "dd-MM-yyyy";
 
+    public static String timeFormat = "HH:mm:ss";
+
     private static SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
     private static SimpleDateFormat sdf2 = new SimpleDateFormat(dateFormat2);
 
+    private static SimpleDateFormat sdf3 = new SimpleDateFormat(timeFormat);
+    
     public static String escapeQuotes(String in) {
         if (in == null)
             return null;
@@ -87,4 +91,25 @@ public class Formatter {
         return value;
     }
 
+    // Try 2 ways of parsing
+    // First - treat it as a long
+    // Second - treat it as a string
+    public static Date parseTime(String value) throws Exception {
+        Date date = null;
+        try {
+            date = new Date(Long.parseLong(value));
+        } catch (Exception e) {
+            date = null;
+        }
+        if (date == null) {
+            try {
+                date = sdf3.parse(value);
+            } catch (Exception e) {
+                throw new Exception("Could not pase value [" + value + "] into a time");
+            }
+        }
+
+        return date;
+    }
+    
 }
