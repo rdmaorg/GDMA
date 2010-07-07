@@ -297,6 +297,19 @@ YAHOO.GDMA.datagrid.refreshData = function (state) {
 // This is the method responsible for drawing the table
 YAHOO.GDMA.datagrid.buildTable = function(datasource) {
 
+	// Update the table Title
+    if (null != YAHOO.GDMA.datagrid.currentDataDescription)
+    {
+	    var server = YAHOO.GDMA.datagrid.currentDataDescription.name;
+	    var selectedTable = "";
+	    
+	    if (YAHOO.GDMA.datagrid.currentDataDescription.tables.length >= 1 && 
+	    	null != YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name)
+	    	selectedTable = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name.trim();
+	    
+	    YAHOO.GDMA.layout.getUnitByPosition('center').set('header','Database[ ' + server + ' ]  -  Table[ ' + selectedTable + ' ]');
+    }
+    
     // setup the datatable
     YAHOO.GDMA.datagrid.dataTable = new YAHOO.widget.DataTable(
             "divDataTable", 
