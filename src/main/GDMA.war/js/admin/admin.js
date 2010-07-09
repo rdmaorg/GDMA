@@ -87,7 +87,7 @@ YAHOO.GDMA.admin.saveRecord = function() {
         };
         YAHOO.GDMA.dialog.showYesNoDialog(handleYes, "Please confirm save", "Are you sure you wish to save the "
                 + YAHOO.GDMA.admin.updateList.length
-                + " changed record(s)?<br/> This action will happen immediately and is non reversible.");
+                + " changed record(s)?<br/> This action will commit your changes to the database.");
     } else {
         YAHOO.GDMA.dialog.showInfoDialog("Save Records", "No changed have been made- there is nothing to save!");
     }    
@@ -113,7 +113,7 @@ YAHOO.GDMA.admin.deleteRecord = function() {
 
         YAHOO.GDMA.dialog.showYesNoDialog(handleYes, "Please confirm delete",
                 "Are you sure you wish to delete the selected record?"
-                        + "<br/> This action will happen immediately and is non reversible.");
+                        + "<br/> This action will commit your changes to the database.");
     }
 };
 
