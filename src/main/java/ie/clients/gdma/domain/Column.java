@@ -41,6 +41,20 @@ public class Column {
     private Integer maxWidth;
 
     private Integer orderby;
+    
+    private Integer columnSize;
+    
+    
+    public Integer getColumnSize() {
+        return columnSize;
+    }
+
+    public void setColumnSize(Integer columnSize) {
+        this.columnSize = columnSize;
+    }
+
+    
+    
 
     public Integer getOrderby() {
         return orderby;
