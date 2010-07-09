@@ -45,7 +45,7 @@ if(!YAHOO.GDMA.admin.updateList||YAHOO.GDMA.admin.updateList.length>0){var A=fun
 YAHOO.GDMA.admin.refreshFunction()
 })
 };
-YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm save","Are you sure you wish to save the "+YAHOO.GDMA.admin.updateList.length+" changed record(s)?<br/> This action will happen immediately and is non reversible.")
+YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm save","Are you sure you wish to save the "+YAHOO.GDMA.admin.updateList.length+" changed record(s)?<br/> This action will commit your changes to the database.")
 }else{YAHOO.GDMA.dialog.showInfoDialog("Save Records","No changed have been made- there is nothing to save!")
 }};
 YAHOO.GDMA.admin.deleteRecord=function(){YAHOO.GDMA.admin.dataTable.cancelCellEditor();
@@ -57,7 +57,7 @@ YAHOO.GDMA.admin.deleteFunction(C,function(){YAHOO.GDMA.dialog.showInfoDialog("D
 YAHOO.GDMA.admin.refreshFunction()
 })
 };
-YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm delete","Are you sure you wish to delete the selected record?<br/> This action will happen immediately and is non reversible.")
+YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm delete","Are you sure you wish to delete the selected record?<br/> This action will commit your changes to the database.")
 }}};
 YAHOO.GDMA.admin.addRecord=function(){YAHOO.GDMA.admin.dataTable.cancelCellEditor();
 var B=YAHOO.GDMA.admin.dataTable.getSelectedRows();
