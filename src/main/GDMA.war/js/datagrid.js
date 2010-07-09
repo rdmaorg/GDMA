@@ -178,7 +178,7 @@ YAHOO.GDMA.datagrid.updateRecords = function() {
         };
         YAHOO.GDMA.dialog.showYesNoDialog(handleYes, "Please confirm save", "Are you sure you wish to save the "
                 + updateCount
-                + " changed record(s)?<br/> This action will happen immediately and is non reversible.");
+                + " changed record(s)?<br/> This action will commit your changes to the database.");
     } else {
         YAHOO.GDMA.dialog.showInfoDialog("Updated Records", "No changed have been made- there is nothing to save!");
     }    
@@ -220,7 +220,7 @@ YAHOO.GDMA.datagrid.deleteRecord = function() {
 
         YAHOO.GDMA.dialog.showYesNoDialog(handleYes, "Please confirm delete",
                 "Are you sure you wish to delete the selected " + selectedRows.length + " record(s)?"
-                        + "<br/> This action will happen immediately and is non reversible.");
+                        + "<br/> This action will commit your changes to the database.");
     }
      
 };
@@ -401,7 +401,7 @@ YAHOO.GDMA.datagrid.buildTable = function(datasource) {
     // Hook into custom event to customize save-flow of "radio" editor
     YAHOO.GDMA.datagrid.dataTable.subscribe("editorUpdateEvent", function(oArgs) {
         if(oArgs.editor.column.key === "active") {
-            this.saveCellEditor();
+        	this.saveCellEditor();
         }
     });
     
