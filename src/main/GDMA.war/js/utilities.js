@@ -104,7 +104,18 @@ YAHOO.GDMA.utilities.parseDate = function(oData) {
     
     // Validate
     if(oData instanceof Date) {
-        return oData;
+        
+    	var mm = oData.getMonth()+1;
+        var dd = oData.getDate();
+        var yyyy = oData.getFullYear();
+                
+        if (mm < 10) mm = "0" + mm;
+        if (dd < 10) dd = "0" + dd
+        
+        //return oData;
+        //return yyyy + "-" + mm + "-" + dd;
+       //return yyyy + "-" + mm + "-" + dd;
+         return yyyy + "-" + mm + "-" + dd;
     }
     else {
         YAHOO.log("Could not convert data " + YAHOO.lang.dump(oData) + " to type Date", "warn", this.toString());
@@ -145,10 +156,15 @@ YAHOO.GDMA.utilities.formatDate = function(elCell, oRecord, oColumn, oData){
     if(oData && oData instanceof Date){
         var mm = oData.getMonth()+1;
         var dd = oData.getDate();
-        var yyyy = oData.getFullYear();        
+        var yyyy = oData.getFullYear(); 
+        
+        if (mm < 10) mm = "0" + mm;
+        if (dd < 10) dd = "0" + dd;
+        
         elCell.innerHTML = yyyy + "-" + mm + "-" + dd;
     }else {
-        elCell.innerHTML = "";
+        //elCell.innerHTML = "";
+    	elCell.innerHTML = oData;
     }
 };
 
@@ -292,7 +308,27 @@ YAHOO.GDMA.utilities.validateNumber = function(oData) {
 YAHOO.GDMA.utilities.validateString = function(oData) {
     var string = "" + oData;
     if(YAHOO.lang.isString(string)) {
-        return string;
+        
+    	
+    	if (null != YAHOO.GDMA.datagrid.currentDataDescription)
+        {
+    	    if (YAHOO.GDMA.datagrid.currentDataDescription.tables.length >= 1 && 
+    	    	null != YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name)
+    	    	{
+    				if (YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns.length >= 1 )
+    				{    				
+    					if(oData.length <= YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[this._oCellEditor.column._nTreeIndex-1].columnSize)
+    			        {
+    			        	return string;
+    			        }
+    			        else
+    			        {
+    			        	YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "The maximum length allowed for this field is " + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[this._oCellEditor.column._nTreeIndex-1].columnSize);
+    			            return null;
+    			        }
+    				}
+    	    	}    
+        } 	
     }
     else {
         YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "Value entered is not text");
