@@ -160,6 +160,10 @@ public class ServerUtil {
                         column.setDisplayed(true);
                         column.setNullable(resultSetMetaData.isNullable(i) == ResultSetMetaData.columnNullable);
                         column.setSpecial("N");
+                        
+                        
+                        column.setColumnSize(resultSetMetaData.getColumnDisplaySize(i));
+                        
                         columns.add(column);
                     } else {
                         // update type - just in case
