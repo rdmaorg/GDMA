@@ -305,36 +305,69 @@ YAHOO.GDMA.utilities.validateNumber = function(oData) {
     }
 };
 
-YAHOO.GDMA.utilities.validateString = function(oData) {
+/*YAHOO.GDMA.utilities.validateString = function(oData) {
     var string = "" + oData;
+    var columnIndex = this._oCellEditor.column._nTreeIndex-1
+    
+    validateString(string, columnIndex)    
+};*/
+
+
+YAHOO.GDMA.utilities.validateString = function(oData, oColumnIndex) {
+    var string = "" + oData;
+    var columnIndex;
+    
+    //if the editor(update) cell is defined, i.e. an update is occurring
+    //then get the columnIndex from the cell editor pop-up object
+    if(typeof(this._oCellEditor)!="undefined")
+    {
+    	columnIndex = this._oCellEditor.column._nTreeIndex-1
+    }
+    //otherwise set the columnIndex value to the value passed in the parameters 
+    else 
+    {
+    	columnIndex = oColumnIndex;	
+    }
+    
     if(YAHOO.lang.isString(string)) {
         
-    	
-    	if (null != YAHOO.GDMA.datagrid.currentDataDescription)
-        {
-    	    if (YAHOO.GDMA.datagrid.currentDataDescription.tables.length >= 1 && 
-    	    	null != YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name)
+    	if(null != oColumnIndex)
+    	{	
+    		if (null != YAHOO.GDMA.datagrid.currentDataDescription)
+    		{
+    			if (YAHOO.GDMA.datagrid.currentDataDescription.tables.length >= 1 && 
+    			    null != YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name)
     	    	{
     				if (YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns.length >= 1 )
     				{    				
-    					if(oData.length <= YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[this._oCellEditor.column._nTreeIndex-1].columnSize)
+    					if(oData.length <= YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[columnIndex].columnSize)
     			        {
     			        	return string;
     			        }
     			        else
     			        {
-    			        	YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "The maximum length allowed for this field is " + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[this._oCellEditor.column._nTreeIndex-1].columnSize);
+    			        	YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "The maximum length allowed for this field is " + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[columnIndex].columnSize);
     			            return null;
     			        }
     				}
     	    	}    
-        } 	
+    		}
+    	}
     }
     else {
         YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "Value entered is not text");
         return null;
     }
 };
+
+
+
+
+
+
+
+
+
 
 YAHOO.GDMA.utilities.validateDate = function(oData) {
     YAHOO.log("Not validating : type " + (typeof oData) + ", value " + oData, "warn", this.toString());
