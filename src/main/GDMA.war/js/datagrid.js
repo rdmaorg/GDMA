@@ -846,9 +846,16 @@ YAHOO.GDMA.datagrid.addRecordSave = function() {
                  columnValue = txtColumnValue.value;
                  var validator = YAHOO.GDMA.utilities.getValidator(columns[i].columnType);
                  if(validator){
-                     if(validator(columnValue) == null){
-                         txtColumnValue.style.color = "red";
-                         YAHOO.GDMA.dialog.showInfoDialog("Validation Error!", "Field values in red are not valid.");
+                     if(validator(columnValue, i) == null){
+                    	 txtColumnValue.style.color = "red";
+                    	 if(columnValue.length > columns[i].columnSize)
+                         {
+                        	 //YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "The maximum length allowed for this field is " + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[i].columnSize);
+                         }
+                         else
+                         {
+                        	 YAHOO.GDMA.dialog.showInfoDialog("Validation Error!", "Field values in red are not valid.");
+                         }
                          return;
                      }
                  }
@@ -944,9 +951,16 @@ YAHOO.GDMA.datagrid.multiUpdateSave = function(){
                      columnValue = txtColumnValue.value;
                      var validator = YAHOO.GDMA.utilities.getValidator(columns[i].columnType);
                      if(validator){
-                         if(validator(columnValue) == null){
-                             txtColumnValue.style.color = "red";
-                             YAHOO.GDMA.dialog.showInfoDialog("Validation Error!", "Field values in red are not valid.");
+                         if(validator(columnValue, i) == null){
+                        	 txtColumnValue.style.color = "red";
+                        	 if(columnValue.length > columns[i].columnSize)
+                             {
+                            	 //YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "The maximum length allowed for this field is " + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns[i].columnSize);
+                             }
+                             else
+                             {
+                            	 YAHOO.GDMA.dialog.showInfoDialog("Validation Error!", "Field values in red are not valid.");
+                             }
                              return;
                          }
                      }
