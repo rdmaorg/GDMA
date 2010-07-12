@@ -278,6 +278,7 @@ public class DynamicDaoImpl implements DynamicDao {
 									        + " can not be set to null and must have a value");
 								}
 								parameters.add(o);
+								LOG.debug("Added parameter " + o.toString());
 							}
 						}
 					}
@@ -514,6 +515,8 @@ public class DynamicDaoImpl implements DynamicDao {
 				}
 				if (theColumn == null)
 					throw new IOException("The column \"" + h + "\" does not exist in " + table.getName());
+				
+	LOG.debug("Column is of type " + theColumn.getColumnTypeString());
 
 				if (tableList == null) {
 					tableList = "\"" + h + "\"";
@@ -523,7 +526,9 @@ public class DynamicDaoImpl implements DynamicDao {
 					patternList += ",?";
 				}
 				// using varchar because all values from CSV are strings
-				params.add(new SqlParameter(Types.VARCHAR));
+			//	params.add(new SqlParameter(Types.VARCHAR));
+			//bh changing this as it was breaking date types
+				params.add(new SqlParameter(theColumn.getColumnType()));
 			}
 
 			final String sql = "INSERT INTO " + table.getName() + " (" + tableList + ") VALUES (" + patternList + ")";
@@ -535,7 +540,7 @@ public class DynamicDaoImpl implements DynamicDao {
 
 			try {
 				while (row != null) {
-					LOG.debug("Row starting with: " + row[0]);
+					LOG.debug("Row starting with: " + row[0] + "," + row[1] + "," + row[2]+ "," + row[3]+ "," + row[4]+ "," + row[5]);
 					jdbcTemplate.update(sql, psc.newPreparedStatementSetter(row));
 					counter++;
 					row = rdr.readNext();
