@@ -365,7 +365,8 @@ public class SqlUtil {
                 case Types.TIME:
                     try {
                         if (StringUtils.hasText(data)) {
-                            oReturn = data;
+                            Formatter.parseTime(data);
+                            oReturn = data;  // If no exception thrown from above then we have a valid time format.
                         } else {
                             return null;
                         }
