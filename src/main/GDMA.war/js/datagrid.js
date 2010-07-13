@@ -417,13 +417,13 @@ YAHOO.GDMA.datagrid.buildTable = function(datasource) {
 YAHOO.GDMA.datagrid.createDatasource = function(){
     GdmaAjax.getTableDetails(YAHOO.GDMA.datagrid.paginatedRequest.serverId, YAHOO.GDMA.datagrid.paginatedRequest.tableId, function(servers) {
 
-    	if (0 == servers.length)
+    	if (null == servers || 0 == servers.length)
     	{
     		YAHOO.GDMA.dialog.showInfoDialog("Error", "Table Columns haven't been setup correctly.  Please contact your administrator.");
     		return;
     	}
     	
-        YAHOO.GDMA.datagrid.currentDataDescription = [0];
+        YAHOO.GDMA.datagrid.currentDataDescription = servers[0];
 
         //build the column defs & fields structure
         YAHOO.GDMA.datagrid.responseSchema = {
