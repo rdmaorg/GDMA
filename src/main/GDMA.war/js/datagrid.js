@@ -305,7 +305,7 @@ YAHOO.GDMA.datagrid.buildTable = function(datasource) {
 	    
 	    if (YAHOO.GDMA.datagrid.currentDataDescription.tables.length >= 1 && 
 	    	null != YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name)
-	    	selectedTable = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name.trim();
+	    	selectedTable = YAHOO.lang.trim(YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name);
 	    
 	    YAHOO.GDMA.layout.getUnitByPosition('center').set('header','Database[ ' + server + ' ]  -  Table[ ' + selectedTable + ' ]');
     }
