@@ -169,6 +169,8 @@ public class ServerUtil {
                         // update type - just in case
                         column.setColumnType(resultSetMetaData.getColumnType(i));
                         column.setColumnTypeString(resultSetMetaData.getColumnTypeName(i));
+                        column.setNullable(resultSetMetaData.isNullable(i) == ResultSetMetaData.columnNullable);
+                        column.setColumnSize(resultSetMetaData.getColumnDisplaySize(i));
                     }
                 }
             }
