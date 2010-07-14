@@ -224,6 +224,7 @@ public class DynamicDaoImpl implements DynamicDao {
 
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("SQL USED: " + sql);
+                        LOG.debug("parameters: " + parameters);
 					}
 
 					JdbcTemplate jdbcTemplate = new JdbcTemplate(transactionManager.getDataSource());
@@ -285,13 +286,19 @@ public class DynamicDaoImpl implements DynamicDao {
 					if (CollectionUtils.isEmpty(parameters)) {
 						throw new InvalidDataAccessResourceUsageException("No update values found");
 					}
+
+                    if (null == keys || keys.isEmpty()) {
+                        throw new InvalidDataAccessResourceUsageException("Update Not possible as no Table Primary Key Set.  Please contact your administrator");
+                    }
+					
 					handleSpecialColumns(table.getColumns(), columns, parameters);
 					parameters.addAll(keys);
 
 					String sql = SqlUtil.createUpdateStatement(server, table, columns);
 
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("SQL USED: " + sql);
+                        LOG.debug("SQL USED: " + sql);
+                        LOG.debug("parameters: " + parameters);
 					}
 
 					JdbcTemplate jdbcTemplate = new JdbcTemplate(transactionManager.getDataSource());
@@ -516,7 +523,7 @@ public class DynamicDaoImpl implements DynamicDao {
 				if (theColumn == null)
 					throw new IOException("The column \"" + h + "\" does not exist in " + table.getName());
 				
-	LOG.debug("Column is of type " + theColumn.getColumnTypeString());
+	            LOG.debug("Column is of type " + theColumn.getColumnTypeString());
 
 				if (tableList == null) {
 					tableList = "\"" + h + "\"";
