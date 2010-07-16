@@ -90,15 +90,24 @@ public class AuditAspect {
             for (ColumnUpdate columnUpdate : list) {
                 // only save if values are different
 
-                if (columnUpdate.getOldColumnValue() == columnUpdate.getNewColumnValue()) {
-                    continue;
-                }
+          //   if (columnUpdate.getOldColumnValue() == columnUpdate.getNewColumnValue()) {
+          //        continue;
+               // }
+                
+                
 
                 // this column wasn't modified
-                if (auditType != 'M' && columnUpdate.getNewColumnValue() == null) {
+            	// fix brackets
+                if ((auditType == 'M') && (columnUpdate.getNewColumnValue() == null)) {
+                	LOG.debug("No change for column" + columnUpdate.getColumnId());
                     continue;
                 }
-
+                // use equals rather then ==
+                if (columnUpdate.getOldColumnValue().equals(columnUpdate.getNewColumnValue())) {     
+                	  LOG.debug("No change for column" + columnUpdate.getColumnId());
+                	  continue;
+              }
+                LOG.debug("Logging change for column" + columnUpdate.getColumnId());
                 AuditRecord auditRecord = new AuditRecord();
                 auditRecord.setColumnID(columnUpdate.getColumnId());
                 auditRecord.setAuditHeaderID(auditHeader.getId());
