@@ -244,6 +244,11 @@ public class DynamicDaoImpl implements DynamicDao {
 	 */
 	@Auditable
 	public int updateRecords(UpdateRequest updateRequest) {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("updateRecords(updateRequest=" + updateRequest
+					+ ") - start");
+		}
+
 		final Server server = gdmaFacade.getServerDao().get(updateRequest.getServerId());
 		final Table table = gdmaFacade.getTableDao().get(updateRequest.getTableId());
 		final List<List<ColumnUpdate>> columnUpdates = updateRequest.getUpdates();
@@ -254,6 +259,11 @@ public class DynamicDaoImpl implements DynamicDao {
 		int countDeleted = (Integer) txTemplate.execute(new TransactionCallback() {
 			@SuppressWarnings("unchecked")
 			public Object doInTransaction(TransactionStatus status) {
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("doInTransaction(status=" + status
+									+ ") - start");
+						}
+
 				int countDeleted = 0;
 				for (List<ColumnUpdate> list : columnUpdates) {
 
@@ -279,7 +289,11 @@ public class DynamicDaoImpl implements DynamicDao {
 									        + " can not be set to null and must have a value");
 								}
 								parameters.add(o);
+								if (o == null){
+									LOG.debug("o is null");
+								} else {
 								LOG.debug("Added parameter " + o.toString());
+								}
 							}
 						}
 					}
@@ -305,9 +319,18 @@ public class DynamicDaoImpl implements DynamicDao {
 					countDeleted += jdbcTemplate.update(sql, parameters.toArray());
 
 				}
+
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("doInTransaction() - end - return value="
+									+ countDeleted);
+						}
 				return countDeleted;
 			}
 		});
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("updateRecords() - end - return value=" + countDeleted);
+		}
 		return countDeleted;
 	}
 
