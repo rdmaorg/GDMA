@@ -102,8 +102,9 @@ public class AuditAspect {
                 	LOG.debug("No change for column" + columnUpdate.getColumnId());
                     continue;
                 }
+                
                 // use equals rather then ==
-                if (columnUpdate.getOldColumnValue().equals(columnUpdate.getNewColumnValue())) {     
+                if ((columnUpdate.getOldColumnValue() != null ) && (columnUpdate.getOldColumnValue().equals(columnUpdate.getNewColumnValue()))) {     
                 	  LOG.debug("No change for column" + columnUpdate.getColumnId());
                 	  continue;
               }
