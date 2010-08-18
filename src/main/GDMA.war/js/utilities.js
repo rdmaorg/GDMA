@@ -331,7 +331,7 @@ YAHOO.GDMA.utilities.validateString = function(oData, oColumnIndex) {
     
     if(YAHOO.lang.isString(string)) {
         
-    	if(null != oColumnIndex)
+    	if(null != columnIndex)
     	{	
     		if (null != YAHOO.GDMA.datagrid.currentDataDescription)
     		{
