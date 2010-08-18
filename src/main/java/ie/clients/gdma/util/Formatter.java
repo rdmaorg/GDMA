@@ -94,7 +94,7 @@ public class Formatter {
     // Try 2 ways of parsing
     // First - treat it as a long
     // Second - treat it as a string
-    public static Date parseTime(String value) throws Exception {
+    public static String parseTime(String value) throws Exception {
         Date date = null;
         try {
             date = new Date(Long.parseLong(value));
@@ -109,7 +109,7 @@ public class Formatter {
             }
         }
 
-        return date;
+        return value;
     }
     
 }
