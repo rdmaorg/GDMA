@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -95,6 +96,7 @@ public class DynamicDaoImpl implements DynamicDao {
 	 * PaginatedRequest)
 	 */
 	public PaginatedResponse get(PaginatedRequest paginatedRequest) {
+        LOG.debug("In get(PaginatedRequest paginatedRequest):");
 		Server server = gdmaFacade.getServerDao().get(paginatedRequest.getServerId());
 		Table table = gdmaFacade.getTableDao().get(paginatedRequest.getTableId());
 		Column sortedByColumnId = paginatedRequest.getSortedByColumnId() == null ? null : gdmaFacade.getColumnDao().get(paginatedRequest.getSortedByColumnId());
@@ -121,8 +123,19 @@ public class DynamicDaoImpl implements DynamicDao {
 
 		final List<Object> params = convertFiltersToSqlParameterValues(paginatedRequest.getFilters());
 
-		paginatedResponse.setRecords((List) jdbcTemplate.query(psc.newPreparedStatementCreator(params), new PagedResultSetExtractor(new RowMapper(),
-		        paginatedRequest.getRecordOffset(), paginatedRequest.getRowsPerPage())));
+
+        try{
+            paginatedResponse.setRecords((List) jdbcTemplate.query(psc.newPreparedStatementCreator(params), new PagedResultSetExtractor(new RowMapper(),
+            paginatedRequest.getRecordOffset(), paginatedRequest.getRowsPerPage())));
+        }
+        catch (Exception e){
+            
+            LOG.error("*****Exception****** e = " + e);
+            SQLException sqle = (SQLException) e.getCause();
+            LOG.debug("Error code: " + sqle.getErrorCode());
+            LOG.debug("SQL state: " + sqle.getSQLState());      
+        }
+
 		paginatedResponse.setTotalRecords(getCount(server, table, paginatedRequest.getFilters()));
 		paginatedResponse.setStartIndex(paginatedRequest.getRecordOffset());
 		paginatedResponse.setKey("" + paginatedRequest.getSortedByColumnId());
@@ -152,12 +165,20 @@ public class DynamicDaoImpl implements DynamicDao {
 				if (SqlUtil.isNumeric(filter.getColumnType())) {
 					LOG.debug("Number as string as parameter: " + param);
 				} else if (SqlUtil.isDate(filter.getColumnType())) {
+                    LOG.debug("DATE filter detected: " + filter.getFilterValue());
 					try {
-						param = new java.sql.Date(Formatter.parseDate(filter.getFilterValue()).getTime());
+                        param = Formatter.formatDate(Formatter.parseDate(filter.getFilterValue()));
 						LOG.debug("Date as parameter: " + param);
 					} catch (Exception ex) {
 						LOG.error("Could not parse the date: " + filter.getFilterValue(), ex);
 					}
+                } else if (SqlUtil.isTime(filter.getColumnType())) {
+                    try {
+                        param = Formatter.parseTime(filter.getFilterValue());
+                        LOG.debug("Time as parameter: " + param);
+                    } catch (Exception ex) {
+                        LOG.error("Could not parse the time: " + filter.getFilterValue(), ex);
+                    }
 				} else {
 					// For LIKE stmt
 					param = "%" + param + "%";
