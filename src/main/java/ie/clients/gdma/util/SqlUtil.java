@@ -6,7 +6,6 @@ import ie.clients.gdma.domain.Table;
 import ie.clients.gdma.web.command.Filter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Types;
 import java.util.List;
 
@@ -153,7 +152,7 @@ public class SqlUtil {
 						stringBuilder.append(table.getName());
 						stringBuilder.append('.');
 						stringBuilder.append(filter.getColumnName());
-						if (isNumeric(filter.getColumnType()) || isDate(filter.getColumnType())) {
+						if (isNumeric(filter.getColumnType()) || isDate(filter.getColumnType())  || isTime(filter.getColumnType())) {
 							stringBuilder.append(" = ?");
 						} else {
 							//stringBuilder.append(table.getName());
@@ -327,7 +326,7 @@ public class SqlUtil {
 				case Types.BIGINT:
 					try {
 						if (StringUtils.hasText(data)) {
-							oReturn = new BigInteger(data);
+							oReturn = new Long(data);
 						} else {
 							return null;
 						}
@@ -430,7 +429,6 @@ public class SqlUtil {
 
 		switch (sqlDataType) {
 			case Types.DATE:
-			case Types.TIME:
 			case Types.TIMESTAMP:
 				blnReturn = true;
 				break;
@@ -443,6 +441,21 @@ public class SqlUtil {
 
 	}
 
+    public static boolean isTime(int sqlDataType) {
+        boolean blnReturn = false;
+
+        switch (sqlDataType) {
+            case Types.TIME:
+                blnReturn = true;
+                break;
+            default:
+                blnReturn = false;
+                break;
+        }
+
+        return blnReturn;
+
+    }	
 	public static boolean isNumeric(String sqlDataType) {
 		boolean blnReturn = false;
 
