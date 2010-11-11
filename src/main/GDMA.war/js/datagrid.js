@@ -790,12 +790,13 @@ YAHOO.GDMA.datagrid.doBulkImport = function(){
 
 YAHOO.GDMA.datagrid.doBulkImportDone = function(error, numRecords){
 	if (error == '') {
-        YAHOO.GDMA.dialog.showInfoDialog("Saved!", "" + numRecords + " record(s) imported successfully");
+        YAHOO.GDMA.dialog.showImportInfoDialog("Saved!", "" + numRecords + " record(s) imported successfully");
         YAHOO.GDMA.datagrid.refreshData();
 	} else {
         YAHOO.GDMA.dialog.showInfoDialog("Error!", "Import error: " + error);
 	}
     YAHOO.GDMA.datagrid.popFormPanel.destroy();
+    //setInterval ( "location.reload()", 5000 );
 };
 
 YAHOO.GDMA.datagrid.bulkImport = function() {
