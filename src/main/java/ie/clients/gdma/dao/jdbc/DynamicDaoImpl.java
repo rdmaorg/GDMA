@@ -569,35 +569,48 @@ public class DynamicDaoImpl implements DynamicDao {
 				
 	            LOG.debug("Column is of type " + theColumn.getColumnTypeString());
 
-				if (tableList == null) {
-					tableList = "\"" + h + "\"";
-					patternList = "?";
-				} else {
-					tableList += ",\"" + h + "\"";
-					patternList += ",?";
-				}
+	            if(server.getConnectionUrl().contains("mysql")){
+	            	if (tableList == null) {
+						tableList = h;
+						patternList = "?";
+					} else {
+						tableList += "," + h;
+						patternList += ",?";
+					}
+	            }else{
+	            	if (tableList == null) {
+						tableList = "\"" + h + "\"";
+						patternList = "?";
+					} else {
+						tableList += ",\"" + h + "\"";
+						patternList += ",?";
+					}
+	            }
+	            
+				
 				// using varchar because all values from CSV are strings
 			//	params.add(new SqlParameter(Types.VARCHAR));
 			//bh changing this as it was breaking date types
 				params.add(new SqlParameter(theColumn.getColumnType()));
 			}
 
-			final String sql = "INSERT INTO " + table.getName() + " (" + tableList + ") VALUES (" + patternList + ")";
+			final String sql = "INSERT INTO " + server.getPrefix() + "." + table.getName() + " (" + tableList + ") VALUES (" + patternList + ")";
+			//final String sql = "INSERT INTO " + table.getName() + " (" + tableList + ") VALUES (" + patternList + ")";
 			LOG.debug("Preparing sql: [" + sql + "]");
 			final PreparedStatementCreatorFactory psc = new PreparedStatementCreatorFactory(sql, params);
-
 			String[] row = rdr.readNext();
 			final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSourcePool.getTransactionManager(server).getDataSource());
 
 			try {
 				while (row != null) {
-					LOG.debug("Row starting with: " + row[0] + "," + row[1] + "," + row[2]+ "," + row[3]+ "," + row[4]+ "," + row[5]);
+					LOG.debug("Row starting with: " + row[0] );
 					jdbcTemplate.update(sql, psc.newPreparedStatementSetter(row));
 					counter++;
 					row = rdr.readNext();
+					LOG.debug("Row starting with:333333333333333333 ");
 				}
 			} catch (DataAccessException ex) {
-				throw new IOException("Could not import data:" + ex.getMessage(), ex);
+				throw new IOException("Could not import data:" + ex.getMessage());
 			}
 		}
 		return counter;
