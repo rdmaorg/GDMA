@@ -7,6 +7,10 @@ public class Filter {
     private Long columnId;
 
     private String columnName;
+    
+    private int filterOperator;
+    
+    private String filterOperatorText;
 
     private int columnType;
 
@@ -23,6 +27,10 @@ public class Filter {
     private boolean blank = false;
 
     private boolean nullValue = false;
+    
+    private boolean orValue = false;  // to deal with OR's in the filter sql
+    
+    private boolean notValue = false;  // to deal with NOT's in the filter sql
 
     public Long getColumnId() {
         return columnId;
@@ -39,6 +47,22 @@ public class Filter {
     public void setColumnName(String columnName) {
         this.columnName = columnName;
     }
+    
+    public int getFilterOperator() {
+        return filterOperator;
+    }
+
+    public void setFilterOperator(int filterOperator) {
+        this.filterOperator = filterOperator;
+    }
+    
+    public String getfilterOperatorText(){
+        return filterOperatorText;
+    }
+    
+    public void setFilterOperatorText(String filterOperatorText) {
+        this.filterOperatorText = filterOperatorText;
+    }
 
     public String getFilterValue() {
         return filterValue;
@@ -49,15 +73,37 @@ public class Filter {
     }
 
     public boolean isBlank() {
-        return blank;
+        if(getFilterOperator() == 9)
+        	return true;
+        else
+        	return false;
     }
 
     public void setBlank(boolean blank) {
         this.blank = blank;
     }
+    
+    public boolean isOrValue() {
+        return orValue;
+    }
+    
+    public void setOrValue(boolean orValue) {
+        this.orValue = orValue;
+    }
 
+    public boolean isNotValue() {
+        return notValue;
+    }
+    
+    public void setNotValue(boolean notValue) {
+        this.notValue = notValue;
+    }
+    
     public boolean isNullValue() {
-        return nullValue;
+    	if(getFilterOperator() == 8)
+        	return true;
+        else
+        	return false;
     }
 
     public void setNullValue(boolean nullValue) {
@@ -66,5 +112,11 @@ public class Filter {
 
     public boolean isValid() {
         return isBlank() || isNullValue() || StringUtils.hasText(filterValue);
+    }
+    
+    public String toString() {
+        return "Filter [columnId=" + columnId + ", columnName="
+                + columnName + ", columnType=" + columnType + ", filterOperator=" + filterOperator + ", filterValue="
+                + filterValue + ", nullValue=" + nullValue + ", notValue=" + notValue + ", blank=" + blank + ", orValue=" + orValue + "]";
     }
 }
