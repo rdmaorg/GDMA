@@ -122,6 +122,9 @@ public class DynamicDaoImpl implements DynamicDao {
 		PaginatedResponse paginatedResponse = new PaginatedResponse();
 
 		final List<Object> params = convertFiltersToSqlParameterValues(paginatedRequest.getFilters());
+		LOG.debug("params: " + params);
+		paginatedResponse.setRecords((List) jdbcTemplate.query(psc.newPreparedStatementCreator(params), new PagedResultSetExtractor(new RowMapper(),
+		        paginatedRequest.getRecordOffset(), paginatedRequest.getRowsPerPage())));
 
 
         try{
@@ -146,7 +149,8 @@ public class DynamicDaoImpl implements DynamicDao {
 
 	private void declareSqlParameters(PreparedStatementCreatorFactory psc, List<Filter> filters) {
 		for (Filter filter : filters) {
-			if (filter.isNullValue() || filter.isBlank())
+			//if filter is null or blank
+			if ((filter.getFilterOperator() == 8 || filter.getFilterOperator() == 9))
 				continue;
 			if (StringUtils.hasText(filter.getFilterValue())) {
 				psc.addParameter(new SqlParameter(filter.getColumnType()));
@@ -157,10 +161,11 @@ public class DynamicDaoImpl implements DynamicDao {
 	private List<Object> convertFiltersToSqlParameterValues(List<Filter> filters) {
 		final List<Object> params = new ArrayList<Object>();
 		for (Filter filter : filters) {
-			if (filter.isNullValue() || filter.isBlank())
+			//if ((filter.isNullValue() || filter.isBlank())&&(filter.getFilterValue()== null))
+			if ((filter.getFilterOperator() == 8 || filter.getFilterOperator() == 9))
 				continue;
-
-			if (StringUtils.hasText(filter.getFilterValue())) {
+			//if (StringUtils.hasText(filter.getFilterValue())) {
+			if (!(filter.getFilterOperator() == 8 || filter.getFilterOperator() == 9)){
 				Object param = filter.getFilterValue();
 				if (SqlUtil.isNumeric(filter.getColumnType())) {
 					LOG.debug("Number as string as parameter: " + param);
@@ -181,7 +186,25 @@ public class DynamicDaoImpl implements DynamicDao {
                     }
 				} else {
 					// For LIKE stmt
-					param = "%" + param + "%";
+					//deal with "Begins With" filter operator
+					if(filter.getFilterOperator() == 5)
+					{
+						param = param + "%";
+					}
+					//deal with "Contains" filter operator
+					else if(filter.getFilterOperator() == 6)
+					{
+						param = "%" + param + "%";
+					}
+					//deal with "Ends With" filter operator
+					else if(filter.getFilterOperator() == 7)
+					{
+						param = "%" + param;
+					}
+					else
+					{
+						param = param;
+					}
 					LOG.debug("Generic parameter: " + param);
 				}
 				params.add(param);
@@ -607,7 +630,6 @@ public class DynamicDaoImpl implements DynamicDao {
 					jdbcTemplate.update(sql, psc.newPreparedStatementSetter(row));
 					counter++;
 					row = rdr.readNext();
-					LOG.debug("Row starting with:333333333333333333 ");
 				}
 			} catch (DataAccessException ex) {
 				throw new IOException("Could not import data:" + ex.getMessage());
