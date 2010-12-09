@@ -357,6 +357,24 @@ h1.logon {
     padding-left: 10px;
 }
 
+#divDlgAccessLayout #btnAccessListCancel,#divDlgPopupFormLayout #btnPopupFormAddFilter {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgAccessLayout #btnAccessListCancel .first-child,#divDlgPopupFormLayout #btnPopupFormAddFilter .first-child {
+    background: url(../images/add.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
+#divDlgAccessLayout #btnAccessListCancel,#divDlgPopupFormLayout #btnPopupFormRemoveFilter {
+    margin: 4px 4px 0px 0px
+}
+
+#divDlgAccessLayout #btnAccessListCancel .first-child,#divDlgPopupFormLayout #btnPopupFormRemoveFilter .first-child {
+    background: url(../images/delete.gif) left center no-repeat;
+    padding-left: 10px;
+}
+
 #divDlgPopupFormBottom #btnPopupFormClear .first-child {
     background: url(../images/refresh.gif) left center no-repeat;
     padding-left: 10px;
