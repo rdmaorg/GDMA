@@ -13,6 +13,10 @@ YAHOO.GDMA.utilities.createElement = function(type, id, parent, inputType){
         parent.appendChild(el);
     }
     
+    
+    
+    
+    
     return el;
 }
 
@@ -46,6 +50,8 @@ YAHOO.GDMA.utilities.sqlType.CLOB        = 2005;
 YAHOO.GDMA.utilities.sqlType.REF         = 2006;
 YAHOO.GDMA.utilities.sqlType.DATALINK    = 70;
 YAHOO.GDMA.utilities.sqlType.BOOLEAN     = 16;
+
+YAHOO.GDMA.utilities.sqlType.TEXT     = 16;
 
 
 YAHOO.GDMA.utilities.isTypeNumber = function(columnType){
@@ -307,18 +313,9 @@ YAHOO.GDMA.utilities.validateNumber = function(oData) {
     }
 };
 
-/*YAHOO.GDMA.utilities.validateString = function(oData) {
-    var string = "" + oData;
-    var columnIndex = this._oCellEditor.column._nTreeIndex-1
-    
-    validateString(string, columnIndex)    
-};*/
-
-
 YAHOO.GDMA.utilities.validateString = function(oData, oColumnIndex) {
     var string = "" + oData;
     var columnIndex;
-    
     //if the editor(update) cell is defined, i.e. an update is occurring
     //then get the columnIndex from the cell editor pop-up object
     if(typeof(this._oCellEditor)!="undefined")
@@ -360,6 +357,7 @@ YAHOO.GDMA.utilities.validateString = function(oData, oColumnIndex) {
         YAHOO.GDMA.dialog.showInfoDialog("Validation Error", "Value entered is not text");
         return null;
     }
+    
 };
 
 
@@ -446,6 +444,41 @@ YAHOO.GDMA.utilities.populateDropDown = function(elDropdown, data, keyValue, key
         }
 
     }
+};
+
+YAHOO.GDMA.utilities.populateDropDown2 = function(elDropdown, dataID, dataName, keyValue, keyText, currentValue, addPleaseSelect){
+
+    var elOption = document.createElement("option");
+
+    if(addPleaseSelect){
+        // create the first option i.e. please select
+        elOption.value = -1;
+        elOption.text = "Please Select";
+        elOption.selected = (currentValue == -1);
+        elDropdown.options[0] = elOption;
+    }
+
+    // add the rest of the options
+    for ( var i = 0; i < dataID.length; i++) {
+        elOption = document.createElement("option");
+        elOption.value = dataID[i];
+        elOption.text = dataName[i];
+        elDropdown.options[i+1] = elOption;
+        if(currentValue == dataID[i]){
+            elOption.selected = (currentValue == dataID[i]);    
+            elDropdown.selectedIndex = i + 1;
+        }
+
+    }
+};
+
+YAHOO.GDMA.utilities.isDataTypeString = function(oDataType) {
+	switch(oDataType) {
+	case (1): case (12): case (-1): case (2005):
+		return true;
+	default:
+		return false;
+	}
 };
 
 
