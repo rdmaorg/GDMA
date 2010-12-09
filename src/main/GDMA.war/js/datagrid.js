@@ -89,41 +89,6 @@ YAHOO.GDMA.datagrid.editDropdown = function(oEditor, oSelf) {
 };
 
 YAHOO.GDMA.datagrid.doFilter = function(){
-    YAHOO.GDMA.datagrid.paginatedRequest.filters = [];
-    var columns = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns;
-    var idx = 0;
-    for(var i = 0; i < columns.length; i++){
-        if(columns[i].displayed == true){
-            var columnValue;
-            
-            var chkIsNull = document.getElementById("chkIsNull" + columns[i].id);
-            var chkIsBlank = document.getElementById("chkIsBlank" + columns[i].id);
-            
-            if(columns[i].dropDownColumnDisplay && columns[i].dropDownColumnStore){
-                var selFilter = document.getElementById("selFilter" + columns[i].id);
-                var selectedIndex = selFilter.selectedIndex;
-                if(selectedIndex < 1){                     
-                    columnValue = null;
-                }else{
-                    columnValue = selFilter.options[selFilter.selectedIndex].value;
-                }
-            }else{
-                var txtFilter = document.getElementById("txtFilter" + columns[i].id);
-                columnValue = txtFilter.value;
-            }
-   
-            if(  (columnValue && columnValue != '') || chkIsNull.checked || chkIsBlank.checked){
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx] = {};
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx].columnId = columns[i].id;
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx].columnName = columns[i].name;
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx].columnType = columns[i].columnType;
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx].filterValue = columnValue;
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx].nullValue = chkIsNull.checked;
-                YAHOO.GDMA.datagrid.paginatedRequest.filters[idx].blank = chkIsBlank.checked;
-                idx++;
-            }
-        }
-    }
     YAHOO.GDMA.datagrid.paginatedRequest.recordOffset = 0;
     YAHOO.GDMA.datagrid.popFormPanel.destroy();    
     YAHOO.GDMA.datagrid.refreshData();
@@ -557,8 +522,10 @@ YAHOO.GDMA.datagrid.init = function(serverId, tableId) {
 //        YAHOO.GDMA.datagrid.dataTable.oldRender();
 //        YAHOO.GDMA.dialog.loading.hide();
 //    }
-    
-    YAHOO.GDMA.dialog.loading.show();
+	
+	YAHOO.GDMA.datagrid.filterColumn = 0;
+	
+	YAHOO.GDMA.dialog.loading.show();
     
     // default structure for making data requests
     YAHOO.GDMA.datagrid.paginatedRequest = {
@@ -631,6 +598,10 @@ YAHOO.GDMA.datagrid.filterRecords = function() {
             title: 'Create a filter for table ' + YAHOO.GDMA.datagrid.currentDataDescription.tables[0].name ,
             submit: YAHOO.GDMA.datagrid.doFilter,
             submitLabel: 'Filter',
+            
+            addFilter: YAHOO.GDMA.datagrid.addFilter, 
+            removeFilter: YAHOO.GDMA.datagrid.removeFilter,
+            
             reset: YAHOO.GDMA.datagrid.resetPopupForm,
             cancel: YAHOO.GDMA.datagrid.cancelPopupForm,
             body: function(container){
@@ -638,54 +609,256 @@ YAHOO.GDMA.datagrid.filterRecords = function() {
                         YAHOO.GDMA.utilities.createElement("br",null, container);
                         
                         var columns = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns;
+                                                
+                        //Build up values for the Column dropdown
+                        var displayColumnsId = new Array();
+                        var displayColumnsName = new Array();
                         for(var i = 0; i < columns.length; i++){
-                            if(columns[i].displayed == true){
-                                var id = columns[i].id
-                                var p = YAHOO.GDMA.utilities.createElement("p","p" + id, container);
-                                
-                                var lblFilter = YAHOO.GDMA.utilities.createElement("label","lblFilter" + id, p);
-                                lblFilter.htmlFor = "txtFilter" + id;
-                                lblFilter.innerHTML = columns[i].name;
-                                if(columns[i].dropDownColumnDisplay && columns[i].dropDownColumnStore){
-                                    var selFilter = YAHOO.GDMA.utilities.createElement("select","selFilter" + id, p);
-                                    YAHOO.GDMA.utilities.populateDropDown(
+                        	if(columns[i].displayed == true){
+                        		displayColumnsId[i] = columns[i].id;
+                        		displayColumnsName[i] = columns[i].name;
+                        	}
+                        }
+                        var p = YAHOO.GDMA.utilities.createElement("p","p" + id, container);
+                        var spanColumn = YAHOO.GDMA.utilities.createElement("span","spanColumn", p);
+                        spanColumn.innerHTML = "Column ";
+                        var selColFilter = YAHOO.GDMA.utilities.createElement("select","selColFilter", p);
+                        YAHOO.GDMA.utilities.populateDropDown2(
+                        		selColFilter, 
+                        		displayColumnsId, 
+                        		displayColumnsName,
+                                1, 
+                                2, 
+                                -1, 
+                                true); 
+                        selColFilter.style.width = '200px';
+                        selColFilter.setAttribute("onchange", "valueEntryDisplay();" );
+                        
+                        p.innerHTML += "<BR>&nbsp;<BR>";
+                        var spanFilter = YAHOO.GDMA.utilities.createElement("span","spanFilter", p);
+                        spanFilter.innerHTML = "Filter &nbsp;&nbsp;&nbsp;&nbsp;";
+                        var operatorIds = new Array();
+                    	
+                        //Build up values for the Filter dropdown
+                        var operatorNames = new Array();
+                    	for(var i = 0; i < 10; i++){
+                    		operatorIds[i] = i;
+                        }
+                    	operatorNames[0] = "Equal To";
+                    	operatorNames[1] = "Less Than";
+                    	operatorNames[2] = "Less Than Or Equal To";
+                    	operatorNames[3] = "Greater Than";
+                    	operatorNames[4] = "Greater Than Or Equal To";
+                    	operatorNames[5] = "Begins With";
+                    	operatorNames[6] = "Contains";
+                    	operatorNames[7] = "Ends With";
+                    	operatorNames[8] = "Is Null";
+                    	operatorNames[9] = "Is Blank";
+                    	var selOperator = YAHOO.GDMA.utilities.createElement("select","selOperator", p);
+                        YAHOO.GDMA.utilities.populateDropDown2(
+                        		selOperator, 
+                        		operatorIds, 
+                        		operatorNames,
+                                1, 
+                                2, 
+                                -1, 
+                                true); 
+                        
+                        selOperator.style.width = '200px';
+                        p.innerHTML += "<BR>&nbsp;<BR>";
+                        var spanCriteria = YAHOO.GDMA.utilities.createElement("span","spanCriteria", p);
+                        spanCriteria.innerHTML = "Criteria &nbsp;";
+                        var txtColumnValueTemp = YAHOO.GDMA.utilities.createElement("input","txtFilterTemp", p);
+        				txtColumnValueTemp.type = "text";
+        				txtColumnValueTemp.style.width = '200px';
+        				
+                        var tempSpanOr = YAHOO.GDMA.utilities.createElement("span","tempSpanOr", p);
+                        tempSpanOr.innerHTML = "Or";
+                        p.innerHTML += "<INPUT type=\"checkbox\" id=\"tempChkIsOr" + "\" />";               
+                        var tempSpanNot = YAHOO.GDMA.utilities.createElement("span","tempSpanNot", p);
+                        tempSpanNot.innerHTML = "Not";
+    					p.innerHTML += "<INPUT type=\"checkbox\" id=\"tempChkIsNot" + "\" />";
+                        
+                        
+                        
+                        
+    					
+                        //Creates criteria input elements for each column in the selected table and deletes 
+    					//all but those for the selected column, which are displayed
+                        valueEntryDisplay = function() {
+                        	var columns = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns;
+                        	var selectedValue = document.activeElement.value;
+                        	var selectedIndex = document.activeElement.selectedIndex;
+                        	
+                        	
+                        	var element = document.getElementById("txtFilterTemp");
+              			  	element.parentNode.removeChild(element);
+              			  	var element = document.getElementById("tempSpanOr");
+              			  	element.parentNode.removeChild(element);
+              			  	var element = document.getElementById("tempChkIsOr");
+            			  	element.parentNode.removeChild(element);
+            			  	var element = document.getElementById("tempSpanNot");
+            			  	element.parentNode.removeChild(element);
+            			  	var element = document.getElementById("tempChkIsNot");
+            			  	element.parentNode.removeChild(element);
+            			  	
+                        	for(var i = 0; i < columns.length; i++){
+                        		
+                        		var id = columns[i].id;
+                        		if(columns[i].dropDownColumnDisplay && columns[i].dropDownColumnStore){
+                        			if(document.getElementById("selFilter" + id) != null){
+                        				var element = document.getElementById("selFilter" + id);
+                          			  	element.parentNode.removeChild(element);
+                          			  	
+                          			  	var element = document.getElementById("spanOr" + id);
+                          			  	element.parentNode.removeChild(element);
+                          			  	var element = document.getElementById("chkIsOr" + id);
+                        			  	element.parentNode.removeChild(element);
+                        			  	var element = document.getElementById("spanNot" + id);
+                        			  	element.parentNode.removeChild(element);
+                        			  	var element = document.getElementById("chkIsNot" + id);
+                        			  	element.parentNode.removeChild(element);
+                        			}
+                        		}
+                        		else{
+                        			if(document.getElementById("txtFilter" + id) != null){
+                        				var element = document.getElementById("txtFilter" + id);
+                          			  	element.parentNode.removeChild(element);
+                          			  	
+                          			  	var element = document.getElementById("spanOr" + id);
+                        			  	element.parentNode.removeChild(element);
+                        			  	var element = document.getElementById("chkIsOr" + id);
+                          			  	element.parentNode.removeChild(element);
+                          			  	var element = document.getElementById("spanNot" + id);
+                          			  	element.parentNode.removeChild(element);
+                          			  	var element = document.getElementById("chkIsNot" + id);
+                        			  	element.parentNode.removeChild(element);
+                        			}
+                        		}
+                        			
+                        	}
+                        	
+                        	for(var i = 0; i < columns.length; i++){
+                        		var id = columns[i].id;
+                        		
+                    			if(columns[i].id == selectedValue){
+                    				YAHOO.GDMA.datagrid.filterColumn = i;
+            						if(columns[i].dropDownColumnDisplay && columns[i].dropDownColumnStore){
+                            		    
+            							var selFilter = YAHOO.GDMA.utilities.createElement("select","selFilter" + id, p);
+                            			YAHOO.GDMA.utilities.populateDropDown(
                                             selFilter, 
                                             YAHOO.GDMA.datagrid.ddColumns[id], 
                                             1, 
                                             2, 
                                             -1, 
-                                            true);                        
-                                }else{
-                                    var txtColumnValue = YAHOO.GDMA.utilities.createElement("input","txtFilter" + id, p);
-                                    txtColumnValue.type = "text";
-                                }
-                                
-                                var spanIsNull = YAHOO.GDMA.utilities.createElement("span","spanIsNull" + id, p);
-                                spanIsNull.innerHTML = "Is Null";                     
-                                p.innerHTML += "<INPUT type=\"checkbox\" id=\"chkIsNull" + id + "\" />";
-            
-                                var spanIsBlank = YAHOO.GDMA.utilities.createElement("span","spanIsBlank" + id, p);
-                                spanIsBlank.innerHTML = "Is Blank";
-                                p.innerHTML += "<INPUT type=\"checkbox\" id=\"chkIsBlank" + id + "\" />";
-                                
-                            }
+                                            true); 
+                            			selFilter.style.width = '200px';
+                                    }
+            						else{
+            							var txtColumnValue = YAHOO.GDMA.utilities.createElement("input","txtFilter" + id, p);
+                        				txtColumnValue.type = "text";
+                        				txtColumnValue.style.width = '200px';
+                                    }
+            						var spanOr = YAHOO.GDMA.utilities.createElement("span","spanOr" + id, p);
+                                    spanOr.innerHTML = "Or";
+                                    p.innerHTML += "<INPUT type=\"checkbox\" id=\"chkIsOr" + id + "\" />";                                        
+                                    var tempor = "chkIsOr" + id;
+                                    var spanNot = YAHOO.GDMA.utilities.createElement("span","spanNot" + id, p);
+                					spanNot.innerHTML = "Not";
+                					p.innerHTML += "<INPUT type=\"checkbox\" id=\"chkIsNot" + id + "\" />";
+                					var tempNot = "chkIsOr" + id;
+                            	}            					
+                            }                        	
                         }
+                                                
+                        //Create a <div> element to hold the filter table 
+                        var p2 = YAHOO.GDMA.utilities.createElement("div","pTable", container);
                         
-                        //now go through the filters a set values
+                        p2.innerHTML += "<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
+                        
+                        var filterNo = YAHOO.GDMA.datagrid.paginatedRequest.filters.length;
+                        var cNodes = p.children;
+                    	//if there is a filter to display
+                        if(filterNo > 0)
+                    	{
+                    		//If there is a table displayed, delete it 
+                        	for (var j =0; j < cNodes.length; j++)
+                    		{
+                    			if(cNodes[j].id == "filterTable")
+                    				cNodes[j].parentNode.removeChild(cNodes[j]);
+                    		} 
+                        	//create a new table with the updated array of filters
+                    		var filterDisplayTable = "<div align=\"center\" id=\"filterDiv\" class=\"height: 100px; overflow-y: scroll;  padding: 30px; width: 100%;\"><table id=\"filterTable\" overflow-y=\"scroll\"  cellpadding=\"10\" width=\"90%\">";
+                    		filterDisplayTable += "<tr bgcolor=\"#C0C0C0\"><th><b>Column</b></th><th><b>Filter</b></th><th><b>Criteria</b></th><th><b>Or</b></th><th><b>Not</b></th></tr>";
+                    		              	          	       
+                    		//loop through the filters and display in the table
+                    		for(var i = 0; i < YAHOO.GDMA.datagrid.paginatedRequest.filters.length; i++)
+                    		{
+                    			if((i % 2) == 0)
+                    				filterDisplayTable += "<tr bgcolor=\"#EDF5FF\"><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].columnName + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].filterOperatorText + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].filterValue + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].orValue + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].notValue + "</td></tr>";
+                    			else
+                    				filterDisplayTable += "<tr bgcolor=\"#FFFFFF\"><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].columnName + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].filterOperatorText + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].filterValue + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].orValue + "</td><td>" + YAHOO.GDMA.datagrid.paginatedRequest.filters[i].notValue + "</td></tr>";
+                    		}
+                    		filterDisplayTable += "</table></div>";                    	
+                    	
+                    		p2.innerHTML += filterDisplayTable;
+                    	
+                    	}
+                        p2.innerHTML += "<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
+                    	
+                    	//now go through the filters a set id values
                         for(var i = 0; i <  YAHOO.GDMA.datagrid.paginatedRequest.filters.length; i++){
-                            var id = YAHOO.GDMA.datagrid.paginatedRequest.filters[i].columnId;
-                            var el = document.getElementById("txtFilter" + id);
-                            if(!el)
-                                el = document.getElementById("selFilter" + id);
-                            if(el){
-                                el.value =  YAHOO.GDMA.datagrid.paginatedRequest.filters[i].filterValue;
-                                document.getElementById("chkIsNull" + id).checked = (YAHOO.GDMA.datagrid.paginatedRequest.filters[i].nullValue == true);
-                                document.getElementById("chkIsBlank" + id).checked = (YAHOO.GDMA.datagrid.paginatedRequest.filters[i].blank == true);
-                            }
+                            var id = YAHOO.GDMA.datagrid.paginatedRequest.filters[i].columnId;                                             
                         }
                 }
     };
     YAHOO.GDMA.datagrid.createPopupform( popupformConfig );
+};
+
+
+//Add a filter to the array of filters
+YAHOO.GDMA.datagrid.addFilter = function(){
+	var selfilterAdd;
+	var columnValue;
+	var columns = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns;
+	var currentColumn = YAHOO.GDMA.datagrid.filterColumn;
+	var operatorFilter = document.getElementById("selOperator");
+	if(document.getElementById("selFilter" + columns[currentColumn].id) == null)
+	{
+		columnValue = document.getElementById("txtFilter" + columns[currentColumn].id).value;
+	}
+	else
+	{
+		selfilterAdd = document.getElementById("selFilter" + columns[currentColumn].id);
+		columnValue = selfilterAdd.options[selfilterAdd.selectedIndex].value;
+	}
+	var operatorValue = operatorFilter.options[operatorFilter.selectedIndex].value;
+	var operatorValueText = operatorFilter.options[operatorFilter.selectedIndex].text;
+	var filterNo = YAHOO.GDMA.datagrid.paginatedRequest.filters.length;
+	
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo] = {};
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].columnId = columns[currentColumn].id;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].columnName = columns[currentColumn].name;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].columnType = columns[currentColumn].columnType;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].filterValue = columnValue;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].filterOperator = operatorValue;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].filterOperatorText = operatorValueText;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].orValue = document.getElementById("chkIsOr" + columns[currentColumn].id).checked;
+	YAHOO.GDMA.datagrid.paginatedRequest.filters[filterNo].notValue = document.getElementById("chkIsNot" + columns[currentColumn].id).checked;
+	
+	YAHOO.GDMA.datagrid.popFormPanel.destroy();
+	YAHOO.GDMA.datagrid.filterRecords();
+};
+
+YAHOO.GDMA.datagrid.removeFilter = function(){
+	var columns = YAHOO.GDMA.datagrid.currentDataDescription.tables[0].columns;
+	var filterNo = YAHOO.GDMA.datagrid.paginatedRequest.filters.length;
+	
+	
+	YAHOO.GDMA.datagrid.popFormPanel.destroy();
+	YAHOO.GDMA.datagrid.filterRecords();
+	
 };
 
 YAHOO.GDMA.datagrid.doDownload = function(){
@@ -1020,7 +1193,12 @@ YAHOO.GDMA.datagrid.multiUpdate = function() {
 
     if (!selectedRows || selectedRows.length < 2) {
         YAHOO.GDMA.dialog.showInfoDialog("No record selected ...", "Please select the multiple records you wish to update.")
-    } else{
+    } 
+    else if(selectedRows.length > 25)
+    {
+    	YAHOO.GDMA.dialog.showInfoDialog("Too many records selected ...", "Please contact " + adminContactDetails[1] + " with details of the multiple updates you wish to make.")
+    }
+    else{
         var popupformConfig = {
                 title: 'Update All Selected Rows',
                 submit: YAHOO.GDMA.datagrid.multiUpdateSave,
@@ -1096,14 +1274,22 @@ YAHOO.GDMA.datagrid.resetPopupForm = function(){
         }else if(inputs[i].type == 'checkbox'){
             inputs[i].checked = false;
         }
-    }    
+    } 
+    var selects = divDlgPopupFormCenter.getElementsByTagName("select");
+    for ( var j = 0; j < selects.length; j++) {
+        selects[j].selectedIndex = -1;        
+    } 
+    YAHOO.GDMA.datagrid.paginatedRequest.filters = [];
+    YAHOO.GDMA.datagrid.popFormPanel.destroy();
+	YAHOO.GDMA.datagrid.filterRecords();
+	
 };
 
 //used to collect primary key values
 YAHOO.GDMA.datagrid.createPopupform = function(config) {
     
     var btnSaveText = config.submitLabel ? config.submitLabel : 'Save';
-    var width = config.width ? config.width : 500;
+    var width = config.width ? config.width : 550;
     var height = config.height ? config.height : 400;
     
     //get or create the container element for the panel
@@ -1144,6 +1330,12 @@ YAHOO.GDMA.datagrid.createPopupform = function(config) {
     
             YAHOO.GDMA.datagrid.popFormLayout.render();            
                           
+            if(config.addFilter){            
+                YAHOO.GDMA.toolbar.createToolBarButton("Add Filter","btnPopupFormAddFilter", divDlgPopupFormBottom, config.addFilter, "Add a Filter", "show" );
+            }if(config.resetFilter){            
+                YAHOO.GDMA.toolbar.createToolBarButton("Reset Filter","btnPopupFormRemoveFilter", divDlgPopupFormBottom, config.removeFilter, "Reset the form", "show" );
+            }
+            
             if(config.reset){            
                 YAHOO.GDMA.toolbar.createToolBarButton("Reset","btnPopupFormClear", divDlgPopupFormBottom, config.reset, "Reset the form", "show" );
             }
@@ -1211,3 +1403,6 @@ YAHOO.GDMA.datagrid.toolbarButtons =  [
         tooltip: "import data from csv file"
     }
 ];
+
+
+
