@@ -110,19 +110,31 @@ public class SqlUtil {
 		StringBuilder stringBuilder = new StringBuilder();
 
 		boolean addAnd = false;
+		
+		boolean addOrColumn = false;
+		
 		if (filters != null) {
 			for (Filter filter : filters) {
 				boolean addOr = false;
 				if (filter.isValid()) {
-					if (addAnd) {
-						stringBuilder.append(" AND ");
-					} else {
-						addAnd = true;
+					LOG.error("filter = "  + filter.toString() );
+					if(addOrColumn)
+					{						
+						stringBuilder.append(" OR ");
+						addOrColumn = false;
 					}
-
+					else
+					{
+						if (addAnd) {
+							stringBuilder.append(" AND ");
+						} else {
+							addAnd = true;
+						}
+					}
 					stringBuilder.append(" (");
 
-					if (filter.isNullValue()) {
+					//if (filter.isNullValue()) {
+					if (filter.getFilterOperator() == 8) {
 						stringBuilder.append(table.getName());
 						stringBuilder.append('.');
 						stringBuilder.append(filter.getColumnName());
@@ -130,12 +142,8 @@ public class SqlUtil {
 						addOr = true;
 					}
 
-					if (filter.isBlank()) {
-						if (addOr) {
-							stringBuilder.append(" OR ");
-						} else {
-							addOr = true;
-						}
+					//if (filter.isBlank()) {
+					if (filter.getFilterOperator() == 9) {
 						stringBuilder.append(table.getName());
 						stringBuilder.append('.');
 						stringBuilder.append(filter.getColumnName());
@@ -148,18 +156,30 @@ public class SqlUtil {
 						} else {
 							addOr = true;
 						}
-
+						//deal with NOT queries, i.e. if the Not checkbox is ticked
+						if (filter.isNotValue())
+						{
+							stringBuilder.append(" NOT ");
+						}
 						stringBuilder.append(table.getName());
 						stringBuilder.append('.');
 						stringBuilder.append(filter.getColumnName());
-						if (isNumeric(filter.getColumnType()) || isDate(filter.getColumnType())  || isTime(filter.getColumnType())) {
-							stringBuilder.append(" = ?");
-						} else {
-							//stringBuilder.append(table.getName());
-							//stringBuilder.append('.');
-							//stringBuilder.append(filter.getColumnName());
-							stringBuilder.append(" LIKE ?");
+																	
+						switch (filter.getFilterOperator()) {
+			            	case 0:  stringBuilder.append(" = ?"); break; 
+			            	case 1:  stringBuilder.append(" < ?"); break; 
+			            	case 2:  stringBuilder.append(" <= ?"); break; 
+			            	case 3:  stringBuilder.append(" > ?"); break; 
+			            	case 4:  stringBuilder.append(" >= ?"); break; 
+			            	case 5:  stringBuilder.append(" LIKE ?"); break; 
+			            	case 6:  stringBuilder.append(" LIKE ?"); break; 
+			            	case 7:  stringBuilder.append(" LIKE ?"); break;			            	
 						}
+						
+					}
+					if(filter.isOrValue())
+					{
+						addOrColumn = true;
 					}
 
 					stringBuilder.append(" )");
