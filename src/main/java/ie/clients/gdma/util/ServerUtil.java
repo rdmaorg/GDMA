@@ -92,8 +92,11 @@ public class ServerUtil {
                     table.setAllowDelete(false);
                     tables.add(table);
                 }
-            }
+            }   
+            
+            LOG.debug("*************Server details: " + server.toString());
             serverDao.save(server);
+            
         } catch (Exception e) {
             LOG.error(e, e);
         } finally {
