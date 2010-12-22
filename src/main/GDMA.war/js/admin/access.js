@@ -134,7 +134,7 @@ YAHOO.GDMA.admin.access.initLayout = function (){
         xy: [140, 100]
     });
     
-    YAHOO.GDMA.admin.access.panel.setHeader('User Acess for table ' + YAHOO.GDMA.admin.access.tableName );
+    YAHOO.GDMA.admin.access.panel.setHeader('User Access for table ' + YAHOO.GDMA.admin.access.tableName );
     YAHOO.GDMA.admin.access.panel.setBody('<div id="divDlgAccessLayout"></div>');
     YAHOO.GDMA.admin.access.panel.beforeRenderEvent.subscribe(function() {
         try{
