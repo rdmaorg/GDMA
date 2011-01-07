@@ -30,38 +30,69 @@ public class GdmaAjaxFacade {
 
 	public void setGdmaFacade(GdmaFacade gdmaFacade) {
 		Assert.notNull(gdmaFacade, "a null gdmaFacade was passed to GdmaAdminAjaxFacade");
-		this.gdmaFacade = gdmaFacade;
+
+        Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+
+        this.gdmaFacade = gdmaFacade;
 	}
 
 	public List<Server> getServerTableList() {
 		Assert.notNull(gdmaFacade, "gdmaFacade is null");
 		String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+
 		return gdmaFacade.getServerDao().getServerTableList(username);
 	}
 
 	public List<Server> getTableDetails(Long serverId, Long tableId) {
+        Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+	    
 		Server server = gdmaFacade.getServerDao().get(serverId);
 		Table table = gdmaFacade.getTableDao().get(tableId);
 		return gdmaFacade.getServerDao().getServerTableColumnList(serverId, tableId);
 	}
 
 	public PaginatedResponse getData(PaginatedRequest paginatedRequest) {
+	    Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+
 		return gdmaFacade.getDynamicDao().get(paginatedRequest);
 	}
 
 	public void addRecord(UpdateRequest updateRequest) {
+        Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+
 		gdmaFacade.getDynamicDao().addRecord(updateRequest);
 	}
 
 	public int deleteRecords(UpdateRequest updateRequest) {
+        Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+
 		return gdmaFacade.getDynamicDao().deleteRecords(updateRequest);
 	}
 
 	public int updateRecords(UpdateRequest updateRequest) {
+        Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+	    
 		return gdmaFacade.getDynamicDao().updateRecords(updateRequest);
 	}
 
 	public List getDropDownData(Column display, Column store) {
-		return gdmaFacade.getDynamicDao().getDropDownData(display, store);
+        Assert.notNull(gdmaFacade, "gdmaFacade is null");
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
+        Assert.notNull(username, "username is null");
+
+        return gdmaFacade.getDynamicDao().getDropDownData(display, store);
 	}
 }
