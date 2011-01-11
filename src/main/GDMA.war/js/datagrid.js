@@ -1194,7 +1194,7 @@ YAHOO.GDMA.datagrid.multiUpdate = function() {
     if (!selectedRows || selectedRows.length < 2) {
         YAHOO.GDMA.dialog.showInfoDialog("No record selected ...", "Please select the multiple records you wish to update.")
     } 
-    else if(selectedRows.length > 25)
+    else if(selectedRows.length > adminContactDetails[0])
     {
     	YAHOO.GDMA.dialog.showInfoDialog("Too many records selected ...", "Please contact " + adminContactDetails[1] + " with details of the multiple updates you wish to make.")
     }
