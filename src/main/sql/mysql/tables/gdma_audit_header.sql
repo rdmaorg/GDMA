@@ -4,5 +4,5 @@ CREATE TABLE GDMA2_AUDIT_HEADER
   table_id    INT NOT NULL,
   type        CHAR(1) NOT NULL,
   modified_by VARCHAR(255) NOT NULL,
-  modified_on DATE NOT NULL
+  modified_on DATETIME NOT NULL
 );
