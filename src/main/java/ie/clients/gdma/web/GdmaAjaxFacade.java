@@ -33,8 +33,6 @@ public class GdmaAjaxFacade {
 	public void setGdmaFacade(GdmaFacade gdmaFacade) {
 		Assert.notNull(gdmaFacade, "a null gdmaFacade was passed to GdmaAdminAjaxFacade");
 
-        authenticateUser();
-
 		this.gdmaFacade = gdmaFacade;
 	}
 
