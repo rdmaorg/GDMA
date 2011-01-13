@@ -12,6 +12,8 @@ import ie.clients.gdma.web.command.UpdateRequest;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 
@@ -35,11 +37,19 @@ public class GdmaAjaxFacade {
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
         Assert.notNull(username, "username is null");
 
-        this.gdmaFacade = gdmaFacade;
+		this.gdmaFacade = gdmaFacade;
 	}
 
 	public List<Server> getServerTableList() {
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("----------------  getServerTableList  ---------------");
+        LOG.debug("-----------------------------------------------------");
+	    
 		Assert.notNull(gdmaFacade, "gdmaFacade is null");
+		
+		// Ensure that the user session is valid
+		authenticateUser();
+		
 		String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
         Assert.notNull(username, "username is null");
 
@@ -47,52 +57,96 @@ public class GdmaAjaxFacade {
 	}
 
 	public List<Server> getTableDetails(Long serverId, Long tableId) {
-        Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("-----------------  getTableDetails  -----------------");
+        LOG.debug("-----------------------------------------------------");
 	    
+        // Ensure that the user session is valid
+        authenticateUser();
+        	    
 		Server server = gdmaFacade.getServerDao().get(serverId);
 		Table table = gdmaFacade.getTableDao().get(tableId);
 		return gdmaFacade.getServerDao().getServerTableColumnList(serverId, tableId);
 	}
 
 	public PaginatedResponse getData(PaginatedRequest paginatedRequest) {
-	    Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
-
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("-----------------      getData      -----------------");
+        LOG.debug("-----------------------------------------------------");
+	    
+        // Ensure that the user session is valid
+        authenticateUser();
+        
 		return gdmaFacade.getDynamicDao().get(paginatedRequest);
 	}
 
 	public void addRecord(UpdateRequest updateRequest) {
-        Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
-
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("-----------------     addRecord     -----------------");
+        LOG.debug("-----------------------------------------------------");
+	    
+        // Ensure that the user session is valid
+        authenticateUser();
+        
 		gdmaFacade.getDynamicDao().addRecord(updateRequest);
 	}
 
 	public int deleteRecords(UpdateRequest updateRequest) {
-        Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
-
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("-----------------   deleteRecords   -----------------");
+        LOG.debug("-----------------------------------------------------");
+        
+        // Ensure that the user session is valid
+        authenticateUser();
+        
 		return gdmaFacade.getDynamicDao().deleteRecords(updateRequest);
 	}
 
 	public int updateRecords(UpdateRequest updateRequest) {
-        Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
-	    
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("-----------------   updateRecords   -----------------");
+        LOG.debug("-----------------------------------------------------");
+        
+        // Ensure that the user session is valid
+        authenticateUser();
+        
 		return gdmaFacade.getDynamicDao().updateRecords(updateRequest);
 	}
 
 	public List getDropDownData(Column display, Column store) {
-        Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
-
-        return gdmaFacade.getDynamicDao().getDropDownData(display, store);
+        LOG.debug("-----------------------------------------------------");
+        LOG.debug("---------------   getDropDownData   -----------------");
+        LOG.debug("-----------------------------------------------------");
+	    
+        // Ensure that the user session is valid
+        authenticateUser();
+        
+		return gdmaFacade.getDynamicDao().getDropDownData(display, store);
+	}
+	
+	private void authenticateUser()
+	{
+        LOG.debug("----------------------------------------------------");
+        LOG.debug("-------------    authenticateUser    ---------------");
+        LOG.debug("----------------------------------------------------");
+        User user = null;
+        try{
+            LOG.debug("SecurityContextHolder.getContext()");
+            SecurityContext security = SecurityContextHolder.getContext();
+            LOG.debug("security = " + security);
+            Authentication authentication = security.getAuthentication();
+            LOG.debug("authentication = " + authentication);
+            LOG.debug("------------- 1 --------------");
+            user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            LOG.debug("------------- 2 --------------");
+        }
+        catch(Exception e){
+            LOG.debug("------------- exception --------------");
+            LOG.debug("cought exception e " + e);
+            
+            String principal = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            LOG.debug("principal = " + principal);
+            Assert.notNull(user, "Your Session has Expired please log out.");
+        }	    
 	}
 }
