@@ -42,7 +42,7 @@ public class UserDaoImplTest extends BaseSpringImplTest {
     @Test
     public void loadByUserName() {
         assertNotNull(userDao);
-        User user = userDao.get("admin");
+        User user = userDao.get("801982");
         assertNotNull(user);
         LOG.debug(user.getId());
     }
