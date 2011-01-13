@@ -33,9 +33,7 @@ public class GdmaAjaxFacade {
 	public void setGdmaFacade(GdmaFacade gdmaFacade) {
 		Assert.notNull(gdmaFacade, "a null gdmaFacade was passed to GdmaAdminAjaxFacade");
 
-        Assert.notNull(gdmaFacade, "gdmaFacade is null");
-        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserName();
-        Assert.notNull(username, "username is null");
+        authenticateUser();
 
 		this.gdmaFacade = gdmaFacade;
 	}
