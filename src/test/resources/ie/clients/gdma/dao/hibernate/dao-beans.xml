@@ -4,8 +4,9 @@
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-    <import resource="hibernate/hibernate-beans.xml" />
+    <import resource="hibernate-beans.xml" />
 
+<!-- 
     <bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource">
         <property name="URL" value="jdbc:oracle:thin:@iecsbi01:1521:MSDB2" />
         <property name="user" value="app_meta" />
@@ -18,5 +19,13 @@
             </props>
         </property>
     </bean>
+ -->
+ 
+     <bean id="dataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+        <property name="URL" value="jdbc:mysql://localhost:3306/gdma?autoreconnect=true" />
+        <property name="user" value="gdma" />
+        <property name="password" value="gdma" />
+    </bean>    
+    
     <bean id="dataSourcePool" class="ie.clients.gdma.util.DataSourcePoolImpl" />
 </beans>

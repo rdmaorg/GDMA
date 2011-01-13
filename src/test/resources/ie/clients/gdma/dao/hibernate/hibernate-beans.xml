@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+        
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="mappingResources">
+            <list>
+                <value>ie/clients/gdma/dao/hibernate/hbm/AuditHeader.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/AuditRecord.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/Column.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/ConnectionType.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/Server.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/Table.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/User.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+		    <!-- <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9iDialect</prop> -->
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.default_batch_fetch_size">20</prop>
+            </props>
+        </property>
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+    <aop:config>
+        <aop:pointcut id="hibernateTransactionPointcuts" expression="execution(* ie.clients.gdma.dao.hibernate.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="hibernateTransactionPointcuts" />
+    </aop:config>
+    
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <bean id="auditHeaderDao" class="ie.clients.gdma.dao.hibernate.AuditHeaderDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="auditRecordDao" class="ie.clients.gdma.dao.hibernate.AuditRecordDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="columnDao" class="ie.clients.gdma.dao.hibernate.ColumnDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="connectionTypeDao" class="ie.clients.gdma.dao.hibernate.ConnectionTypeDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="serverDao" class="ie.clients.gdma.dao.hibernate.ServerDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="tableDao" class="ie.clients.gdma.dao.hibernate.TableDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="userDao" class="ie.clients.gdma.dao.hibernate.UserDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+</beans>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
@@ -9,16 +11,18 @@
     <!--
         Master App context
     -->
+    <import resource="ie/clients/gdma/dao/hibernate/hibernate-beans.xml" />
+    <import resource="ie/clients/gdma/dao/jdbc/jdbc-beans.xml" />
+
     <import resource="ie/clients/gdma/web/web-beans.xml" />
     <import resource="ie/clients/gdma/web/dwr-beans.xml" />
     <import resource="ie/clients/gdma/aop.xml" />
     
-    <import resource="ie/clients/gdma/dao/hibernate/hibernate-beans.xml" />
-    <import resource="ie/clients/gdma/dao/jdbc/jdbc-beans.xml" />
 
     
     <bean id="dataSourcePool" class="ie.clients.gdma.util.DataSourcePoolImpl" />
-    
+
+<!-- 
      <bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource">
         <property name="URL" value="jdbc:oracle:thin:@192.168.1.187:1521:orcl" />
         <property name="user" value="GDMADEV" />
@@ -31,7 +35,21 @@
             </props>
         </property>
     </bean>
-    
+ -->
+ 
+     <bean id="dataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
+        <property name="URL" value="jdbc:mysql://localhost:3306/gdma?autoreconnect=true" />
+        <property name="user" value="gdma" />
+        <property name="password" value="gdma" />
+        <property name="connectionCachingEnabled" value="true" />
+        <property name="connectionCacheProperties">
+            <props>
+                <prop key="MinLimit">5</prop>
+                <prop key="MaxLimit">25</prop>
+            </props>
+        </property>
+    </bean>
+     
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="alwaysUseMessageFormat" value="true" />
         <property name="basenames">
@@ -53,4 +71,5 @@
         <property name="userDao" ref="userDao" />
         <property name="dynamicDao" ref="dynamicDao" />
     </bean>
+    
 </beans>
