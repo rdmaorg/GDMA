@@ -6,6 +6,7 @@ import ie.clients.gdma.dao.DynamicDao;
 import ie.clients.gdma.dao.ServerDao;
 import ie.clients.gdma.dao.TableDao;
 import ie.clients.gdma.dao.UserDao;
+import ie.clients.gdma.dao.UserAccessDao;
 
 import org.springframework.util.Assert;
 
@@ -20,6 +21,8 @@ public class GdmaFacade {
     private ConnectionTypeDao connectionTypeDao;
 
     private UserDao userDao;
+    
+    public UserAccessDao userAccessDao;
 
     private DynamicDao dynamicDao;
 
@@ -41,6 +44,10 @@ public class GdmaFacade {
 
     public UserDao getUserDao() {
         return userDao;
+    }
+    
+    public UserAccessDao getUserAccessDao() {
+    	return userAccessDao;
     }
 
     public DynamicDao getDynamicDao() {
@@ -70,6 +77,11 @@ public class GdmaFacade {
     public void setUserDao(UserDao userDao) {
         Assert.notNull(userDao, "a null userDao was passed to GdmaFacade");
         this.userDao = userDao;
+    }
+    
+    public void setUserAccessDao(UserAccessDao userAccessDao) {
+        Assert.notNull(userAccessDao, "a null userAccessDao was passed to GdmaFacade");
+        this.userAccessDao = userAccessDao;
     }
 
     public void setDynamicDao(DynamicDao dynamicDao) {
