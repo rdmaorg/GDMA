@@ -54,6 +54,7 @@
         <property name="columnDao" ref="columnDao" />
         <property name="connectionTypeDao" ref="connectionTypeDao" />
         <property name="userDao" ref="userDao" />
+        <property name="userAccessDao" ref="userAccessDao" />
         <property name="dynamicDao" ref="dynamicDao" />
     </bean>
     
