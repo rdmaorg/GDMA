@@ -6,7 +6,7 @@ import java.util.Set;
 
 /**
  * @author rgill
- * 
+ *
  */
 public class User implements Serializable {
     private Long id;
@@ -23,8 +23,10 @@ public class User implements Serializable {
 
     private boolean locked;
 
-    private Set<Table> tables = new LinkedHashSet<Table>();
+    private boolean active;
 
+    private Set<UserAccess> userAccess = new LinkedHashSet<UserAccess>();
+    
     public String getDomain() {
         return domain;
     }
@@ -81,14 +83,22 @@ public class User implements Serializable {
         this.locked = locked;
     }
 
-    public Set<Table> getTables() {
-        return tables;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setTables(Set<Table> tables) {
-        this.tables = tables;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
+    public Set<UserAccess> getUserAccess() {
+        return userAccess;
+    }
+
+    public void setUserAccess(Set<UserAccess> tables) {
+        this.userAccess = userAccess;
+    }
+    
     public boolean equals(Object other) {
         if (this == other)
             return true;
