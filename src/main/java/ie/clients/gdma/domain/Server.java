@@ -28,6 +28,8 @@ public class Server {
 
     private String prefix;
 
+    private boolean active;
+    
     // the following 2 values are runtime values and are not persisted
     private boolean connected;
 
@@ -94,6 +96,14 @@ public class Server {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Set<Table> getTables() {
