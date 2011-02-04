@@ -7,6 +7,7 @@ import ie.clients.gdma.domain.Column;
 import ie.clients.gdma.domain.Server;
 import ie.clients.gdma.domain.Table;
 import ie.clients.gdma.domain.User;
+import ie.clients.gdma.domain.UserAccess;
 import ie.clients.gdma.util.DataSourcePool;
 import ie.clients.gdma.util.Formatter;
 import ie.clients.gdma.util.PagedResultSetExtractor;
@@ -185,22 +186,22 @@ public class DynamicDaoImpl implements DynamicDao {
 				if (SqlUtil.isNumeric(filter.getColumnType())) {
 					LOG.debug("Number as string as parameter: " + param);
 				} else if (SqlUtil.isDate(filter.getColumnType())) {
-					LOG.debug("DATE filter detected: " + filter.getFilterValue());
+                    LOG.debug("DATE filter detected: " + filter.getFilterValue());
 					try {
-						param = Formatter.parseDate(filter.getFilterValue());
-						LOG.debug("DATE as parameter: " + param);
+                        param = Formatter.formatDate(Formatter.parseDate(filter.getFilterValue()));
+						LOG.debug("Date as parameter: " + param);
 					} catch (Exception ex) {
-						LOG.error("Could not parse the DATE: " + filter.getFilterValue(), ex);
+						LOG.error("Could not parse the date: " + filter.getFilterValue(), ex);
 					}
                 } /*else if (SqlUtil.isDateTime(filter.getColumnType())) {
-                    LOG.debug("DATETIME filter detected: " + filter.getFilterValue());
-					try {
-                        param = Formatter.parseDate(filter.getFilterValue());
-						LOG.debug("DATETIME as parameter: " + param);
-					} catch (Exception ex) {
-						LOG.error("Could not parse the DATETIME: " + filter.getFilterValue(), ex);
-					}
-                }*/else if (SqlUtil.isTime(filter.getColumnType())) {
+                LOG.debug("DATETIME filter detected: " + filter.getFilterValue());
+				try {
+                    param = Formatter.parseDate(filter.getFilterValue());
+					LOG.debug("DATETIME as parameter: " + param);
+				} catch (Exception ex) {
+					LOG.error("Could not parse the DATETIME: " + filter.getFilterValue(), ex);
+				}
+            	}*/else if (SqlUtil.isTime(filter.getColumnType())) {
                     try {
                         param = Formatter.parseTime(filter.getFilterValue());
                         LOG.debug("Time as parameter: " + param);
