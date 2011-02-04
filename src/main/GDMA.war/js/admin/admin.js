@@ -320,8 +320,8 @@ YAHOO.GDMA.admin.toolbarButtons =  [{
         },{
             name: "Delete",
             fn: YAHOO.GDMA.admin.deleteRecord,
-            defaultMode: "show",
-            usersView: "show",
+            defaultMode: "hide",
+            usersView: "hide",
             tooltip: "delete selected server registration"
         },{
             name: "Save",
