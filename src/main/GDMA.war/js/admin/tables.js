@@ -5,9 +5,9 @@ YAHOO.namespace("GDMA.admin.tables");
 YAHOO.GDMA.admin.tables.fields = {
       fields : [ 
                  {key:"id", parser:YAHOO.util.DataSource.parseNumber},
-                 {key:"name", parser:YAHOO.util.DataSource.parseString},
+                 {key:"name", parser:YAHOO.util.DataSource.parseString}/*,
                  {key:"displayed"},
-                 {key:"allowDelete"}
+                 {key:"allowDelete"}*/
                  ]
 };
 
@@ -23,18 +23,6 @@ YAHOO.GDMA.admin.tables.columnDefs = [ {
         sortable:true,
         resizeable:true, 
         width:200
-    }, {
-        key :"displayed",
-        label : YAHOO.GDMA.utilities.createCheckAllHeader("Displayed"),
-        formatter:"checkbox",
-        resizeable:true,
-        width:85
-    }, {
-        key :"allowDelete",
-        label : YAHOO.GDMA.utilities.createCheckAllHeader("Allow Delete"),
-        formatter:"checkbox",
-        resizeable:true,
-        width:85
 }];
 
 YAHOO.GDMA.admin.tables.doubleClick = function(oArgs){
