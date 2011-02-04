@@ -16,6 +16,7 @@
                 <value>ie/clients/gdma/dao/hibernate/hbm/Server.hbm.xml</value>
                 <value>ie/clients/gdma/dao/hibernate/hbm/Table.hbm.xml</value>
                 <value>ie/clients/gdma/dao/hibernate/hbm/User.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/UserAccess.hbm.xml</value> 
             </list>
         </property>
         <property name="hibernateProperties">
@@ -65,6 +66,9 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
     <bean id="userDao" class="ie.clients.gdma.dao.hibernate.UserDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="userAccessDao" class="ie.clients.gdma.dao.hibernate.UserAccessDaoImpl">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
     
