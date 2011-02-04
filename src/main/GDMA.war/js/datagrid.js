@@ -378,8 +378,12 @@ YAHOO.GDMA.datagrid.buildTable = function(datasource) {
     YAHOO.GDMA.dialog.loading.hide();
 };
 
-
-YAHOO.GDMA.datagrid.createDatasource = function(){
+//Create the datasource, passing in the current user's privileges
+YAHOO.GDMA.datagrid.createDatasource = function(userAccess){
+	
+	YAHOO.GDMA.datagrid.userAccess = userAccess;
+	
+	
     GdmaAjax.getTableDetails(YAHOO.GDMA.datagrid.paginatedRequest.serverId, YAHOO.GDMA.datagrid.paginatedRequest.tableId, function(servers) {
 
     	if (null == servers || 0 == servers.length)
@@ -400,7 +404,9 @@ YAHOO.GDMA.datagrid.createDatasource = function(){
                 sortDir : "sortDir",
                 sortKey : "key"
             }
-        };        
+        };  
+        
+        
         
         YAHOO.GDMA.datagrid.columnDefs = [];
         var columns = servers[0].tables[0].columns;
@@ -478,12 +484,13 @@ YAHOO.GDMA.datagrid.createDatasource = function(){
                     def.formatter = YAHOO.GDMA.datagrid.formatDropdown;
                     
                     
-                }else{
-                    // can only edit non primary key fields
-                    if(primarykeyfound && columns[i].primarykey != true && columns[i].allowUpdate == true){
+                }else{                    
+                	var userAllowUpdate = userAccess["allowUpdate"];                	
+                	//if this column is not a primary key, it is set to allow updates and the current user has update privileges for this table
+                	if(primarykeyfound && columns[i].primarykey != true && columns[i].allowUpdate == true && userAllowUpdate == true){
                         def.editor = YAHOO.GDMA.utilities.getEditor(columns[i].columnType);
                         def.editorOptions = {validator:YAHOO.GDMA.utilities.getValidator(columns[i].columnType)};
-                    }
+                    }                	
                 }
                 
                 YAHOO.GDMA.datagrid.columnDefs.push(def);
@@ -497,7 +504,10 @@ YAHOO.GDMA.datagrid.createDatasource = function(){
         }
         
 
-        if(servers[0].tables[0].allowDelete != true || !primarykeyfound ){
+        //if user does not have delete privileges on this table or 
+        //if no Primary Key has been set do not display the delete button
+        if(userAccess["allowDelete"] != true || !primarykeyfound ){
+        
             YAHOO.GDMA.toolbar.updateToolBarButton("btnDelete",{
                 name: "Delete",
                 fn: YAHOO.GDMA.datagrid.deleteRecord,
@@ -505,6 +515,19 @@ YAHOO.GDMA.datagrid.createDatasource = function(){
                 tooltip: "delete selected record"
             });
         }
+        
+        //if user does not have insert privileges on this table or 
+        //if no Primary Key has been set do not display the delete button
+        if(userAccess["allowInsert"] != true || !primarykeyfound ){
+        
+            YAHOO.GDMA.toolbar.updateToolBarButton("btnAdd",{
+                name: "Add",
+                fn: YAHOO.GDMA.datagrid.addRecord,
+                defaultMode: "noshow",
+                tooltip: "add a new record"
+            });
+        }
+               
         //set up the data source - passing the DWR fucntion as the source
         YAHOO.GDMA.datagrid.datasource = new YAHOO.util.DataSource(GdmaAjax.getData);
         YAHOO.GDMA.datagrid.datasource.responseType = YAHOO.util.DataSource.TYPE_JSON;        
@@ -526,6 +549,10 @@ YAHOO.GDMA.datagrid.init = function(serverId, tableId) {
 	YAHOO.GDMA.datagrid.filterColumn = 0;
 	
 	YAHOO.GDMA.dialog.loading.show();
+	
+	YAHOO.GDMA.datagrid.userAllowUpdate = false;
+	YAHOO.GDMA.datagrid.userAllowInsert = false;
+	YAHOO.GDMA.datagrid.userAllowDelete = false;
     
     // default structure for making data requests
     YAHOO.GDMA.datagrid.paginatedRequest = {
@@ -577,7 +604,11 @@ YAHOO.GDMA.datagrid.init = function(serverId, tableId) {
     YAHOO.GDMA.datagrid.updateRequest.tableId = tableId;
     YAHOO.GDMA.datagrid.updateRequest.updates = [];
     
-    YAHOO.GDMA.datagrid.createDatasource();
+    //Get the current user's access privileges for this table and pass it to the createDatasource() function
+    GdmaAjax.getUserAccessDetails(serverId, tableId, function(userAccess) {
+    	//YAHOO.GDMA.datagrid.userAccess = userAccess;
+    	YAHOO.GDMA.datagrid.createDatasource(userAccess);
+    });
     
     // Enable optional features
     if (!enabledFeatures['ie.clients.gdma.BulkImport']) {
