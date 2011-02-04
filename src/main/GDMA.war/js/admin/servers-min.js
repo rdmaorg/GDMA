@@ -2,7 +2,7 @@ YAHOO.namespace("GDMA.admin.servers");
 YAHOO.GDMA.admin.servers.loadConnectionTypes=function(){GdmaAdmin.getConnectionTypes(function(A){YAHOO.GDMA.admin.servers.connectionTypes=A
 })
 };
-YAHOO.GDMA.admin.servers.fields={fields:[{key:"id",parser:YAHOO.util.DataSource.parseNumber},{key:"name",parser:YAHOO.util.DataSource.parseString},{key:"username",parser:YAHOO.util.DataSource.parseString},{key:"password",parser:YAHOO.util.DataSource.parseString},{key:"connectionUrl",parser:YAHOO.util.DataSource.parseString},{key:"connectionType"},{key:"prefix",parser:YAHOO.util.DataSource.parseString}]};
+YAHOO.GDMA.admin.servers.fields={fields:[{key:"id",parser:YAHOO.util.DataSource.parseNumber},{key:"name",parser:YAHOO.util.DataSource.parseString},{key:"username",parser:YAHOO.util.DataSource.parseString},{key:"password",parser:YAHOO.util.DataSource.parseString},{key:"connectionUrl",parser:YAHOO.util.DataSource.parseString},{key:"connectionType"},{key:"prefix",parser:YAHOO.util.DataSource.parseString},{key:"active"}]};
 YAHOO.GDMA.admin.servers.doubleClick=function(B){var A=YAHOO.GDMA.admin.dataTable.getTrEl(B.target);
 YAHOO.GDMA.admin.dataTable.selectRow(A);
 YAHOO.GDMA.admin.dataTable.focus();
@@ -36,4 +36,21 @@ A.fireEvent("editorUpdateEvent",{editor:A._oCellEditor})
 });
 A._focusEl(H)
 };
-YAHOO.GDMA.admin.servers.columnDefs=[{label:"",formatter:YAHOO.GDMA.utilities.rownumFormatter,minWidth:20},{key:"name",label:"Name",editor:"textbox",sortable:true,resizeable:true,width:75},{key:"username",label:"Username",editor:"textbox",sortable:true,resizeable:true,width:75},{key:"password",label:"Password",editor:"textbox",formatter:YAHOO.GDMA.utilities.passwordFormatter,resizeable:true,width:75},{key:"connectionUrl",label:"Connection URL",editor:"textbox",resizeable:true,width:200},{key:"connectionType",label:"Connection Type",formatter:YAHOO.GDMA.admin.servers.connectionTypeFormatter,editor:YAHOO.GDMA.admin.servers.editDropdown,resizeable:true,width:100},{key:"prefix",label:"Prefix",editor:"textbox",resizeable:true,width:50}];
+YAHOO.GDMA.admin.servers.editActiveServerDropdown=function(G,F){var H=G.cell;
+var I=G.record;
+var E=G.column;
+var C=G.container;
+var D=C.appendChild(document.createElement("select"));
+var B=new Array();
+var A=new Array();
+B[0]=1;
+B[1]=0;
+A[0]="true";
+A[1]="false";
+YAHOO.GDMA.utilities.populateDropDown2(D,B,A,1,2,-1,true);
+YAHOO.util.Event.addListener(D,"change",function(){F._oCellEditor.value=A[D.selectedIndex-1];
+F.fireEvent("editorUpdateEvent",{editor:F._oCellEditor})
+});
+F._focusEl(D)
+};
+YAHOO.GDMA.admin.servers.columnDefs=[{label:"",formatter:YAHOO.GDMA.utilities.rownumFormatter,minWidth:20},{key:"name",label:"Name",editor:"textbox",sortable:true,resizeable:true,width:75},{key:"username",label:"Username",editor:"textbox",sortable:true,resizeable:true,width:75},{key:"password",label:"Password",editor:"textbox",formatter:YAHOO.GDMA.utilities.passwordFormatter,resizeable:true,width:75},{key:"connectionUrl",label:"Connection URL",editor:"textbox",resizeable:true,width:200},{key:"connectionType",label:"Connection Type",formatter:YAHOO.GDMA.admin.servers.connectionTypeFormatter,editor:YAHOO.GDMA.admin.servers.editDropdown,resizeable:true,width:100},{key:"prefix",label:"Prefix",editor:"textbox",resizeable:true,width:50},{key:"active",label:"Active",formatter:YAHOO.GDMA.admin.servers.activeFormatter,editor:YAHOO.GDMA.admin.servers.editActiveServerDropdown,resizeable:true,width:50}];
