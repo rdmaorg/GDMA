@@ -17,7 +17,8 @@ YAHOO.GDMA.admin.servers.fields = {
                   {key:"password", parser:YAHOO.util.DataSource.parseString},
                   {key:"connectionUrl", parser:YAHOO.util.DataSource.parseString},
                   {key:"connectionType"},
-                  {key:"prefix", parser:YAHOO.util.DataSource.parseString} 
+                  {key:"prefix", parser:YAHOO.util.DataSource.parseString},
+                  {key:"active"}
         ]
 };
 
@@ -90,6 +91,48 @@ YAHOO.GDMA.admin.servers.editDropdown = function(oEditor, oSelf) {
     oSelf._focusEl(elDropdown);
 };
 
+
+
+
+
+//Need a custom edit drop down to deal with referenced table
+YAHOO.GDMA.admin.servers.editActiveServerDropdown = function(oEditor, oSelf) {
+    var elCell = oEditor.cell;
+    var oRecord = oEditor.record;
+    var oColumn = oEditor.column;
+    var elContainer = oEditor.container;
+    //var value = oEditor.value ? oEditor.value.id : -1;
+
+    var elDropdown2 = elContainer.appendChild(document.createElement("select"));
+    
+    var activeId = new Array();
+    var activeValue = new Array();
+    activeId[0] = 1;
+    activeId[1] = 0;
+    activeValue[0] = "true";
+    activeValue[1] = "false";
+    YAHOO.GDMA.utilities.populateDropDown2(
+            elDropdown2, 
+            activeId, 
+            activeValue, 
+            1,
+            2,
+            -1, 
+            true);
+    
+    // set up a listener to track the input value
+    YAHOO.util.Event.addListener(elDropdown2, "change", function() {
+        oSelf._oCellEditor.value = activeValue[elDropdown2.selectedIndex - 1];//elDropdown2.options[elDropdown2.selectedIndex].value;
+        oSelf.fireEvent("editorUpdateEvent", {
+            editor :oSelf._oCellEditor
+        });
+    });
+
+    // Focus the dropdown
+    oSelf._focusEl(elDropdown2);
+};
+
+
 //define the tables columns
 YAHOO.GDMA.admin.servers.columnDefs = [ {
         label :"",
@@ -133,6 +176,13 @@ YAHOO.GDMA.admin.servers.columnDefs = [ {
         key :"prefix",
         label :"Prefix",
         editor :"textbox",
+        resizeable:true, 
+        width:50
+    }, {
+        key :"active",
+        label :"Active",
+        formatter : YAHOO.GDMA.admin.servers.activeFormatter,
+        editor : YAHOO.GDMA.admin.servers.editActiveServerDropdown,
         resizeable:true, 
         width:50
 } ];
