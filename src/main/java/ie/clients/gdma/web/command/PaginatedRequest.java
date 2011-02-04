@@ -1,5 +1,7 @@
 package ie.clients.gdma.web.command;
 
+import ie.clients.gdma.domain.UserAccess;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,8 @@ public class PaginatedRequest {
     private String dir = YUI_ASC;
 
     private List<Filter> filters = new ArrayList<Filter>();
-
+    
+    
     public Long getServerId() {
         return serverId;
     }
