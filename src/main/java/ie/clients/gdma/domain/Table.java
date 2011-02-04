@@ -15,17 +15,27 @@ public class Table {
 
     private Long id;
 
+    private Long serverId;
+
     private String name;
-
-    private boolean displayed;
-
-    private boolean allowDelete;
 
     private Server server;
 
     private Set<User> users = new LinkedHashSet<User>();
-
+    
     private Set<Column> columns = new LinkedHashSet<Column>();
+    
+    private Set<UserAccess> userAccess = new LinkedHashSet<UserAccess>();
+
+    
+
+    public Set<UserAccess> getUserAccess() {
+        return userAccess;
+    }
+
+    public void setUserAccess(Set<UserAccess> userAccess) {
+        this.userAccess = userAccess;
+    }
 
     public Long getId() {
         return id;
@@ -41,22 +51,6 @@ public class Table {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isDisplayed() {
-        return displayed;
-    }
-
-    public void setDisplayed(boolean displayed) {
-        this.displayed = displayed;
-    }
-
-    public boolean isAllowDelete() {
-        return allowDelete;
-    }
-
-    public void setAllowDelete(boolean allowDelete) {
-        this.allowDelete = allowDelete;
     }
 
     public Set<User> getUsers() {
@@ -94,6 +88,13 @@ public class Table {
 
     public void setServer(Server server) {
         this.server = server;
+    }
+    public Long getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(Long serverId) {
+        this.serverId = serverId;
     }
 
 }
