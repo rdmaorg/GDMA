@@ -5,6 +5,7 @@ import ie.clients.gdma.domain.Column;
 import ie.clients.gdma.domain.Server;
 import ie.clients.gdma.domain.Table;
 import ie.clients.gdma.domain.User;
+import ie.clients.gdma.domain.UserAccess;
 import ie.clients.gdma.web.command.PaginatedRequest;
 import ie.clients.gdma.web.command.PaginatedResponse;
 import ie.clients.gdma.web.command.UpdateRequest;
@@ -52,6 +53,24 @@ public class GdmaAjaxFacade {
 		return gdmaFacade.getServerDao().getServerTableList(username);
 	}
 
+	
+	public UserAccess getUserAccessDetails(Long serverId, Long tableId) {
+		LOG.debug("-----------------------------------------------------");
+        LOG.debug("----------------  getUserAccessDetails  ---------------");
+        LOG.debug("-----------------------------------------------------");
+	    
+		Assert.notNull(gdmaFacade, "gdmaFacade is null");
+		
+		// Ensure that the user session is valid
+		authenticateUser();
+		
+		Long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+		LOG.debug("userId : " + userId);
+		
+		UserAccess userAccess = gdmaFacade.getUserAccessDao().get(tableId, userId);		
+		return userAccess;
+	}
+	
 	public List<Server> getTableDetails(Long serverId, Long tableId) {
         LOG.debug("-----------------------------------------------------");
         LOG.debug("-----------------  getTableDetails  -----------------");
