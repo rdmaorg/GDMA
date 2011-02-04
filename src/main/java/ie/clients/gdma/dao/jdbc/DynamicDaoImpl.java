@@ -111,7 +111,7 @@ public class DynamicDaoImpl implements DynamicDao {
 
 		PreparedStatementCreatorFactory psc = new PreparedStatementCreatorFactory(sql);
 
-		declareSqlParameters(psc, paginatedRequest.getFilters());
+		declareSqlParameters(psc, paginatedRequest.getFilters(), server);
 
 		psc.setResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE);
 		psc.setUpdatableResults(false);
@@ -147,13 +147,28 @@ public class DynamicDaoImpl implements DynamicDao {
 		return paginatedResponse;
 	}
 
-	private void declareSqlParameters(PreparedStatementCreatorFactory psc, List<Filter> filters) {
+	private void declareSqlParameters(PreparedStatementCreatorFactory psc, List<Filter> filters, Server server) {
 		for (Filter filter : filters) {
 			//if filter is null or blank
 			if ((filter.getFilterOperator() == 8 || filter.getFilterOperator() == 9))
 				continue;
 			if (StringUtils.hasText(filter.getFilterValue())) {
-				psc.addParameter(new SqlParameter(filter.getColumnType()));
+				//Teradata and Oracle 
+				if (server.getConnectionUrl().contains("jdbc:teradata"))					
+				{                                       
+					if(filter.getColumnType() == 91)
+					{
+						psc.addParameter(new SqlParameter(93));
+					}
+					else
+					{
+						psc.addParameter(new SqlParameter(filter.getColumnType()));
+					}
+				}
+				else
+				{
+					psc.addParameter(new SqlParameter(filter.getColumnType()));
+				}				
 			}
 		}
 	}
@@ -170,14 +185,22 @@ public class DynamicDaoImpl implements DynamicDao {
 				if (SqlUtil.isNumeric(filter.getColumnType())) {
 					LOG.debug("Number as string as parameter: " + param);
 				} else if (SqlUtil.isDate(filter.getColumnType())) {
-                    LOG.debug("DATE filter detected: " + filter.getFilterValue());
+					LOG.debug("DATE filter detected: " + filter.getFilterValue());
 					try {
-                        param = Formatter.formatDate(Formatter.parseDate(filter.getFilterValue()));
-						LOG.debug("Date as parameter: " + param);
+						param = Formatter.parseDate(filter.getFilterValue());
+						LOG.debug("DATE as parameter: " + param);
 					} catch (Exception ex) {
-						LOG.error("Could not parse the date: " + filter.getFilterValue(), ex);
+						LOG.error("Could not parse the DATE: " + filter.getFilterValue(), ex);
 					}
-                } else if (SqlUtil.isTime(filter.getColumnType())) {
+                } /*else if (SqlUtil.isDateTime(filter.getColumnType())) {
+                    LOG.debug("DATETIME filter detected: " + filter.getFilterValue());
+					try {
+                        param = Formatter.parseDate(filter.getFilterValue());
+						LOG.debug("DATETIME as parameter: " + param);
+					} catch (Exception ex) {
+						LOG.error("Could not parse the DATETIME: " + filter.getFilterValue(), ex);
+					}
+                }*/else if (SqlUtil.isTime(filter.getColumnType())) {
                     try {
                         param = Formatter.parseTime(filter.getFilterValue());
                         LOG.debug("Time as parameter: " + param);
