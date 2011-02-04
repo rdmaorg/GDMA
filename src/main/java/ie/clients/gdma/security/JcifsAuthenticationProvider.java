@@ -122,7 +122,8 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
             throw new AccessException(e.getMessage());
         }
 
-        if (user == null) {
+        //if user does not exist or has been made inactive, do not grant access
+        if (user == null || user.isActive() != true) {
             throw new AccessException("User [" + npa + "] does not have access to GDMA");
         }
 
