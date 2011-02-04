@@ -3,30 +3,42 @@ YAHOO.GDMA.admin.access.loadList=function(B,A){YAHOO.GDMA.admin.access.tableId=B
 YAHOO.GDMA.admin.access.tableName=A;
 YAHOO.GDMA.admin.access.initLayout()
 };
-YAHOO.GDMA.admin.access.displayLists=function(I){YAHOO.GDMA.admin.access.accessList=I;
-var C=I.canAccess;
-var D=I.canNotAccess;
-var B=YAHOO.util.Dom.get("divDlgAccessRight");
-var G=YAHOO.util.Dom.get("divDlgAccessLeft");
-B.innerHTML+='<SELECT size="20" id="lstAccess" multiple="multiple" />';
-G.innerHTML+='<SELECT size="20" id="lstNoAccess" multiple="multiple" />';
-var F=YAHOO.util.Dom.get("lstAccess");
-var H=YAHOO.util.Dom.get("lstNoAccess");
-F.size=20;
-H.size=20;
-for(var E=0;
-E<C.length;
-E++){var A=document.createElement("option");
-A.value=C[E]["id"];
-A.text=C[E]["userName"];
-F.options[E]=A
-}for(var E=0;
-E<D.length;
-E++){var A=document.createElement("option");
-A.value=D[E]["id"];
-A.text=D[E]["userName"];
-H.options[E]=A
-}YAHOO.GDMA.dialog.loading.hide()
+YAHOO.GDMA.admin.access.displayLists=function(H){YAHOO.GDMA.admin.access.userAccessList=H;
+var E=YAHOO.util.Dom.get("divDlgAccessCenter");
+E.innerHTML+="<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
+var D='<div align="center" id="userAccessDiv" class="height: 100px; overflow-y: scroll;  padding: 30px; width: 100%;"><table id="userAccessTable" overflow-y="scroll"  cellpadding="10" width="90%">';
+D+='<tr bgcolor="#C0C0C0"><th><b>User</b></th><th><b>Display</b></th><th><b>Update</b></th><th><b>Insert</b></th><th><b>Delete</b></th></tr>';
+YAHOO.GDMA.admin.access.userIdList=new Array();
+for(var F=0;
+F<H.length;
+F++){YAHOO.GDMA.admin.access.userIdList[F]=H[F]["user"]["id"];
+var I=H[F]["user"]["userName"];
+var G="chkDisplay"+H[F]["user"]["id"];
+var C="chkUpdate"+H[F]["user"]["id"];
+var A="chkInsert"+H[F]["user"]["id"];
+var B="chkDelete"+H[F]["user"]["id"];
+if((F%2)==0){D+='<tr bgcolor="#EDF5FF"><td align="left" >'+I+"</td>";
+if(H[F]["allowDisplay"]){D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" /></td>'
+}if(H[F]["allowUpdate"]){D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" /></td>'
+}if(H[F]["allowInsert"]){D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" /></td>'
+}if(H[F]["allowDelete"]){D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" /></td>'
+}}else{D+='<tr bgcolor="#FFFFFF"><td align="left" >'+I+"</td>";
+if(H[F]["allowDisplay"]){D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" /></td>'
+}if(H[F]["allowUpdate"]){D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" /></td>'
+}if(H[F]["allowInsert"]){D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" /></td>'
+}if(H[F]["allowDelete"]){D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" checked /></td>'
+}else{D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" /></td>'
+}}}D+="</table></div>";
+E.innerHTML+=D;
+E.innerHTML+="<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
+YAHOO.GDMA.dialog.loading.hide()
 };
 YAHOO.GDMA.admin.access.moveItemToLeft=function(){YAHOO.GDMA.admin.access.moveItem("lstAccess","lstNoAccess")
 };
@@ -55,20 +67,20 @@ D.text=A.text;
 B.options[B.options.length]=D;
 C.options[C.selectedIndex]=null
 }}};
-YAHOO.GDMA.admin.access.save=function(){var A=function(){var B=YAHOO.util.Dom.get("lstAccess");
-var E={};
-E.id=YAHOO.GDMA.admin.access.tableId;
-E.name=YAHOO.GDMA.admin.access.tableName;
-E.users=[];
-for(var C=0;
-C<B.options.length;
-C++){var D=B.options[C];
-E.users[C]={};
-E.users[C]["id"]=D.value;
-E.users[C]["userName"]=D.text
-}GdmaAdmin.saveAccessList(E,function(){YAHOO.GDMA.dialog.showInfoDialog("Saved!","Record(s) saved!");
+YAHOO.GDMA.admin.access.save=function(){var A=function(){var E=GdmaAdmin.getUserList();
+var B=YAHOO.GDMA.admin.access.userIdList.length;
+var C={};
+for(var D=0;
+D<B;
+D++){C.tableId=YAHOO.GDMA.admin.access.tableId;
+C.userId=YAHOO.GDMA.admin.access.userIdList[D];
+C.allowDisplay=document.getElementById("chkDisplay"+YAHOO.GDMA.admin.access.userIdList[D]).checked;
+C.allowUpdate=document.getElementById("chkUpdate"+YAHOO.GDMA.admin.access.userIdList[D]).checked;
+C.allowInsert=document.getElementById("chkInsert"+YAHOO.GDMA.admin.access.userIdList[D]).checked;
+C.allowDelete=document.getElementById("chkDelete"+YAHOO.GDMA.admin.access.userIdList[D]).checked;
+GdmaAdmin.saveAccessList(C,function(){})
+}YAHOO.GDMA.dialog.showInfoDialog("Saved!","Record(s) saved!");
 YAHOO.GDMA.admin.access.cancel()
-})
 };
 YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm save","Are you sure you wish to save the changes?")
 };
@@ -81,22 +93,15 @@ document.body.insertBefore(A,document.body.firstChild)
 }YAHOO.GDMA.admin.access.panel=new YAHOO.widget.Panel("divDlgAccess",{draggable:true,close:false,modal:true,width:"438px",xy:[140,100]});
 YAHOO.GDMA.admin.access.panel.setHeader("User Access for table "+YAHOO.GDMA.admin.access.tableName);
 YAHOO.GDMA.admin.access.panel.setBody('<div id="divDlgAccessLayout"></div>');
-YAHOO.GDMA.admin.access.panel.beforeRenderEvent.subscribe(function(){try{YAHOO.util.Event.onAvailable("divDlgAccessLayout",function(){var J=YAHOO.util.Dom.get("divDlgAccessLayout");
-var G=YAHOO.GDMA.utilities.createElement("div","divDlgAccessLeft",J);
-var C=YAHOO.GDMA.utilities.createElement("div","divDlgAccessRight",J);
-var F=YAHOO.GDMA.utilities.createElement("div","divDlgAccessCenter",J);
-var E=YAHOO.GDMA.utilities.createElement("div","divDlgAccessBottom",J);
-YAHOO.GDMA.admin.access.layout=new YAHOO.widget.Layout("divDlgAccessLayout",{height:300,width:430,units:[{position:"left",width:150,height:60,body:"divDlgAccessLeft",header:"User Without Access"},{position:"center",width:100,height:60,body:"divDlgAccessCenter"},{position:"right",width:150,height:60,body:"divDlgAccessRight",header:"User With Access"},{position:"bottom",height:40,body:"divDlgAccessBottom"}]});
+YAHOO.GDMA.admin.access.panel.beforeRenderEvent.subscribe(function(){try{YAHOO.util.Event.onAvailable("divDlgAccessLayout",function(){var G=YAHOO.util.Dom.get("divDlgAccessLayout");
+var C=YAHOO.GDMA.utilities.createElement("div","divDlgAccessCenter",G);
+var D=YAHOO.GDMA.utilities.createElement("div","divDlgAccessBottom",G);
+YAHOO.GDMA.admin.access.layout=new YAHOO.widget.Layout("divDlgAccessLayout",{height:300,width:430,units:[{position:"center",width:100,height:60,body:"divDlgAccessCenter"},{position:"bottom",height:40,body:"divDlgAccessBottom"}]});
 YAHOO.GDMA.admin.access.layout.render();
-var I=YAHOO.util.Dom.get("divDlgAccessCenter");
-var K=YAHOO.GDMA.toolbar.createToolBarButton("Grant All","btnAllMoveRight",I,YAHOO.GDMA.admin.access.moveAllItemToRight,"Grant access to all users","show");
-var K=YAHOO.GDMA.toolbar.createToolBarButton("Grant","btnMoveRight",I,YAHOO.GDMA.admin.access.moveItemToRight,"Grant access to selected user","show");
-var L=YAHOO.GDMA.toolbar.createToolBarButton("Revoke","btnMoveLeft",I,YAHOO.GDMA.admin.access.moveItemToLeft,"Revoke access to selected user","show");
-var K=YAHOO.GDMA.toolbar.createToolBarButton("Revoke All","btnAllMoveLeft",I,YAHOO.GDMA.admin.access.moveAllItemToLeft,"Revoke access to all users","show");
-I=YAHOO.util.Dom.get("divDlgAccessBottom");
-var H=YAHOO.GDMA.toolbar.createToolBarButton("Save","btnAccessListSave",I,YAHOO.GDMA.admin.access.save,"Save changes to the access list","show");
-var D=YAHOO.GDMA.toolbar.createToolBarButton("Cancel","btnAccessListCancel",I,YAHOO.GDMA.admin.access.cancel,"Close this dialog without saving changes","show");
-GdmaAdmin.getAccessListForTable(YAHOO.GDMA.admin.access.tableId,function(M){YAHOO.GDMA.admin.access.displayLists(M)
+divButtons=YAHOO.util.Dom.get("divDlgAccessBottom");
+var F=YAHOO.GDMA.toolbar.createToolBarButton("Save","btnAccessListSave",divButtons,YAHOO.GDMA.admin.access.save,"Save changes to the access list","show");
+var E=YAHOO.GDMA.toolbar.createToolBarButton("Cancel","btnAccessListCancel",divButtons,YAHOO.GDMA.admin.access.cancel,"Close this dialog without saving changes","show");
+GdmaAdmin.getAccessListForTable(YAHOO.GDMA.admin.access.tableId,function(H){YAHOO.GDMA.admin.access.displayLists(H)
 })
 })
 }catch(B){alert(B)
