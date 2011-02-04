@@ -74,7 +74,7 @@ public class Formatter {
                 try {
                     date = sdf2.parse(value);
                 } catch (Exception e2) {
-                    throw new Exception("Could not pase value [" + value + "] into a date");
+                    throw new Exception("Could not parse value [" + value + "] into a date");
                 }
             }
         }
