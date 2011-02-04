@@ -6,6 +6,7 @@ import ie.clients.gdma.domain.ConnectionType;
 import ie.clients.gdma.domain.Server;
 import ie.clients.gdma.domain.Table;
 import ie.clients.gdma.domain.User;
+import ie.clients.gdma.domain.UserAccess;
 import ie.clients.gdma.util.ServerUtil;
 import ie.clients.gdma.web.command.AccessLists;
 import ie.clients.gdma.web.command.PaginatedSqlRequest;
@@ -74,8 +75,8 @@ public class GdmaAdminAjaxFacade {
         List<Table> realTables = new ArrayList<Table>();
         for (Table table : tables) {
             Table realTable = gdmaFacade.getTableDao().get(table.getId());
-            realTable.setAllowDelete(table.isAllowDelete());
-            realTable.setDisplayed(table.isDisplayed());
+            //realTable.setAllowDelete(table.isAllowDelete());
+            //realTable.setDisplayed(table.isDisplayed());
             realTables.add(realTable);
         }
         gdmaFacade.getTableDao().save(realTables);
@@ -113,35 +114,67 @@ public class GdmaAdminAjaxFacade {
     }
 
     @SuppressWarnings("unchecked")
-    public AccessLists getAccessListForTable(Long tableId) {
-        // TODO extract this no a new home!
-        AccessLists accessLists = new AccessLists();
-
-        // get access list for able
-        List<User> users = gdmaFacade.getUserDao().getAccess(tableId);
-        if (users != null && users.size() != 0) {
-            accessLists.setCanAccess(users);
-        }
-
-        // get access denied list for table
-        users = gdmaFacade.getUserDao().getCannotAccess(tableId);
-        if (users != null && users.size() != 0) {
-            accessLists.setCanNotAccess(users);
-        }
-
-        return accessLists;
+    public List<UserAccess> getAccessListForTable(Long tableId) {
+        
+    	List<User> userList = gdmaFacade.getUserDao().get();
+    	List<UserAccess> userAccessList = new ArrayList<UserAccess>();;
+    	for(User user :userList)
+    	{
+    		UserAccess userAccess = gdmaFacade.getUserAccessDao().get(tableId, user.getId());
+    		if(userAccess == null)
+    		{
+    			UserAccess emptyUserAccess = new UserAccess();
+    			emptyUserAccess.setUser(user);
+    			emptyUserAccess.setUserId(user.getId());
+    			emptyUserAccess.setTableId(tableId);
+    			emptyUserAccess.setAllowDisplay(false);
+    			emptyUserAccess.setAllowUpdate(false);
+    			emptyUserAccess.setAllowInsert(false);
+    			emptyUserAccess.setAllowDelete(false);
+    			gdmaFacade.getUserAccessDao().save(emptyUserAccess);
+    			//emptyUserAccess.getUser().getUserName();
+    			userAccessList.add(emptyUserAccess);
+    		}
+    		else
+    		{
+    			userAccessList.add(userAccess);
+    		}
+    		
+    	}
+    	return userAccessList;
+    	
     }
+    
+    @SuppressWarnings("unchecked")
+    public List<User> getUserList() {
+        
+    	List<User> userList = gdmaFacade.getUserDao().get();
+    	return userList;    	
+    }
+    
+    @SuppressWarnings("unchecked")
+    public UserAccess getUserAccessForTable(Long tableId, Long userId) {
+        
+    	UserAccess userAccess = gdmaFacade.getUserAccessDao().get(tableId, userId);
+    	if(userAccess == null)
+    	{
+    		return null;
+    	}
+    	else
+    	{
+    		return userAccess;    	
+    	}
+    	
+    }
+    
 
-    public void saveAccessList(Table table) {
-        // TODO extract this no a new home!
-        // the table isn't a gully populated one - so retrieve it first
-        Table realTable = gdmaFacade.getTableDao().get(table.getId());
-        realTable.getUsers().clear();
-        for (User user : table.getUsers()) {
-            User realUser = gdmaFacade.getUserDao().get(user.getId());
-            realTable.getUsers().add(realUser);
-        }
-        gdmaFacade.getTableDao().save(realTable);
+    public void saveAccessList(UserAccess userAccess) {
+    	UserAccess realUserAccess = gdmaFacade.getUserAccessDao().get(userAccess.getTableId(), userAccess.getUserId());
+    	realUserAccess.setAllowDisplay(userAccess.getAllowDisplay());
+    	realUserAccess.setAllowUpdate(userAccess.getAllowUpdate());
+    	realUserAccess.setAllowInsert(userAccess.getAllowInsert());
+    	realUserAccess.setAllowDelete(userAccess.getAllowDelete());
+    	gdmaFacade.getUserAccessDao().save(realUserAccess);
     }
 
     public List<User> getUsers() {
