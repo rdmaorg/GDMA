@@ -11,7 +11,9 @@ import java.util.List;
  */
 public interface TableDao {
 
-    public Table get(Long id);
+	public List get();
+	
+	public Table get(Long id);
 
     public Table save(Table table);
 
