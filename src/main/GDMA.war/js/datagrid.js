@@ -1427,12 +1427,12 @@ YAHOO.GDMA.datagrid.toolbarButtons =  [
         fn: YAHOO.GDMA.datagrid.downloadRecords,
         defaultMode: "show",
         tooltip: "download records"
-    },{
+    }/*,{
         name: "Import",
         fn: YAHOO.GDMA.datagrid.bulkImport,
         defaultMode: "show",
         tooltip: "import data from csv file"
-    }
+    }*/
 ];
 
 
