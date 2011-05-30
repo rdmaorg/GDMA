@@ -147,7 +147,7 @@ YAHOO.GDMA.utilities.parseTime = function(oData) {
         var ss = oData.getSeconds();
         
         if (hh < 10) hh = "0" + hh;
-        if (hh = 24) hh = "00";
+        if (hh == 24) hh = "00";
         if (mm < 10) mm = "0" + mm
         if (ss < 10) ss = "0" + ss
 
@@ -181,7 +181,7 @@ YAHOO.GDMA.utilities.formatTime = function(elCell, oRecord, oColumn, oData){
         var mm = oData.getMinutes();
         var ss = oData.getSeconds();
         if (hh < 10) hh = "0" + hh;
-        if (hh = 24) hh = "00";
+        if (hh == 24) hh = "00";
         if (mm < 10) mm = "0" + mm
         if (ss < 10) ss = "0" + ss
 
