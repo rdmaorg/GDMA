@@ -5,7 +5,7 @@
 	<groupId>ie.clients.gdma</groupId>
 	<artifactId>GDMA</artifactId>
 	<packaging>war</packaging>
-	<version>0.3.0</version>
+	<version>4.0.0</version>
 	<ciManagement>
 		<system>continuum</system>
 		<notifiers>
@@ -289,7 +289,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-ntlm</artifactId>
 			<version>${spring-security-version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -303,7 +303,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
-			<version>3.2.5.ga</version>
+			<version>3.2.6.ga</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
@@ -448,7 +448,7 @@
             <artifactId>jtds</artifactId>
             <version>1.2.4</version>
         </dependency>
-		
+
 	</dependencies>
 	<properties>
 		<spring-version>2.5.5</spring-version>
