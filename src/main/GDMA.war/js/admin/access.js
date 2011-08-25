@@ -14,16 +14,29 @@ YAHOO.GDMA.admin.access.displayLists = function(userAccessList){
 	
 	var divDlgAccessCenter = YAHOO.util.Dom.get("divDlgAccessCenter");
     
-    divDlgAccessCenter.innerHTML += "<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
-    //create a new table with the 
-	var userAccessTable = "<div align=\"center\" id=\"userAccessDiv\" class=\"height: 100px; overflow-y: scroll;  padding: 30px; width: 100%;\"><table id=\"userAccessTable\" overflow-y=\"scroll\"  cellpadding=\"10\" width=\"90%\">";
-	userAccessTable += "<tr bgcolor=\"#C0C0C0\"><th><b>User</b></th><th><b>Display</b></th><th><b>Update</b></th><th><b>Insert</b></th><th><b>Delete</b></th></tr>";
-	
+    divDlgAccessCenter.innerHTML += "<BR>&nbsp;<BR>";
+    
+    
+	//change the width of the 'detail' table to accomodate the scroll bar (if scroll bar required
+	if(userAccessList.length > 8)
+	{
+		//create a new table with the user access header info and a second with the user access detail info
+	    var userAccessTables = "<div align=\"center\" id=\"userAccessDivHead\" style=\"height: 15px; width: 380px; padding-left: 20px;\"><table id=\"userAccessTableHead\" width=\"380px\"><thead style=\"width: 380px;\"><tr position=\"relative\" bgcolor=\"#C0C0C0\"></th><th width=\"70px\"><b>User</b></th><th width=\"70px\"><b>Display</b></th><th width=\"70px\"><b>Update</b></th><th width=\"70px\"><b>Insert</b></th><th width=\"100px\"><b>Delete</b></th></tr></thead></table></div>";
+		userAccessTables += "<div align=\"center\" id=\"userAccessDiv\" style=\"height: 180px; width: 380px; padding-left: 20px; overflow-y: auto;\"><table id=\"userAccessTable\" width=\"360px\">";
+	}
+	else
+	{
+		//create a new table with the user access header info and a second with the user access detail info
+	    var userAccessTables = "<div align=\"center\" id=\"userAccessDivHead\" style=\"height: 15px; width: 360px; padding-left: 20px;\"><table id=\"userAccessTableHead\" width=\"360px\"><thead style=\"width: 360px;\"><tr position=\"relative\" bgcolor=\"#C0C0C0\"></th><th width=\"70px\"><b>User</b></th><th width=\"70px\"><b>Display</b></th><th width=\"70px\"><b>Update</b></th><th width=\"70px\"><b>Insert</b></th><th width=\"100px\"><b>Delete</b></th></tr></thead></table></div>";
+		userAccessTables += "<div align=\"center\" id=\"userAccessDiv\" style=\"height: 180px; width: 360px; padding-left: 20px; overflow-y: auto;\"><table id=\"userAccessTable\" width=\"360px\">";
+	}
+	userAccessTables += "<tbody overflow-y=\"auto\" width=\"360px\" display=\"block\" height=\"180px\">";
+		
 	YAHOO.GDMA.admin.access.userIdList = new Array();
 	//loop through the users and get the access levels for the table
 	for(var i = 0; i < userAccessList.length; i++)
 	{
-		YAHOO.GDMA.admin.access.userIdList[i] = userAccessList[i]["user"]["id"]
+		YAHOO.GDMA.admin.access.userIdList[i] = userAccessList[i]["user"]["id"];
 		var userName = userAccessList[i]["user"]["userName"];
 		
 		var allowDisplayId = "chkDisplay" + userAccessList[i]["user"]["id"];
@@ -33,51 +46,51 @@ YAHOO.GDMA.admin.access.displayLists = function(userAccessList){
 		
 		if((i % 2) == 0)
     	{
-			userAccessTable += "<tr bgcolor=\"#EDF5FF\"><td align=\"left\" >" + userName + "</td>";
+			userAccessTables += "<tr bgcolor=\"#EDF5FF\" ><td align=\"left\" width=\"80px\">" + userName + "</td>";
 			if(userAccessList[i]["allowDisplay"])
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" checked /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" checked /></td>";
 			else
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" /></td>";
 			if(userAccessList[i]["allowUpdate"])
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" checked /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" checked /></td>";
 			else
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" /></td>";
 			if(userAccessList[i]["allowInsert"])
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" checked /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" checked /></td>";
 			else
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" /></td>";
 			if(userAccessList[i]["allowDelete"])
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" checked /></td>";
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" checked /></td>";
 			else
-				userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" /></td>";																								                                  														
+				userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" /></td>";																								                                  														
     	
     	}
     	else
     	{
-			userAccessTable += "<tr bgcolor=\"#FFFFFF\"><td align=\"left\" >" + userName + "</td>";
+			userAccessTables += "<tr bgcolor=\"#FFFFFF\" ><td align=\"left\" width=\"80px\">" + userName + "</td>";
     		if(userAccessList[i]["allowDisplay"])
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" checked /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" checked /></td>";
     		else
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\"  id=\"" + allowDisplayId + "\" /></td>";
     		if(userAccessList[i]["allowUpdate"])
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" checked /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" checked /></td>";
     		else
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowUpdateId + "\" /></td>";
     		if(userAccessList[i]["allowInsert"])
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" checked /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" checked /></td>";
     		else
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowInsertId + "\" /></td>";
     		if(userAccessList[i]["allowDelete"])
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" checked /></td>";
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" checked /></td>";
     		else
-    			userAccessTable += "<td align=\"left\" ><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" /></td>";	
+    			userAccessTables += "<td align=\"left\" width=\"70px\"><INPUT type=\"checkbox\" id=\"" + allowDeleteId + "\" /></td>";	
     	}
 	}
-	userAccessTable += "</table></div>";                    	
-	divDlgAccessCenter.innerHTML += userAccessTable;
+	userAccessTables += "</tbody></table></div>";                    	
+	divDlgAccessCenter.innerHTML += userAccessTables;
 	
 	
-	divDlgAccessCenter.innerHTML += "<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";    
+	divDlgAccessCenter.innerHTML += "<BR>&nbsp;<BR>";    
     
     YAHOO.GDMA.dialog.loading.hide();
 };

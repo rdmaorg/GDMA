@@ -88,6 +88,7 @@ public class ServerUtil {
                     LOG.debug("Server:[" + server.getName() + "], Table:[" + tableName + "] Not found ");
                     Table table = new Table();
                     table.setName(tableName);
+                    table.setServerId(server.getId());
                     tables.add(table);
                 }
             }   

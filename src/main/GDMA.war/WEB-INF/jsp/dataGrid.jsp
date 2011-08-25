@@ -17,7 +17,7 @@
 	<script type="text/javascript">
 		var GDMA_CONTEXT_ROOT = "${fn:escapeXml(root)}";
 	</script>
-    <script type="text/javascript" src="${fn:escapeXml(jslink)}datagrid-min.js">&#xA0;</script>
+    <script type="text/javascript" src="${fn:escapeXml(jslink)}datagrid.js">&#xA0;</script>
     <script type="text/javascript">
         // var myLogReader = new YAHOO.widget.LogReader();
     </script>

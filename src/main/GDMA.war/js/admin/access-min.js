@@ -5,9 +5,12 @@ YAHOO.GDMA.admin.access.initLayout()
 };
 YAHOO.GDMA.admin.access.displayLists=function(H){YAHOO.GDMA.admin.access.userAccessList=H;
 var E=YAHOO.util.Dom.get("divDlgAccessCenter");
-E.innerHTML+="<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
-var D='<div align="center" id="userAccessDiv" class="height: 100px; overflow-y: scroll;  padding: 30px; width: 100%;"><table id="userAccessTable" overflow-y="scroll"  cellpadding="10" width="90%">';
-D+='<tr bgcolor="#C0C0C0"><th><b>User</b></th><th><b>Display</b></th><th><b>Update</b></th><th><b>Insert</b></th><th><b>Delete</b></th></tr>';
+E.innerHTML+="<BR>&nbsp;<BR>";
+if(H.length>8){var D='<div align="center" id="userAccessDivHead" style="height: 15px; width: 380px; padding-left: 20px;"><table id="userAccessTableHead" width="380px"><thead style="width: 380px;"><tr position="relative" bgcolor="#C0C0C0"></th><th width="70px"><b>User</b></th><th width="70px"><b>Display</b></th><th width="70px"><b>Update</b></th><th width="70px"><b>Insert</b></th><th width="100px"><b>Delete</b></th></tr></thead></table></div>';
+D+='<div align="center" id="userAccessDiv" style="height: 180px; width: 380px; padding-left: 20px; overflow-y: auto;"><table id="userAccessTable" width="360px">'
+}else{var D='<div align="center" id="userAccessDivHead" style="height: 15px; width: 360px; padding-left: 20px;"><table id="userAccessTableHead" width="360px"><thead style="width: 360px;"><tr position="relative" bgcolor="#C0C0C0"></th><th width="70px"><b>User</b></th><th width="70px"><b>Display</b></th><th width="70px"><b>Update</b></th><th width="70px"><b>Insert</b></th><th width="100px"><b>Delete</b></th></tr></thead></table></div>';
+D+='<div align="center" id="userAccessDiv" style="height: 180px; width: 360px; padding-left: 20px; overflow-y: auto;"><table id="userAccessTable" width="360px">'
+}D+='<tbody overflow-y="auto" width="360px" display="block" height="180px">';
 YAHOO.GDMA.admin.access.userIdList=new Array();
 for(var F=0;
 F<H.length;
@@ -17,27 +20,27 @@ var G="chkDisplay"+H[F]["user"]["id"];
 var C="chkUpdate"+H[F]["user"]["id"];
 var A="chkInsert"+H[F]["user"]["id"];
 var B="chkDelete"+H[F]["user"]["id"];
-if((F%2)==0){D+='<tr bgcolor="#EDF5FF"><td align="left" >'+I+"</td>";
-if(H[F]["allowDisplay"]){D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" /></td>'
-}if(H[F]["allowUpdate"]){D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" /></td>'
-}if(H[F]["allowInsert"]){D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" /></td>'
-}if(H[F]["allowDelete"]){D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" /></td>'
-}}else{D+='<tr bgcolor="#FFFFFF"><td align="left" >'+I+"</td>";
-if(H[F]["allowDisplay"]){D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox"  id="'+G+'" /></td>'
-}if(H[F]["allowUpdate"]){D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox" id="'+C+'" /></td>'
-}if(H[F]["allowInsert"]){D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox" id="'+A+'" /></td>'
-}if(H[F]["allowDelete"]){D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" checked /></td>'
-}else{D+='<td align="left" ><INPUT type="checkbox" id="'+B+'" /></td>'
-}}}D+="</table></div>";
+if((F%2)==0){D+='<tr bgcolor="#EDF5FF" ><td align="left" width="80px">'+I+"</td>";
+if(H[F]["allowDisplay"]){D+='<td align="left" width="70px"><INPUT type="checkbox"  id="'+G+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox"  id="'+G+'" /></td>'
+}if(H[F]["allowUpdate"]){D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+C+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+C+'" /></td>'
+}if(H[F]["allowInsert"]){D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+A+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+A+'" /></td>'
+}if(H[F]["allowDelete"]){D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+B+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+B+'" /></td>'
+}}else{D+='<tr bgcolor="#FFFFFF" ><td align="left" width="80px">'+I+"</td>";
+if(H[F]["allowDisplay"]){D+='<td align="left" width="70px"><INPUT type="checkbox"  id="'+G+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox"  id="'+G+'" /></td>'
+}if(H[F]["allowUpdate"]){D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+C+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+C+'" /></td>'
+}if(H[F]["allowInsert"]){D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+A+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+A+'" /></td>'
+}if(H[F]["allowDelete"]){D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+B+'" checked /></td>'
+}else{D+='<td align="left" width="70px"><INPUT type="checkbox" id="'+B+'" /></td>'
+}}}D+="</tbody></table></div>";
 E.innerHTML+=D;
-E.innerHTML+="<BR>&nbsp;<BR><BR>&nbsp;<BR>&nbsp;<BR>";
+E.innerHTML+="<BR>&nbsp;<BR>";
 YAHOO.GDMA.dialog.loading.hide()
 };
 YAHOO.GDMA.admin.access.moveItemToLeft=function(){YAHOO.GDMA.admin.access.moveItem("lstAccess","lstNoAccess")
