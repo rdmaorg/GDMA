@@ -15,7 +15,7 @@ body {
     color: #FFFFFF;
     cursor: pointer;
     cursor: hand;
-    background: navy
+    background: #4e4e50
 }
 
 div.clear {
@@ -25,9 +25,11 @@ div.clear {
 }
 
 div.footer {
-    text-align: center;
-    color: #888888;
+	height:100%;
+    background-color: #888888;
+    color: #4e4e50;
     font-size: 10px;
+	 text-align: center;
 }
 
 img {
@@ -131,19 +133,22 @@ h1.logon {
 #divInnerHeader {
     height: 80px;
     width: 100%;
-    position: relative;
+    position: absolute;
+	top:0px;
+	left:0px;
     border-right: 5px yellow solid;
     margin: 0px;
-    background: url(../images/logo.jpg) left top no-repeat;
+
 }
 
 #divInnerHeader ul {
-    border: solid navy 2px;
+    border: solid #4e4e50 2px;
     width: 100%;
-    background-color: navy;
+    background-color: #4e4e50;
     position: absolute;
-    top: 48px;
-    margin-left: 120px;
+    left:100px;
+    top: 53px;
+    margin-left: 100px;
 }
 
 #divInnerHeader li {
@@ -164,7 +169,7 @@ h1.logon {
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
-    background-color: navy;
+    background-color: #4e4e50;
 }
 
 #divInnerHeader a {
@@ -177,7 +182,7 @@ h1.logon {
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
-    background-color: navy;
+    background-color: #4e4e50;
 }
 
 #divInnerHeader a:hover {
@@ -291,7 +296,7 @@ h1.logon {
 }
 
 #divDlgAccessCenter{
-    padding-top: 40px;
+    padding-top: 1px;
 }
 
 #divDlgColumnsLayout {

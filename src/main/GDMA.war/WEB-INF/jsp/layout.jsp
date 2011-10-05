@@ -19,7 +19,8 @@
     <c:url value="/css/" var="csslink"/>
     <c:url value="/js/" var="jslink"/>
     <c:set var="jsType" scope="page" value="min"/>
-
+    <link rel="shortcut icon" href="/GDMA/images/favicon.ico" type="image/x-icon" />
+	<link rel="icon" type="/GDMA/image/png" href="images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="${fn:escapeXml(csslink)}reset-fonts-grids.css" />
     <link rel="stylesheet" type="text/css" href="${fn:escapeXml(csslink)}resize.css" />
     <link rel="stylesheet" type="text/css" href="${fn:escapeXml(csslink)}layout.css" />

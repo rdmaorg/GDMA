@@ -7,6 +7,8 @@
           version="2.0">           
     <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
     <c:url value="/" var="link"/>
+
+
     <div id="divInnerHeader">
         <ul>
 			<sec:authorize ifAllGranted="ROLE_ADMIN">
@@ -21,18 +23,18 @@
             </li>
             </sec:authorize>
             <li>
-                <a href="${fn:escapeXml(link)}j_spring_security_logout" title="Log out of the application">Logout</a>
-            </li>
-            <li>
                 <fmt:message key="link.help" var="helpLink"/>
                 <a href="${fn:escapeXml(helpLink)}" title="View the help page" target="_blank"><fmt:message key="link.help.text"/></a>
+            </li>			
+            <li >
+                <img src="/GDMA/images/blank.gif" width="65%" style="display:block" />
             </li>
-           	<li>
-				<span>	
-                	<b>Logged in User : </b><sec:authentication property="principal.firstName"/> <sec:authentication property="principal.lastName"/>
-				</span>
+            <li stlye="">
+                <a style="border-left: 1px #FFFFFF solid;border-right: 0px #FFFFFF solid;" href="${fn:escapeXml(link)}j_spring_security_logout" title="Log out of the application">Logout</a>
             </li>
         </ul>
     </div>
-    <div class="clear"></div>
+		<div style="float:left;z-index:0;"><img alt="Avnet Client Solutions" src="/GDMA/images/gdma_logo.png"  width="162" height="60"/></div>
+<div style="float:right;z-index:0;"><img alt="Avnet Client Solutions" src="/GDMA/images/CustomerLogo.png" width="152.45" height="50" /></div>
+
 </jsp:root>    
