@@ -19,7 +19,8 @@ YAHOO.GDMA.admin.columns.fields = {
                   {key:"minWidth"},
                   {key:"maxWidth"},
                   {key:"orderby"},
-                  {key:"columnSize"}
+                  {key:"columnSize"},
+                  {key:"active"}
                   ]
 };
 

@@ -1,6 +1,6 @@
 YAHOO.namespace("GDMA.admin.columns");
 YAHOO.namespace("GDMA.admin.columns.serverbrowser");
-YAHOO.GDMA.admin.columns.fields={fields:[{key:"id",parser:YAHOO.util.DataSource.parseNumber},{key:"name",parser:YAHOO.util.DataSource.parseString},{key:"columnTypeString",parser:YAHOO.util.DataSource.parseString},{key:"primarykey"},{key:"displayed"},{key:"allowInsert"},{key:"allowUpdate"},{key:"nullable"},{key:"dropDownColumnDisplay"},{key:"dropDownColumnStore"},{key:"special"},{key:"minWidth"},{key:"maxWidth"},{key:"orderby"},{key:"columnSize"}]};
+YAHOO.GDMA.admin.columns.fields={fields:[{key:"id",parser:YAHOO.util.DataSource.parseNumber},{key:"name",parser:YAHOO.util.DataSource.parseString},{key:"columnTypeString",parser:YAHOO.util.DataSource.parseString},{key:"primarykey"},{key:"displayed"},{key:"allowInsert"},{key:"allowUpdate"},{key:"nullable"},{key:"dropDownColumnDisplay"},{key:"dropDownColumnStore"},{key:"special"},{key:"minWidth"},{key:"maxWidth"},{key:"orderby"},{key:"columnSize"},{key:"active"}]};
 YAHOO.GDMA.admin.columns.yesnoFormatter=function(B,A,C,D){if(D==true){B.innerHTML="Yes"
 }else{B.innerHTML="No"
 }};
