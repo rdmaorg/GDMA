@@ -14,9 +14,9 @@
         <property name="allowInsert" column="ALLOW_INSERT" type="yes_no" />
         <property name="allowDelete" column="ALLOW_DELETE" type="yes_no" />       
 
-        <many-to-one name="table" class="Table" column="TABLE_ID" insert="false"/>     
         <many-to-one name="user" class="User" column="USER_ID" insert="false"/>    
-              
+        <many-to-one name="table" class="Table" column="table_id" insert="false" update="false"/>
+             
     </class>
 </hibernate-mapping>
 

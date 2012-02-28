@@ -13,10 +13,12 @@ import ie.clients.gdma.web.command.PaginatedSqlRequest;
 import ie.clients.gdma.web.command.PaginatedSqlResponse;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.GrantedAuthority;
 import org.springframework.util.Assert;
 
 
@@ -56,6 +58,16 @@ public class GdmaAdminAjaxFacade {
     public void saveServers(List<Server> servers) {
         gdmaFacade.getServerDao().save(servers);
     }
+    
+    /*Uncomment the method below if moving resynch functionality to the Refresh button
+     * 
+     * public Set<Table>  resyncTableList(Long serverId) {
+    	// TODO use an AOP trigger for this
+        Server server = gdmaFacade.getServerDao().get(serverId);
+        serverUtil.resyncTableList(server);
+        Set<Table> tables = getTablesForServer(serverId);
+        return tables;
+    }*/
 
     /**
      * Only called from admin and it's a special case. We need to re-sync the
@@ -63,11 +75,24 @@ public class GdmaAdminAjaxFacade {
      * 
      * @return
      */
-    public Set<Table> getTablesForServer(Long serverId) {
+    @SuppressWarnings("null")
+	public Set<Table> getTablesForServer(Long serverId) {
         // TODO use an AOP trigger for this
         Server server = gdmaFacade.getServerDao().get(serverId);
+      //Comment the next line out if moving resynch functionality to the Refresh button
         serverUtil.resyncTableList(server);
-        return server.getTables();
+        
+        Set<Table> activeTables = new HashSet<Table>();
+        //Set<Table> activeTables = null;
+        Set<Table> allTables = server.getTables();
+        Table[] allTablesArray = new Table[allTables.size()];
+        allTablesArray = allTables.toArray(allTablesArray);
+        for(int i = 0; i < allTablesArray.length; i++){
+        	if (allTablesArray[i].isActive()) {
+        		activeTables.add(allTablesArray[i]);
+            }                 	
+        }       
+        return activeTables;
     }
 
     public void saveTables(List<Table> tables) {
@@ -94,8 +119,17 @@ public class GdmaAdminAjaxFacade {
         Server server = gdmaFacade.getServerDao().get(serverId);
         Table table = gdmaFacade.getTableDao().get(tableId);
         serverUtil.resyncColumnList(server, table);
-        Set<Column> columns = table.getColumns();
-        return columns;
+        
+        Set<Column> activeColumns = new HashSet<Column>();
+        Set<Column> allColumns = table.getColumns();
+        Column[] allColumnsArray = new Column[allColumns.size()];
+        allColumnsArray = allColumns.toArray(allColumnsArray);
+        for(int i = 0; i < allColumnsArray.length; i++){
+        	if (allColumnsArray[i].isActive()) {
+        		activeColumns.add(allColumnsArray[i]);
+            }                 	
+        }       
+        return activeColumns;
     }
 
     public void saveColumns(List<Column> columns) {
@@ -110,14 +144,14 @@ public class GdmaAdminAjaxFacade {
     }
 
     public List<Server> getServerTableColumnList() {
-        return gdmaFacade.getServerDao().getServerTableColumnList();
+        return gdmaFacade.getServerDao().getServerTableColumnListForDDDropdown();
     }
 
     @SuppressWarnings("unchecked")
     public List<UserAccess> getAccessListForTable(Long tableId) {
-        
+    	
     	List<User> userList = gdmaFacade.getUserDao().get();
-    	List<UserAccess> userAccessList = new ArrayList<UserAccess>();;
+    	List<UserAccess> userAccessList = new ArrayList<UserAccess>();
     	for(User user :userList)
     	{
     		UserAccess userAccess = gdmaFacade.getUserAccessDao().get(tableId, user.getId());
@@ -131,14 +165,21 @@ public class GdmaAdminAjaxFacade {
     			emptyUserAccess.setAllowUpdate(false);
     			emptyUserAccess.setAllowInsert(false);
     			emptyUserAccess.setAllowDelete(false);
+    			Table table = gdmaFacade.getTableDao().get(tableId);
+    			emptyUserAccess.setTable(table);
+    			table.getUserAccess().add(emptyUserAccess);
+    			gdmaFacade.getTableDao().save(table);
     			gdmaFacade.getUserAccessDao().save(emptyUserAccess);
     			//emptyUserAccess.getUser().getUserName();
     			userAccessList.add(emptyUserAccess);
     		}
     		else
     		{
+    			Table table = gdmaFacade.getTableDao().get(tableId);
+    			table.getUserAccess().add(userAccess);
+    			gdmaFacade.getTableDao().save(table);
     			userAccessList.add(userAccess);
-    		}
+    		}  		
     		
     	}
     	return userAccessList;

@@ -32,7 +32,7 @@
     
    <bean id="authenticationProvider"
         class="ie.clients.gdma.security.JcifsAuthenticationProvider"
-        p:domainController="IECORV5WK010014"
+        p:domainController="IECORV5WK010013"
         p:defaultDomain="emea"
         p:defaultRole="ROLE_USER"
         p:adminRole="ROLE_ADMIN"
