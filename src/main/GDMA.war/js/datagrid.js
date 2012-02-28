@@ -644,10 +644,12 @@ YAHOO.GDMA.datagrid.filterRecords = function() {
                         //Build up values for the Column dropdown
                         var displayColumnsId = new Array();
                         var displayColumnsName = new Array();
+                        var displayColumnCount = 0;
                         for(var i = 0; i < columns.length; i++){
-                        	if(columns[i].displayed == true){
-                        		displayColumnsId[i] = columns[i].id;
-                        		displayColumnsName[i] = columns[i].name;
+                        	if(columns[i].displayed == true){ 
+                        		displayColumnsId[displayColumnCount] = columns[i].id;
+                        		displayColumnsName[displayColumnCount] = columns[i].name;
+                        		displayColumnCount++;
                         	}
                         }
                         var p = YAHOO.GDMA.utilities.createElement("p","p" + id, container);
@@ -772,7 +774,7 @@ YAHOO.GDMA.datagrid.filterRecords = function() {
                         	for(var i = 0; i < columns.length; i++){
                         		var id = columns[i].id;
                         		
-                    			if(columns[i].id == selectedValue){
+                    			if(columns[i].id == selectedValue && columns[i].displayed == true){
                     				YAHOO.GDMA.datagrid.filterColumn = i;
             						if(columns[i].dropDownColumnDisplay && columns[i].dropDownColumnStore){
                             		    
@@ -1050,8 +1052,9 @@ YAHOO.GDMA.datagrid.addRecordSave = function() {
                          YAHOO.GDMA.dialog.showInfoDialog("Validation Error!", "You must select an item from the " + columns[i].name + " dropdown");
                          return;
                      }
+                 }else{
+                	 columnValue = selColumnValue.options[selColumnValue.selectedIndex].value;
                  }
-                 columnValue = selColumnValue.options[selColumnValue.selectedIndex].value;
              }else{
                  var txtColumnValue = document.getElementById("txtColumnValue" + columns[i].id);
                  columnValue = txtColumnValue.value;
