@@ -5,7 +5,7 @@
 	<groupId>ie.clients.gdma</groupId>
 	<artifactId>GDMA</artifactId>
 	<packaging>war</packaging>
-	<version>4.0.0</version>
+	<version>4.1.0</version>
 	<ciManagement>
 		<system>continuum</system>
 		<notifiers>
@@ -26,6 +26,15 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+            <id>801992</id>
+            <name>John Roche</name>
+            <email>john.roche@avnet.com</email>
+            <organization>Avnet Client Solutions</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
 	</developers>
 	<scm>
 		<connection>scm:cvs|pserver|svu@cvs.clients.local|/home/cvsroot|GDMA</connection>
