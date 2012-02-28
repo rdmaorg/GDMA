@@ -17,6 +17,7 @@
         <property name="password" column="PASSWORD" type="string" />
         <property name="connectionUrl" column="URL" type="string" />
         <property name="prefix" column="PREFIX" type="string" />
+        <property name="active" column="ACTIVE" type="yes_no" />
         <many-to-one name="connectionType" column="ODBC_TYPE_ID" cascade="none"/>
         
         <set name="tables" order-by="ID" cascade="all-delete-orphan">

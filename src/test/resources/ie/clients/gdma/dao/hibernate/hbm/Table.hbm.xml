@@ -14,9 +14,17 @@
         <property name="displayed" column="DISPLAYED" type="yes_no" />
         <property name="allowDelete" column="ALLOWDELETE" type="yes_no" />
         
-        <set name="users" table="GDMA2_USER_TABLE_ACCESS" order-by="USER_ID asc" cascade="all">
-            <key column="TABLE_ID"/>
-            <many-to-many column="USER_ID" class="User" />
+       
+        
+        <set name="users" table="GDMA2_USER_TABLE_ACCESS">
+            <key column="TABLE_ID"/>            
+            <composite-element class="UserAccess">
+                <property name="allowDisplay"/>
+                <property name="allowUpdate"/>
+                <property name="allowInsert"/>
+                <property name="allowDelete"/>
+                <many-to-one name="user" column="USER_ID" class="User"/>
+            </composite-element>
         </set>
         
         <set name="columns" table="GDMA2_COLUMN" order-by="ORDERBY asc, ID asc" cascade="all-delete-orphan">

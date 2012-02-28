@@ -103,7 +103,7 @@ public class ServerDaoImplTest extends BaseSpringImplTest {
             LOG.debug("        " + server.getUsername());
             for (Table table : server.getTables()) {
                 LOG.debug("        Table: " + table.getName());
-                LOG.debug("               " + (table.isDisplayed() ? "visible" : "hidden"));
+                //LOG.debug("               " + (table.isDisplayed() ? "visible" : "hidden"));
                 for (Column column : table.getColumns()) {
                     LOG.debug("                       Column: " + column.getName());
                     LOG.debug("                               " + (column.isDisplayed() ? "visible" : "hidden"));

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import ie.clients.gdma.dao.UserDao;
 import ie.clients.gdma.domain.Table;
 import ie.clients.gdma.domain.User;
+import ie.clients.gdma.domain.UserAccess;
 import ie.clients.gdma.util.BaseSpringImplTest;
 
 import java.util.List;
@@ -19,24 +20,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UserDaoImplTest extends BaseSpringImplTest {
 
     protected static Logger LOG = Logger.getLogger(UserDaoImplTest.class);
-
+    
     @Autowired
     private UserDao userDao;
-
+    
+    private UserDao tableDao;
+    
     @Test
     public void testloadAll() {
-        assertNotNull(userDao);
+    	
+        //Users
+    	assertNotNull(userDao);
         List users = userDao.get();
         assertTrue(users.size() > 0);
         for (Object o : users) {
             User user = (User) o;
             LOG.debug(user.getUserName());
-            Set<Table> tables = user.getTables();
+            /*Set<Table> tables = user.getTables();
             for (Table table : tables) {
                 LOG.debug(table.getName());
+            }*/
+            Set<UserAccess> userAccesses = user.getUserAccess();
+            for (UserAccess userAccess : userAccesses) {
+                LOG.debug(userAccess.getTable());                
             }
         }
-
+        
+        
     }
 
     @Test
@@ -47,7 +57,7 @@ public class UserDaoImplTest extends BaseSpringImplTest {
         LOG.debug(user.getId());
     }
 
-    @Test
+    /*@Test
     public void getCannotListForTable() {
         assertNotNull(userDao);
         List<User> users = userDao.getAccess(111L);
@@ -58,5 +68,5 @@ public class UserDaoImplTest extends BaseSpringImplTest {
         for (User user : users) {
             LOG.debug("NoAccess : " + user.getUserName());
         }
-    }
+    }*/
 }

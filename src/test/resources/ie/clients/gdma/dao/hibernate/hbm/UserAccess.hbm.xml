@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="ie.clients.gdma.domain">
+    <class name="UserAccess" table="GDMA2_USER_TABLE_ACCESS">
+        
+        <composite-id>
+            <key-many-to-one name="table" class="Table" column="TABLE_ID" />     
+            <key-many-to-one name="user" class="User" column="USER_ID" />    
+        </composite-id>        
+        
+        <property name="allowDisplay" column="ALLOW_DISPLAY" type="yes_no" />
+        <property name="allowUpdate" column="ALLOW_UPDATE" type="yes_no" />
+        <property name="allowInsert" column="ALLOW_INSERT" type="yes_no" />
+        <property name="allowDelete" column="ALLOW_DELETE" type="yes_no" />      
+              
+
+    </class>
+
+</hibernate-mapping>
