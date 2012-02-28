@@ -44,6 +44,7 @@ public class Column {
     
     private Integer columnSize;
     
+    private boolean active;
     
     public Integer getColumnSize() {
         return columnSize;
@@ -195,6 +196,14 @@ public class Column {
 
     public void setPrimarykey(boolean primarykey) {
         this.primarykey = primarykey;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String toString() {

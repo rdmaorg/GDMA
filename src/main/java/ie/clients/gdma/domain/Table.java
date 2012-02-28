@@ -27,6 +27,7 @@ public class Table {
     
     private Set<UserAccess> userAccess = new LinkedHashSet<UserAccess>();
 
+    private boolean active;
     
 
     public Set<UserAccess> getUserAccess() {
@@ -95,6 +96,14 @@ public class Table {
 
     public void setServerId(Long serverId) {
         this.serverId = serverId;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }
