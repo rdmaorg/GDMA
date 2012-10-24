@@ -31,9 +31,24 @@ YAHOO.GDMA.admin.refreshTables = function() {
     YAHOO.GDMA.admin.selectedTableID = null;    
     YAHOO.GDMA.admin.tables.loadTables(YAHOO.GDMA.admin.selectedServerID, YAHOO.GDMA.admin.buildTable);
     YAHOO.GDMA.toolbar.changeState("tablesView");
+    //uncomment the next line and comment the line after if moving resynch functionality to the Refresh button
+    //YAHOO.GDMA.admin.refreshFunction = YAHOO.GDMA.admin.resynchTables;
     YAHOO.GDMA.admin.refreshFunction = YAHOO.GDMA.admin.refreshTables;
     YAHOO.GDMA.layout.getUnitByPosition('center').set('header','Admin - Tables for Server [' + YAHOO.GDMA.admin.selectedServerName + ']');
 };
+
+//Uncomment this method if moving resynch functionality to the Refresh button
+//Function to resynch the list of tables with the DB
+/*YAHOO.GDMA.admin.resynchTables = function() {
+    YAHOO.GDMA.admin.dataTable.cancelCellEditor();
+    YAHOO.GDMA.admin.updateList = []; 
+    YAHOO.GDMA.admin.selectedTableID = null;    
+    YAHOO.GDMA.admin.tables.resynchTables(YAHOO.GDMA.admin.selectedServerID, YAHOO.GDMA.admin.buildTable);
+    YAHOO.GDMA.toolbar.changeState("tablesView");
+    YAHOO.GDMA.admin.refreshFunction = YAHOO.GDMA.admin.resynchTables;
+    YAHOO.GDMA.layout.getUnitByPosition('center').set('header','Admin - Tables for Server [' + YAHOO.GDMA.admin.selectedServerName + ']');
+};*/
+
 
 // Function to refresh the list of columns
 YAHOO.GDMA.admin.refreshColumns = function() {
@@ -87,7 +102,7 @@ YAHOO.GDMA.admin.saveRecord = function() {
         };
         YAHOO.GDMA.dialog.showYesNoDialog(handleYes, "Please confirm save", "Are you sure you wish to save the "
                 + YAHOO.GDMA.admin.updateList.length
-                + " changed record(s)?<br/> This action will happen immediately and is non reversible.");
+                + " changed record(s)?<br/> This action will commit your changes to the database.");
     } else {
         YAHOO.GDMA.dialog.showInfoDialog("Save Records", "No changed have been made- there is nothing to save!");
     }    
@@ -113,7 +128,7 @@ YAHOO.GDMA.admin.deleteRecord = function() {
 
         YAHOO.GDMA.dialog.showYesNoDialog(handleYes, "Please confirm delete",
                 "Are you sure you wish to delete the selected record?"
-                        + "<br/> This action will happen immediately and is non reversible.");
+                        + "<br/> This action will commit your changes to the database.");
     }
 };
 
@@ -320,8 +335,8 @@ YAHOO.GDMA.admin.toolbarButtons =  [{
         },{
             name: "Delete",
             fn: YAHOO.GDMA.admin.deleteRecord,
-            defaultMode: "show",
-            usersView: "show",
+            defaultMode: "hide",
+            usersView: "hide",
             tooltip: "delete selected server registration"
         },{
             name: "Save",
@@ -340,7 +355,7 @@ YAHOO.GDMA.admin.toolbarButtons =  [{
             tablesView: "show",
             columnsView: "show",
             usersView: "show",
-            tooltip: "refresh the list of servers"
+            tooltip: "refresh the list of records"
         },{
             name: "Servers",
             fn: YAHOO.GDMA.admin.refreshServers, 

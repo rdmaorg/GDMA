@@ -34,5 +34,6 @@
 
     <definition name="dataGrid" template="/WEB-INF/jsp/dataGrid.jsp"/>
 
+    <definition name="bulkImportResults" template="/WEB-INF/jsp/bulkImportResults.jsp"/>
 
 </tiles-definitions>

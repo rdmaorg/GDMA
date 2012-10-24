@@ -25,18 +25,18 @@
             default-target-url="/index.htm" 
             always-use-default-target="true" 
             login-processing-url="/j_spring_security_check" />
-        <sec:concurrent-session-control max-sessions="1" exception-if-maximum-exceeded="true"/>
+        <sec:concurrent-session-control max-sessions="2" exception-if-maximum-exceeded="true"/>
     </sec:http>
     
     <bean id="loggerListener" class="org.springframework.security.event.authentication.LoggerListener"/>
     
    <bean id="authenticationProvider"
         class="ie.clients.gdma.security.JcifsAuthenticationProvider"
-        p:domainController="vmgdma"
-        p:defaultDomain="CLIENTS"
+        p:domainController="IECORV5WK010013"
+        p:defaultDomain="emea"
         p:defaultRole="ROLE_USER"
         p:adminRole="ROLE_ADMIN"
-        p:expirationDate="01-Jan-2010"
+        p:expirationDate="01-Jan-2020"
         p:userDao-ref="userDao">
         
         <sec:custom-authentication-provider/>

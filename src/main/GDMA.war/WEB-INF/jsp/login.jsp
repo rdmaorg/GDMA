@@ -15,10 +15,11 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="En" >
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <c:url value="/css/" var="csslink"/>
     <c:url value="/js/" var="jslink"/>
-    
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+	<link rel="icon" type="image/png" href="images/favicon.png" />
     <link rel="stylesheet" type="text/css" href="${fn:escapeXml(csslink)}fonts-min.css" />
     <link rel="stylesheet" type="text/css" href="${fn:escapeXml(csslink)}container.css" />
     <link rel="stylesheet" type="text/css" href="${fn:escapeXml(csslink)}button.css" />
@@ -40,46 +41,97 @@
     <script type="text/javascript" src="${fn:escapeXml(jslink)}yui/button-min.js">&#xA0;</script>
     <script type="text/javascript" src="${fn:escapeXml(jslink)}toolbar.js">&#xA0;</script>
 
-    <title>Generic Data Maintenance Application - Logon</title>
-    </head>
-<body id="body" class="yui-skin-sam">
-	<c:url value="/j_spring_security_check" var="jsck"/>
-    <h1 class="logon"><fmt:message key="loginform.header" /></h1>
-    <form:form action="${fn:escapeXml(jsck)}" method="POST" name="loginForm" cssClass="loginform" >
-        <fieldset>
-            <label for="j_username"><fmt:message key="loginform.username" /></label>
-            <input type="text" id="j_username" name="j_username" class="text"/>
-<!--
-            <input type="hidden" id="j_username" name="j_username" class="text"/>
--->            
-            <br />
+<title>Generic Data Maintenance Application</title>
+</head>
 
-            <label for="j_password"><fmt:message key="loginform.password" /></label>
-            <input type="password" name="j_password" class="text"/>
-            <br />
-<!-- 
-            <label for="domain"><fmt:message key="loginform.domain" /></label>
-            <form:select path="domain">
-                <form:options items="${domains}" />
-            </form:select>
-            <br />
- -->
-            <div id="divLoginButtons" class="gdma-toolbar">
-                <input id="btnReset" type="reset" name="btnReset" value="Reset" />
-                <input id="btnSubmit" type="submit" name="btnSubmit" value="Login" /> 
-            </div>
-            <br />
+<body>
+<c:url value="/j_spring_security_check" var="jsck"/>
 
-        </fieldset>
-		<br />
-        <c:if test="${not empty param.login_error}">
-        <span class="error">Login failed</span><br/>
-        <span class="error">${SPRING_SECURITY_LAST_EXCEPTION.message}</span>
-        </c:if>
-    </form:form>
+<table width="100%">
+<tr>
+<td  colspan="2"><img src="images/blank.gif" width="995" height="50" style="display:block" /></td>
+</tr>
+<tr><td width="100%" align="center">
+	<table style="width: 995; height:60%; font: 12px/1.3em Arial,Tahoma,Helvetica,sans-serif;">
+	<tr>
+	<td style="align: left; font-size: x-large;" align="left"><img alt="Avnet Client Solutions" src="images/gdma_logo.png"  width="162" height="60"/></td>
+	<td style="height:20%" align="right"><img alt="Avnet Client Solutions" src="images/CustomerLogo.png" width="152.45" height="50" /></td>
+	</tr>
+	<tr>
+<td  colspan="2"><img src="images/blank.gif"  height="10" style="display:block" /></td>
+</tr>
+	<tr>
+	<td width="100%" align="center" valign="middle"  colspan="2">
+		<div >
+			<img src="images/header_bg.png" alt="Avnet Client Solutions"  style="display:block" />
+		</div>
+		<div style="position:absolute;top:150px;left:56%;overflow:hidden;" >
+			
+
+			<fieldset style="border:0px;">
+			<form:form action="${fn:escapeXml(jsck)}" method="POST" name="loginForm" >
+			<table >
+									<tr>
+										<td  colspan="2" align="left"><h4>Login</h4></td>
+									</tr>
+									<tr>
+										<td  colspan="2"><img src="images/blank.gif" height="5" style="display:block" /></td>
+									</tr>
+                                
+                                    <tr>
+                                        <td>
+                                            <label for="j_username"><fmt:message key="loginform.username" /></label>
+                                        </td>
+                                        <td align="left">
+                                            <input type="text" id="j_username" name="j_username" class="text" style="width:150px"/>
+                                        </td>
+                                    </tr>
+
+                                   <tr>
+                                        <td>
+                                            <label for="j_password"><fmt:message key="loginform.password" /></label>
+                                        </td>
+                                       <td align="left">
+                                            <input type="password" name="j_password" class="text" style="width:150px"/>
+                                        </td>
+                                    </tr>
+										<tr>
+											<td  colspan="2"><img src="images/blank.gif" height="5" style="display:block" /></td>
+										</tr>
+									<tr>
+                                        <td align="left">
+                                            <input  type="reset"  value="Reset" />  
+                                        </td>
+                                       <td align="right">
+                                            <input  type="submit"  value="Login" />
+                                        </td>
+                                    </tr>
+
+                            </table>
+	                       
+                        </form:form>
+			</fieldset>
+		</div>
+
+	</td>
+	</tr>
+	<tr>
+<td  colspan="2"><img src="images/blank.gif" height="20" style="display:block" /></td>
+</tr>
+<tr>
+<td style="height:20%"  align="right" colspan="2"> <span style="font-size: x-small;">© AVNET Client Solutions 2011</span></td>
+</tr>
+	</table>
+</td>
+</tr>
+
+</table>
 
     <script type="text/javascript">
-    
+   			<c:if test="${not empty param.login_error}">
+				alert('${SPRING_SECURITY_LAST_EXCEPTION.message}');
+			</c:if>
+
     logonSubmit = function(oArgs){
         var form = YAHOO.util.Dom.get("command");
         var j_username = YAHOO.util.Dom.get("j_username");
@@ -92,6 +144,7 @@
         }
         form.submit();
     };
+	/*
         YAHOO.util.Event.onDOMReady(function() {
             
             var btnReset = new YAHOO.widget.Button( "btnReset");
@@ -99,7 +152,10 @@
             //btnSubmit.on("click", logonSubmit);
 
         });
+		*/
     </script>
+
 </body>
+
 </html>
 </jsp:root>

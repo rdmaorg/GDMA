@@ -28,6 +28,8 @@ public class Server {
 
     private String prefix;
 
+    private boolean active;
+    
     // the following 2 values are runtime values and are not persisted
     private boolean connected;
 
@@ -95,6 +97,14 @@ public class Server {
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
+    
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public Set<Table> getTables() {
         return tables;
@@ -132,4 +142,14 @@ public class Server {
     public int hashCode() {
         return name.hashCode();
     }
+
+    public String toString() {
+        return "Server [connected=" + connected + ", connectionType="
+                + connectionType + ", connectionUrl=" + connectionUrl + ", id="
+                + id + ", lastError=" + lastError + ", name=" + name
+                + ", password=" + password + ", prefix=" + prefix + ", tables="
+                + tables + ", username=" + username + "]";
+    }
+    
+    
 }

@@ -45,7 +45,7 @@ if(!YAHOO.GDMA.admin.updateList||YAHOO.GDMA.admin.updateList.length>0){var A=fun
 YAHOO.GDMA.admin.refreshFunction()
 })
 };
-YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm save","Are you sure you wish to save the "+YAHOO.GDMA.admin.updateList.length+" changed record(s)?<br/> This action will happen immediately and is non reversible.")
+YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm save","Are you sure you wish to save the "+YAHOO.GDMA.admin.updateList.length+" changed record(s)?<br/> This action will commit your changes to the database.")
 }else{YAHOO.GDMA.dialog.showInfoDialog("Save Records","No changed have been made- there is nothing to save!")
 }};
 YAHOO.GDMA.admin.deleteRecord=function(){YAHOO.GDMA.admin.dataTable.cancelCellEditor();
@@ -57,7 +57,7 @@ YAHOO.GDMA.admin.deleteFunction(C,function(){YAHOO.GDMA.dialog.showInfoDialog("D
 YAHOO.GDMA.admin.refreshFunction()
 })
 };
-YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm delete","Are you sure you wish to delete the selected record?<br/> This action will happen immediately and is non reversible.")
+YAHOO.GDMA.dialog.showYesNoDialog(A,"Please confirm delete","Are you sure you wish to delete the selected record?<br/> This action will commit your changes to the database.")
 }}};
 YAHOO.GDMA.admin.addRecord=function(){YAHOO.GDMA.admin.dataTable.cancelCellEditor();
 var B=YAHOO.GDMA.admin.dataTable.getSelectedRows();
@@ -160,7 +160,7 @@ YAHOO.GDMA.admin.columnconfig.loadList(YAHOO.GDMA.admin.selectedServerID,YAHOO.G
 YAHOO.GDMA.admin.viewUsers=function(){YAHOO.GDMA.admin.dataTable.cancelCellEditor();
 YAHOO.GDMA.admin.refreshUsers()
 };
-YAHOO.GDMA.admin.toolbarButtons=[{name:"Add",fn:YAHOO.GDMA.admin.addRecord,defaultMode:"show",usersView:"show",tooltip:"add a new server registration"},{name:"Delete",fn:YAHOO.GDMA.admin.deleteRecord,defaultMode:"show",usersView:"show",tooltip:"delete selected server registration"},{name:"Save",fn:YAHOO.GDMA.admin.saveRecord,editmode:"show",tooltip:"save updates or additions of server records"},{name:"Cancel",fn:YAHOO.GDMA.admin.refreshRecords,editmode:"show",tooltip:"cancel and discard current changes"},{name:"Refresh",fn:YAHOO.GDMA.admin.refreshRecords,defaultMode:"show",tablesView:"show",columnsView:"show",usersView:"show",tooltip:"refresh the list of servers"},{name:"Servers",fn:YAHOO.GDMA.admin.refreshServers,tablesView:"show",columnsView:"show",usersView:"show",tooltip:"view the list of server registrations"},{name:"Tables",fn:YAHOO.GDMA.admin.viewTables,defaultMode:"show",columnsView:"show",tooltip:"view the tables for the selected server"},{name:"Columns",fn:YAHOO.GDMA.admin.viewColumns,tablesView:"show",tooltip:"view the columns for the selected table"},{name:"Access",fn:YAHOO.GDMA.admin.viewPermissions,tablesView:"show",tooltip:"view the permissions for the selected table"},{name:"Users",fn:YAHOO.GDMA.admin.viewUsers,defaultMode:"show",tooltip:"view the list of users"},{name:"Config",fn:YAHOO.GDMA.admin.viewColumnConfig,columnsView:"show",tooltip:"Edit columns config"}];
+YAHOO.GDMA.admin.toolbarButtons=[{name:"Add",fn:YAHOO.GDMA.admin.addRecord,defaultMode:"show",usersView:"show",tooltip:"add a new server registration"},{name:"Delete",fn:YAHOO.GDMA.admin.deleteRecord,defaultMode:"hide",usersView:"hide",tooltip:"delete selected server registration"},{name:"Save",fn:YAHOO.GDMA.admin.saveRecord,editmode:"show",tooltip:"save updates or additions of server records"},{name:"Cancel",fn:YAHOO.GDMA.admin.refreshRecords,editmode:"show",tooltip:"cancel and discard current changes"},{name:"Refresh",fn:YAHOO.GDMA.admin.refreshRecords,defaultMode:"show",tablesView:"show",columnsView:"show",usersView:"show",tooltip:"refresh the list of records"},{name:"Servers",fn:YAHOO.GDMA.admin.refreshServers,tablesView:"show",columnsView:"show",usersView:"show",tooltip:"view the list of server registrations"},{name:"Tables",fn:YAHOO.GDMA.admin.viewTables,defaultMode:"show",columnsView:"show",tooltip:"view the tables for the selected server"},{name:"Columns",fn:YAHOO.GDMA.admin.viewColumns,tablesView:"show",tooltip:"view the columns for the selected table"},{name:"Access",fn:YAHOO.GDMA.admin.viewPermissions,tablesView:"show",tooltip:"view the permissions for the selected table"},{name:"Users",fn:YAHOO.GDMA.admin.viewUsers,defaultMode:"show",tooltip:"view the list of users"},{name:"Config",fn:YAHOO.GDMA.admin.viewColumnConfig,columnsView:"show",tooltip:"Edit columns config"}];
 YAHOO.GDMA.admin.init=function(){dwr.engine.setErrorHandler(YAHOO.GDMA.admin.dwrErrorHandler);
 dwr.engine.setPreHook(function(){YAHOO.GDMA.dialog.loading.show()
 });

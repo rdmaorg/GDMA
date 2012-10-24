@@ -18,7 +18,9 @@ YAHOO.GDMA.admin.columns.fields = {
                   {key:"special"},
                   {key:"minWidth"},
                   {key:"maxWidth"},
-                  {key:"orderby"}
+                  {key:"orderby"},
+                  {key:"columnSize"},
+                  {key:"active"}
                   ]
 };
 
@@ -296,7 +298,19 @@ YAHOO.GDMA.admin.columns.columnDefs = [ {
                 validator: YAHOO.GDMA.utilities.validateNumber
             },
             width:60
-        }];
+        }
+        
+        ,{
+            key :"columnSize",
+            label :"Column Size",
+            editor :"textbox",
+            editorOptions: {
+                validator: YAHOO.GDMA.utilities.validateNumber
+            },
+            width:60
+        }
+        
+        ];
 
 
 YAHOO.GDMA.admin.columns.deleteRecord = function(){

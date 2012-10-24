@@ -29,4 +29,6 @@ public interface ServerDao {
 
     public List<Server> getServerTableColumnList(Long serverId, Long tableId);
 
+	public List<Server> getServerTableColumnListForDDDropdown();
+
 }

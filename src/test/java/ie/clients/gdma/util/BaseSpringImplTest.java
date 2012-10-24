@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/testApplicationContext.xml",
-        "classpath:/ie/clients/gdma/dao/hibernate/hibernate-beans.xml" })
+        "classpath:/ie/clients/gdma/dao/hibernate/dao-beans.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @Transactional
 public abstract class BaseSpringImplTest {

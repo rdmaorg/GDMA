@@ -105,3 +105,44 @@ YAHOO.GDMA.dialog.showInfoDialog = function(header, text, icon) {
 
     YAHOO.GDMA.dialog.infoDialog.show();
 };
+
+
+YAHOO.GDMA.dialog.showImportInfoDialog = function(header, text, icon) {
+    YAHOO.GDMA.dialog.loading.hide();
+    var handleOk = function() {
+    	//this.hide();
+    	location.reload();
+        };
+
+    if (!icon)
+        icon = YAHOO.widget.SimpleDialog.ICON_INFO;
+
+    // Instantiate the Dialog
+    if (!YAHOO.GDMA.dialog.infoDialog) {
+        YAHOO.GDMA.dialog.infoDialog = new YAHOO.widget.SimpleDialog("infoDialog", {
+            fixedcenter :true,
+            visible :false,
+            draggable :false,
+            close :false,
+            modal :true,
+            zindex :40000,
+            text :"Click Ok?",
+            constraintoviewport :true,
+            buttons : [ {
+                text :"Ok",
+                handler :handleOk,
+                isDefault :true
+            } ]
+        });
+        YAHOO.GDMA.dialog.infoDialog.setHeader("Info");
+        YAHOO.GDMA.dialog.infoDialog.render("body");
+    }
+
+    YAHOO.GDMA.dialog.infoDialog.setBody(text);
+    YAHOO.GDMA.dialog.infoDialog.setHeader(header);
+    YAHOO.GDMA.dialog.infoDialog.cfg.setProperty("icon", icon);
+
+    // Render the Dialog
+
+    YAHOO.GDMA.dialog.infoDialog.show();
+};

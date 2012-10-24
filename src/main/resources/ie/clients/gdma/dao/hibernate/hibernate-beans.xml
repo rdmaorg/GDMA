@@ -16,11 +16,13 @@
                 <value>ie/clients/gdma/dao/hibernate/hbm/Server.hbm.xml</value>
                 <value>ie/clients/gdma/dao/hibernate/hbm/Table.hbm.xml</value>
                 <value>ie/clients/gdma/dao/hibernate/hbm/User.hbm.xml</value>
+                <value>ie/clients/gdma/dao/hibernate/hbm/UserAccess.hbm.xml</value> 
             </list>
         </property>
         <property name="hibernateProperties">
             <props>
-		    <!-- <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9iDialect</prop> -->
+		        <!-- <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9iDialect</prop> -->
+                <!-- <prop key="hibernate.dialect">ie.clients.gdma.hibernate.dialect.TeradataDialect</prop> -->
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.default_batch_fetch_size">20</prop>
@@ -64,6 +66,9 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
     <bean id="userDao" class="ie.clients.gdma.dao.hibernate.UserDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    <bean id="userAccessDao" class="ie.clients.gdma.dao.hibernate.UserAccessDaoImpl">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
     

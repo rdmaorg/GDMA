@@ -15,5 +15,6 @@ CREATE TABLE GDMA2_COLUMN
   special                  CHAR(1) DEFAULT 'N' NOT NULL,
   minwidth                 SMALLINT,
   maxwidth                 SMALLINT,
-  orderby                  SMALLINT
+  orderby                  SMALLINT,
+  column_size              INT
 );

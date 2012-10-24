@@ -14,6 +14,10 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  */
 public class TableDaoImpl extends HibernateDaoSupport implements TableDao {
 
+	public List<Table> get() {
+        return getHibernateTemplate().loadAll(Table.class);
+    }
+
     public Table get(Long id) {
         return (Table) getHibernateTemplate().load(Table.class, id);
     }

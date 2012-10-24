@@ -17,7 +17,8 @@
         <dwr:convert type="bean" class="ie.clients.gdma.domain.Server" />
         <dwr:convert type="bean" class="ie.clients.gdma.domain.Table" />
         <dwr:convert type="bean" class="ie.clients.gdma.domain.Column" />
-        <dwr:convert type="bean" class="ie.clients.gdma.domain.User" />
+        <dwr:convert type="bean" class="ie.clients.gdma.domain.User" />        
+        <dwr:convert type="bean" class="ie.clients.gdma.domain.UserAccess" />        
         <dwr:convert type="bean" class="ie.clients.gdma.domain.ConnectionType" />
         <dwr:convert type="bean" class="ie.clients.gdma.web.command.AccessLists" />
         <dwr:convert type="bean" class="ie.clients.gdma.web.command.TableUserAccess" />

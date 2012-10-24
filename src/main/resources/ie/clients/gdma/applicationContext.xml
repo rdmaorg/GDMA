@@ -46,6 +46,7 @@
     <bean id="serverUtil" class="ie.clients.gdma.util.ServerUtil">
         <property name="serverDao" ref="serverDao" />
         <property name="tableDao" ref="tableDao" />
+        <property name="userAccessDao" ref="userAccessDao" />
         <property name="dataSourcePool" ref="dataSourcePool" />
     </bean>
     <bean id="gdmaFacade" class="ie.clients.gdma.GdmaFacade">
@@ -54,6 +55,7 @@
         <property name="columnDao" ref="columnDao" />
         <property name="connectionTypeDao" ref="connectionTypeDao" />
         <property name="userDao" ref="userDao" />
+        <property name="userAccessDao" ref="userAccessDao" />
         <property name="dynamicDao" ref="dynamicDao" />
     </bean>
     

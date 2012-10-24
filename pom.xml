@@ -5,7 +5,7 @@
 	<groupId>ie.clients.gdma</groupId>
 	<artifactId>GDMA</artifactId>
 	<packaging>war</packaging>
-	<version>0.3.0</version>
+	<version>4.1.0</version>
 	<ciManagement>
 		<system>continuum</system>
 		<notifiers>
@@ -26,6 +26,15 @@
 				<role>developer</role>
 			</roles>
 		</developer>
+		<developer>
+            <id>801992</id>
+            <name>John Roche</name>
+            <email>john.roche@avnet.com</email>
+            <organization>Avnet Client Solutions</organization>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
 	</developers>
 	<scm>
 		<connection>scm:cvs|pserver|svu@cvs.clients.local|/home/cvsroot|GDMA</connection>
@@ -289,7 +298,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-ntlm</artifactId>
 			<version>${spring-security-version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -303,7 +312,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate</artifactId>
-			<version>3.2.5.ga</version>
+			<version>3.2.6.ga</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
@@ -373,8 +382,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc5</artifactId>
-			<version>11.1.0.6.0</version>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openqa.selenium.client-drivers</groupId>
@@ -428,6 +437,27 @@
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+	    <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>1.2.4</version>
+        </dependency>
+
 	</dependencies>
 	<properties>
 		<spring-version>2.5.5</spring-version>

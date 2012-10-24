@@ -51,16 +51,34 @@ public class ServerDaoImpl extends HibernateDaoSupport implements ServerDao {
 
     }
 
+    /*@SuppressWarnings("unchecked")
+    public List<Server> getServerTableList(final String userName) {
+        return (List) getHibernateTemplate().execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                String query = "";
+                query += "select distinct server";
+                query += "  from Server as server, UserAccess as userAccess ";
+                query += "    inner join fetch server.tables as table";
+                query += "  where userAccess.tableId = table.id";
+                query += "  and userAccess.user.userName = ? and table.displayed = true";
+                query += "  and server.active = true";
+                return session.createQuery(query).setString(0, userName).list();
+            }
+        });
+    }*/
+    
     @SuppressWarnings("unchecked")
     public List<Server> getServerTableList(final String userName) {
         return (List) getHibernateTemplate().execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
                 String query = "";
                 query += "select distinct server";
-                query += "  from Server as server ";
+                query += "  from Server as server, UserAccess as userAccess ";
                 query += "    inner join fetch server.tables as table";
-                query += "    join fetch table.users as user";
-                query += "  where user.userName = ? and table.displayed = true ";
+                query += "  where userAccess.tableId = table.id";
+                query += "  and userAccess.user.userName = ? and userAccess.allowDisplay = true";
+                query += "  and server.active = true";
+                query += "  and table.active = true";
                 return session.createQuery(query).setString(0, userName).list();
             }
         });
@@ -72,6 +90,15 @@ public class ServerDaoImpl extends HibernateDaoSupport implements ServerDao {
         query += "select distinct server from Server as server ";
         query += "    inner join fetch server.tables as table";
         query += "    inner join fetch table.columns as column";
+        List<Server> servers = getHibernateTemplate().find(query);
+        return servers;
+    }@SuppressWarnings("unchecked")
+    public List<Server> getServerTableColumnListForDDDropdown() {
+        String query = "";
+        query += "select distinct server from Server as server ";
+        query += "    inner join fetch server.tables as table ";
+        query += "    inner join fetch table.columns as column";
+        query += "    where table.active = true and column.active = true";
         List<Server> servers = getHibernateTemplate().find(query);
         return servers;
     }

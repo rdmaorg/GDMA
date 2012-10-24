@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="ie.clients.gdma.domain">
+    <class name="User" table="GDMA2_USERS" lazy="false">
+        <id name="id" column="ID" type="long">
+            <generator class="native">
+                <param name="sequence">SEQ_GDMA2_USERS</param>
+            </generator>
+        </id>
+        <property name="firstName" column="FIRST_NAME" type="string" />
+        <property name="lastName" column="LAST_NAME" type="string" />
+        <property name="userName" column="USERNAME" type="string" />
+        <property name="admin" column="ISADMIN" type="yes_no" />
+        <property name="locked" column="ISLOCKED" type="yes_no" />
+        <property name="active" column="ACTIVE" type="yes_no" />
+        
+        
+        <!-- <set name="tables" table="GDMA2_USER_TABLE_ACCESS" order-by="TABLE_ID asc" inverse="true" cascade="save-update">
+            <key column="USER_ID" not-null="true"/>
+            <many-to-many column="TABLE_ID" class="Table" />
+        </set> -->
+        
+        
+        <set name="tables" table="GDMA2_USER_TABLE_ACCESS">
+            <key column="USER_ID"/>            
+            <composite-element class="UserAccess">
+                <property name="allowDisplay"/>
+                <property name="allowUpdate"/>
+                <property name="allowInsert"/>
+                <property name="allowDelete"/>
+                <many-to-one name="table" column="TABLE_ID" class="Table"/>
+            </composite-element>
+        </set>
+        
+               
+    </class>
+</hibernate-mapping>

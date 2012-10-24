@@ -41,6 +41,21 @@ public class Column {
     private Integer maxWidth;
 
     private Integer orderby;
+    
+    private Integer columnSize;
+    
+    private boolean active;
+    
+    public Integer getColumnSize() {
+        return columnSize;
+    }
+
+    public void setColumnSize(Integer columnSize) {
+        this.columnSize = columnSize;
+    }
+
+    
+    
 
     public Integer getOrderby() {
         return orderby;
@@ -181,6 +196,27 @@ public class Column {
 
     public void setPrimarykey(boolean primarykey) {
         this.primarykey = primarykey;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String toString() {
+        return "Column [allowInsert=" + allowInsert + ", allowUpdate="
+                + allowUpdate + ", columnType=" + columnType
+                + ", columnTypeString=" + columnTypeString + ", displayed="
+                + displayed + ", dropDownColumnDisplay="
+                + dropDownColumnDisplay + ", dropDownColumnStore="
+                + dropDownColumnStore + ", id=" + id + ", maxWidth=" + maxWidth
+                + ", minWidth=" + minWidth + ", name=" + name + ", nullable="
+                + nullable + ", orderby=" + orderby + ", primarykey="
+                + primarykey + ", special=" + special + ", table=" + table
+                + "]";
     }
 
 }

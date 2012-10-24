@@ -1,6 +1,7 @@
 package ie.clients.gdma.web.command;
 
 import ie.clients.gdma.domain.User;
+import ie.clients.gdma.domain.UserAccess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,8 @@ public class AccessLists {
     private List<User> canAccess = new ArrayList<User>();
 
     private List<User> canNotAccess = new ArrayList<User>();
-
-    public List<User> getCanAccess() {
+	
+	public List<User> getCanAccess() {
         return canAccess;
     }
 
@@ -26,4 +27,5 @@ public class AccessLists {
     public void setCanNotAccess(List<User> canNotAccess) {
         this.canNotAccess = canNotAccess;
     }
+    
 }

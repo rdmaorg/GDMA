@@ -1,13 +1,91 @@
 package ie.clients.gdma.domain;
 
-public class UserAccess extends User {
-    private boolean allowedAccess = false;
+import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-    public boolean isAllowedAccess() {
-        return allowedAccess;
+public class UserAccess implements Serializable {
+
+	private static final long serialVersionUID = -2834870515554339937L;
+
+	private Long userId;
+	
+	private Long tableId;
+	
+	private boolean allowDisplay = false;
+	
+	private boolean allowUpdate = false;
+	
+	private boolean allowInsert = false;
+	
+	private boolean allowDelete = false;
+	
+	private User user;
+	
+	private Table table;
+	
+	public Long  getUserId() {
+        return userId;
     }
 
-    public void setAllowedAccess(boolean allowedAccess) {
-        this.allowedAccess = allowedAccess;
+    public void setUserId(Long  userId) {
+        this.userId = userId;
     }
+    
+    public Long  getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(Long  tableId) {
+        this.tableId = tableId;
+    }
+    
+    public boolean getAllowDisplay() {
+        return allowDisplay;
+    }
+
+    public void setAllowDisplay(boolean allowDisplay) {
+        this.allowDisplay = allowDisplay;
+    }
+    
+    public boolean getAllowUpdate() {
+        return allowUpdate;
+    }
+
+    public void setAllowUpdate(boolean allowUpdate) {
+        this.allowUpdate = allowUpdate;
+    }
+    
+    public boolean getAllowInsert() {
+        return allowInsert;
+    }
+
+    public void setAllowInsert(boolean allowInsert) {
+        this.allowInsert = allowInsert;
+    }
+    
+    public boolean getAllowDelete() {
+        return allowDelete;
+    }
+
+    public void setAllowDelete(boolean allowDelete) {
+        this.allowDelete = allowDelete;
+    }   
+    
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
+    } 
+    
 }

@@ -5,9 +5,9 @@ YAHOO.namespace("GDMA.admin.tables");
 YAHOO.GDMA.admin.tables.fields = {
       fields : [ 
                  {key:"id", parser:YAHOO.util.DataSource.parseNumber},
-                 {key:"name", parser:YAHOO.util.DataSource.parseString},
+                 {key:"name", parser:YAHOO.util.DataSource.parseString}/*,
                  {key:"displayed"},
-                 {key:"allowDelete"}
+                 {key:"allowDelete"}*/
                  ]
 };
 
@@ -23,18 +23,6 @@ YAHOO.GDMA.admin.tables.columnDefs = [ {
         sortable:true,
         resizeable:true, 
         width:200
-    }, {
-        key :"displayed",
-        label : YAHOO.GDMA.utilities.createCheckAllHeader("Displayed"),
-        formatter:"checkbox",
-        resizeable:true,
-        width:85
-    }, {
-        key :"allowDelete",
-        label : YAHOO.GDMA.utilities.createCheckAllHeader("Allow Delete"),
-        formatter:"checkbox",
-        resizeable:true,
-        width:85
 }];
 
 YAHOO.GDMA.admin.tables.doubleClick = function(oArgs){
@@ -46,6 +34,24 @@ YAHOO.GDMA.admin.tables.doubleClick = function(oArgs){
 
 YAHOO.GDMA.admin.tables.deleteRecord = function(){    
 }
+
+//Uncomment this method if moving resynch functionality to the Refresh button
+//Resync and load the list of tables
+/*YAHOO.GDMA.admin.tables.resynchTables = function(serverId, fnCallback ) {
+  GdmaAdmin.resyncTableList( serverId, function(tables) {
+      // setup the object backing the table
+      var datasource = new YAHOO.util.DataSource(tables);
+      datasource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;        
+      // field names
+      datasource.responseSchema = YAHOO.GDMA.admin.tables.fields;        
+      datasource.columnDefs = YAHOO.GDMA.admin.tables.columnDefs;
+      fnCallback(datasource);
+  });
+  // setup the functions need
+  YAHOO.GDMA.admin.saveFunction =  GdmaAdmin.saveTables;
+  YAHOO.GDMA.admin.deleteFunction = YAHOO.GDMA.admin.tables.deleteRecord;
+  YAHOO.GDMA.admin.doubleClick = YAHOO.GDMA.admin.tables.doubleClick;
+}*/
 
 // Load the list of tables
 YAHOO.GDMA.admin.tables.loadTables = function(serverId, fnCallback ) {

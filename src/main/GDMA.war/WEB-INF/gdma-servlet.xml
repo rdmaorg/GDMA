@@ -8,6 +8,12 @@
         http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-1.0.xsd">
 
 
+
+
+<bean id="sessionExpirationFilter" class="ie.clients.gdma.security.SessionExpirationFilter">
+    <property name="expiredUrl" value="/login.spring?login_error=2"/>
+</bean>
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
     </bean>
@@ -39,6 +45,7 @@
                 /serverList.htm=serverListController
                 /download.xls=downloadController
                 /download.csv=downloadController
+                /bulkImport.htm=bulkImportController
             </value>
         </property>
     </bean>
@@ -50,6 +57,15 @@
     
     <bean id="downloadController" class="ie.clients.gdma.web.controllers.DownloadController">
         <property name="gdmaFacade" ref="gdmaFacade" />
+    </bean>
+    
+    <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+    
+    <bean id="bulkImportController" class="ie.clients.gdma.web.controllers.BulkImportController">
+        <property name="gdmaFacade" ref="gdmaFacade" />
+        <property name="commandClass" value="ie.clients.gdma.web.controllers.BulkImportBean"/>
+        <property name="successView" value="bulkImportResults"/>
     </bean>
     
     <bean id="indexController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />

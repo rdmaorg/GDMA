@@ -4,6 +4,7 @@ import ie.clients.gdma.dao.AuditHeaderDao;
 import ie.clients.gdma.dao.AuditRecordDao;
 import ie.clients.gdma.domain.AuditHeader;
 import ie.clients.gdma.domain.AuditRecord;
+import ie.clients.gdma.domain.User;
 import ie.clients.gdma.web.command.ColumnUpdate;
 import ie.clients.gdma.web.command.UpdateRequest;
 
@@ -20,7 +21,7 @@ import org.springframework.aop.framework.adapter.UnknownAdviceTypeException;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.userdetails.User;
+//import org.springframework.security.userdetails.User;
 import org.springframework.util.CollectionUtils;
 
 
@@ -89,15 +90,25 @@ public class AuditAspect {
             for (ColumnUpdate columnUpdate : list) {
                 // only save if values are different
 
-                if (columnUpdate.getOldColumnValue() == columnUpdate.getNewColumnValue()) {
-                    continue;
-                }
+          //   if (columnUpdate.getOldColumnValue() == columnUpdate.getNewColumnValue()) {
+          //        continue;
+               // }
+                
+                
 
                 // this column wasn't modified
-                if (auditType != 'M' && columnUpdate.getNewColumnValue() == null) {
+            	// fix brackets
+                if ((auditType == 'M') && (columnUpdate.getNewColumnValue() == null)) {
+                	LOG.debug("No change for column" + columnUpdate.getColumnId());
                     continue;
                 }
-
+                
+                // use equals rather then ==
+                if ((columnUpdate.getOldColumnValue() != null ) && (columnUpdate.getOldColumnValue().equals(columnUpdate.getNewColumnValue()))) {     
+                	  LOG.debug("No change for column" + columnUpdate.getColumnId());
+                	  continue;
+              }
+                LOG.debug("Logging change for column" + columnUpdate.getColumnId());
                 AuditRecord auditRecord = new AuditRecord();
                 auditRecord.setColumnID(columnUpdate.getColumnId());
                 auditRecord.setAuditHeaderID(auditHeader.getId());
@@ -132,14 +143,28 @@ public class AuditAspect {
 
     private String getUsername() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
+        if (securityContext == null){
+        	LOG.debug("securit context is null");
+        }
         Authentication authentication = securityContext.getAuthentication();
+        if (authentication == null){
+        	LOG.debug("auth is null");
+        } else
+        {
+        	LOG.debug(authentication.getPrincipal().getClass());
+        }
+       // LOG.debug("user is " + (String)authentication.getPrincipal() );
+      //  return (String)authentication.getPrincipal();
+        
+       // user is our domain user not spring one
         if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
             LOG.debug("User ==> NULL");
             return "NULL";
         }
         User user = (User) authentication.getPrincipal();
-        LOG.debug("User ==> " + user.getUsername() + "\n");
-        return user.getUsername();
+        LOG.debug("User ==> " + user.getUserName() + "\n");
+        return user.getUserName();
+   
     }
 
 }

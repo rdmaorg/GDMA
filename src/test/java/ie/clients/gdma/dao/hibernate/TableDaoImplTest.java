@@ -2,10 +2,15 @@ package ie.clients.gdma.dao.hibernate;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import ie.clients.gdma.dao.ServerDao;
 import ie.clients.gdma.dao.TableDao;
 import ie.clients.gdma.domain.Server;
 import ie.clients.gdma.domain.Table;
+import ie.clients.gdma.domain.User;
 import ie.clients.gdma.util.BaseSpringImplTest;
 
 import org.apache.log4j.Logger;
@@ -26,7 +31,29 @@ public class TableDaoImplTest extends BaseSpringImplTest {
 
     private Server server;
 
-    @Before
+    @Test    
+    public void testloadAll() {
+    	
+        //Users
+    	assertNotNull(tableDao);
+        List tables = tableDao.get();
+        assertTrue(tables.size() > 0);
+        for (Object o : tables) {
+            Table table = (Table) o;
+            LOG.debug(table.getName());
+            /*Set<Table> tables = user.getTables();
+            for (Table table : tables) {
+                LOG.debug(table.getName());
+            }*/
+            /*Set<UserAccess> userAccesss = user.getUserAccess();
+            for (UserAccess userAccess : userAccesss) {
+                LOG.debug(userAccess.getTable());                
+            }*/
+        }
+        
+        
+    }
+ @Before
     public void getConnectionType() {
         assertNotNull(serverDao);
         assertNotNull(tableDao);
@@ -41,8 +68,8 @@ public class TableDaoImplTest extends BaseSpringImplTest {
 
         Table table = new Table();
         table.setName("junit-test-table");
-        table.setDisplayed(true);
-        table.setAllowDelete(true);
+        //table.setDisplayed(true);
+        //table.setAllowDelete(true);
 
         server.getTables().add(table);
 

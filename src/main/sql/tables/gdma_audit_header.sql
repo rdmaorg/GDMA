@@ -3,7 +3,7 @@ create table GDMA2_AUDIT_HEADER
 (
   ID          NUMBER(12) not null,
   TABLE_ID    NUMBER(9) not null,
-  TYPE        CHAR(1) not null,
+  AUDIT_TYPE        CHAR(1) not null,
   MODIFIED_BY VARCHAR2(255) not null,
   MODIFIED_ON DATE not null
 )

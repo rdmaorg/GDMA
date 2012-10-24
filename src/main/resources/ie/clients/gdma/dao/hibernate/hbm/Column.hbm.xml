@@ -25,7 +25,8 @@
         <property name="maxWidth" column="MAXWIDTH" type="integer" />
         <property name="minWidth" column="MINWIDTH" type="integer" />
         <property name="orderby" column="ORDERBY" type="integer"/>
-
+		<property name="columnSize" column="COLUMN_SIZE" type="integer"/>
+		<property name="active" column="ACTIVE" type="yes_no" />
     </class>
 
 </hibernate-mapping>

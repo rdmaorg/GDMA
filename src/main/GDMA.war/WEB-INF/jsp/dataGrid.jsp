@@ -6,6 +6,8 @@
           version="2.0">           
     <jsp:directive.page contentType="text/html" pageEncoding="UTF-8"/>
 
+    <jsp:include page="features.jsp" flush="true"/>    
+
     <div id="divToolbar" class="yui-skin-sam gdma-toolbar">&#xA0;</div>
     <div id="divDataTable" class="yui-skin-sam">&#xA0;</div>
     <div id="divPager" class="yui-skin-sam">&#xA0;</div>
@@ -15,7 +17,7 @@
 	<script type="text/javascript">
 		var GDMA_CONTEXT_ROOT = "${fn:escapeXml(root)}";
 	</script>
-    <script type="text/javascript" src="${fn:escapeXml(jslink)}datagrid-min.js">&#xA0;</script>
+    <script type="text/javascript" src="${fn:escapeXml(jslink)}datagrid.js">&#xA0;</script>
     <script type="text/javascript">
         // var myLogReader = new YAHOO.widget.LogReader();
     </script>
