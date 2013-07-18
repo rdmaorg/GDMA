@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.web.servlet.view.AbstractView;
 
 
@@ -57,7 +58,18 @@ public class CsvDownloaderView extends AbstractView {
                     } else {
                         addComma = true;
                     }
-                    sbTemp.append(recordRow.get(i) == null ? " " : getValue(recordRow.get(i)));
+                    //If the column value contains a comma(s), then surround the value with double quotes so the comma(s) are escaped 
+                    //to ensure that the resultant CSV file will not be 'skewed'.
+                    String colValue = recordRow.get(i) == null ? " " : getValue(recordRow.get(i));
+                    if (colValue.indexOf(",") != -1) {
+                    	colValue = colValue.replaceAll("\"", "\"\"");
+                    	sbTemp.append("\"");
+                    	sbTemp.append(colValue);
+                    	sbTemp.append("\"");
+                    } else {
+                    	sbTemp.append(colValue);
+                    }
+                    
                 }
                 addComma = false;
                 sbTemp.append("\r\n");

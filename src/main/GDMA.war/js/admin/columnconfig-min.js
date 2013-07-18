@@ -69,7 +69,7 @@ YAHOO.GDMA.admin.columnconfig.panel.beforeRenderEvent.subscribe(function(){try{Y
 var C=YAHOO.GDMA.utilities.createElement("div","divDlgPopupFormLeft",I);
 var J=YAHOO.GDMA.utilities.createElement("div","divDlgPopupFormCenterButtons",I);
 var D=YAHOO.GDMA.utilities.createElement("div","divDlgPopupFormBottom",I);
-YAHOO.GDMA.admin.columnconfig.layout=new YAHOO.widget.Layout("divDlgPopupFormLayout",{height:400,width:300,units:[{position:"left",width:150,height:60,body:"divDlgPopupFormLeft",header:"User Without Access"},{position:"center",width:100,height:60,body:"divDlgPopupFormCenterButtons"},{position:"bottom",height:40,body:"divDlgPopupFormBottom"}]});
+YAHOO.GDMA.admin.columnconfig.layout=new YAHOO.widget.Layout("divDlgPopupFormLayout",{height:400,width:300,units:[{position:"left",width:150,height:60,body:"divDlgPopupFormLeft",header:"Columns"},{position:"center",width:100,height:60,body:"divDlgPopupFormCenterButtons"},{position:"bottom",height:40,body:"divDlgPopupFormBottom"}]});
 YAHOO.GDMA.admin.columnconfig.layout.render();
 var G=YAHOO.util.Dom.get("divDlgPopupFormCenterButtons");
 var K=YAHOO.GDMA.toolbar.createToolBarButton("Top","btnMoveTop",G,YAHOO.GDMA.admin.columnconfig.moveItemTop,"Move column to top","show");

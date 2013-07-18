@@ -144,7 +144,7 @@ YAHOO.GDMA.admin.columnconfig.initLayout = function (){
                 height: 400,
                 width: 300,
                 units: [
-                    { position: 'left', width: 150, height: 60, body: 'divDlgPopupFormLeft', header: 'User Without Access' },
+                    { position: 'left', width: 150, height: 60, body: 'divDlgPopupFormLeft', header: 'Columns' },
                     { position: 'center', width: 100, height: 60, body: 'divDlgPopupFormCenterButtons' },
                     { position: 'bottom', height: 40, body: 'divDlgPopupFormBottom' }
                 ]

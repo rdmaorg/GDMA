@@ -41,7 +41,7 @@ public class JcifsAuthenticationProvider implements AuthenticationProvider, Init
     private Date expirationDate;
 
     public JcifsAuthenticationProvider() {
-        Config.setProperty("jcifs.smb.client.soTimeout", "300000");
+        Config.setProperty("jcifs.smb.client.soTimeout", "3000");
         Config.setProperty("jcifs.netbios.cachePolicy", "1200");
     }
 

@@ -119,7 +119,7 @@
 <td  colspan="2"><img src="images/blank.gif" height="20" style="display:block" /></td>
 </tr>
 <tr>
-<td style="height:20%"  align="right" colspan="2"> <span style="font-size: x-small;">© AVNET Client Solutions 2011</span></td>
+<td style="height:20%"  align="right" colspan="2"> <span style="font-size: x-small;">© AVNET Client Solutions 2013</span></td>
 </tr>
 	</table>
 </td>
