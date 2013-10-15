@@ -283,9 +283,14 @@ public class DynamicDaoImpl implements DynamicDao {
 
 					for (ColumnUpdate columnUpdate : list) {
 						Column column = gdmaFacade.getColumnDao().get(columnUpdate.getColumnId());
-						columns.add(column);
-
-						parameters.add(SqlUtil.convertToType(columnUpdate.getNewColumnValue(), column.getColumnType()));
+						
+						if(server.getConnectionUrl().toLowerCase().contains(("teradata").toLowerCase()) && column.isPrimarykey() && columnUpdate.getNewColumnValue().equals("")){
+							
+						}else
+						{
+							columns.add(column);
+							parameters.add(SqlUtil.convertToType(columnUpdate.getNewColumnValue(), column.getColumnType()));
+						}
 					}
 					handleSpecialColumns(table.getColumns(), columns, parameters);
 					final String sql = SqlUtil.createInsertStatement(server, table, columns);

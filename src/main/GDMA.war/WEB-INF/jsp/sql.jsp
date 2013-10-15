@@ -8,7 +8,7 @@
     <div id="divSQlTop" class="yui-skin-sam gdma-toolbar">
         <div id="divToolbar" class="yui-skin-sam gdma-toolbar"><select id="selServers" name="selServers"><option>Please Select</option></select></div>
         <div id="divSQlText" class="yui-skin-sam gdma-toolbar">
-            <textarea id="txtSqlEditor" name="txtSqlEditor" rows="5" cols="75" style="width:99%">&#xA0;</textarea>
+            <textarea id="txtSqlEditor" name="txtSqlEditor" rows="5" cols="75" style="width:99%" >&#xA0;</textarea>
         </div>
     </div>
     <div id="divServerTable" class="yui-skin-sam">&#xA0;</div>

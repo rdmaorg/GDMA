@@ -5,7 +5,7 @@
 	<groupId>ie.clients.gdma</groupId>
 	<artifactId>GDMA</artifactId>
 	<packaging>war</packaging>
-	<version>4.1.0</version>
+	<version>4.1.1</version>
 	<ciManagement>
 		<system>continuum</system>
 		<notifiers>
@@ -382,8 +382,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0.3.0</version>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openqa.selenium.client-drivers</groupId>

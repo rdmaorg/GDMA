@@ -7,7 +7,9 @@ YAHOO.GDMA.admin.columns.fields = {
         fields : [ 
                   {key:"id", parser:YAHOO.util.DataSource.parseNumber},
                   {key:"name", parser:YAHOO.util.DataSource.parseString},
+                  {key:"columnType"},
                   {key:"columnTypeString", parser:YAHOO.util.DataSource.parseString},
+                  {key:"columnType"},
                   {key:"primarykey"},
                   {key:"displayed"},
                   {key:"allowInsert"},
@@ -223,8 +225,14 @@ YAHOO.GDMA.admin.columns.columnDefs = [ {
             resizeable:true, 
             width:170
         }, {
-            key :"columnTypeString",
+            key :"columnType",
             label :"Type",
+            sortable:true,
+            resizeable:true, 
+            width:60
+        }, {
+            key :"columnTypeString",
+            label :"Type String",
             sortable:true,
             resizeable:true, 
             width:65

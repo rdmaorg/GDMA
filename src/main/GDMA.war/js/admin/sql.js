@@ -68,9 +68,16 @@ YAHOO.GDMA.sql.onExecute = function(){
         YAHOO.GDMA.dialog.showInfoDialog("Error!", "Please enter a valid select query",YAHOO.widget.SimpleDialog.ICON_BLOCK);
         return;
     }
-    if(sql.substring(0, 6).toUpperCase() != "SELECT")
-	{			
-    	YAHOO.GDMA.dialog.showInfoDialog("Invalid operation!", "This console is designed for SQL SELECT statements. " +
+    
+    if(sql.substring(0,1).toUpperCase() != 'S'){
+    	sql = sql.substring(1);
+    }else{
+    	sql = sql.substring(0);
+    }
+    
+    if(sql.substring(0,6).toUpperCase() != "SELECT")
+	{	
+        	YAHOO.GDMA.dialog.showInfoDialog("Invalid operation!", "This console is designed for SQL SELECT statements. " +
     			"Please use the GUI on the GDMA tab for SQL INSERTS, UPDATES or DELETES.",YAHOO.widget.SimpleDialog.ICON_BLOCK);
 		return;
 	}
