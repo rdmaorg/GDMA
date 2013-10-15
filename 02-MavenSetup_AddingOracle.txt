@@ -4,8 +4,8 @@
  * run the following command = which assumes ojdbc14.jar is in the current directory
 {{{
 mvn install:install-file -DgroupId=com.oracle \
-                         -DartifactId=ojdbc14 \
-                         -Dversion=10.2.0.3.0 \
+                         -DartifactId=ojdbc6 \
+                         -Dversion=11.2.0.3 \
                          -Dpackaging=jar \
-                         -Dfile=ojdbc14.jar
+                         -Dfile=ojdbc6.jar
 }}}
