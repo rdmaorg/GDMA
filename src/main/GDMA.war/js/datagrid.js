@@ -480,17 +480,23 @@ YAHOO.GDMA.datagrid.createDatasource = function(userAccess){
                                 });
                     })();
 
-                    def.editor = YAHOO.GDMA.datagrid.editDropdown;
-                    def.formatter = YAHOO.GDMA.datagrid.formatDropdown;
+//                    def.editor = YAHOO.GDMA.datagrid.editDropdown;
+//                    def.formatter = YAHOO.GDMA.datagrid.formatDropdown;
                     
                     
                 }else{                    
-                	var userAllowUpdate = userAccess["allowUpdate"];                	
-                	//if this column is not a primary key, it is set to allow updates and the current user has update privileges for this table
-                	if(primarykeyfound && columns[i].primarykey != true && columns[i].allowUpdate == true && userAllowUpdate == true){
-                        def.editor = YAHOO.GDMA.utilities.getEditor(columns[i].columnType);
-                        def.editorOptions = {validator:YAHOO.GDMA.utilities.getValidator(columns[i].columnType)};
-                    }                	
+//                	var userAllowUpdate = userAccess["allowUpdate"];                	
+//                	//if this column is not a primary key, it is set to allow updates and the current user has update privileges for this table
+//                	if(primarykeyfound && columns[i].primarykey != true && columns[i].allowUpdate == true && userAllowUpdate == true){
+//                        def.editor = YAHOO.GDMA.utilities.getEditor(columns[i].columnType);
+//                        def.editorOptions = {validator:YAHOO.GDMA.utilities.getValidator(columns[i].columnType)};
+//                    }                	
+                }
+                var userAllowUpdate = userAccess["allowUpdate"];                	
+            	//if this column is not a primary key, it is set to allow updates and the current user has update privileges for this table
+            	if(primarykeyfound && columns[i].primarykey != true && columns[i].allowUpdate == true && userAllowUpdate == true){
+                    def.editor = YAHOO.GDMA.utilities.getEditor(columns[i].columnType);
+                    def.editorOptions = {validator:YAHOO.GDMA.utilities.getValidator(columns[i].columnType)};
                 }
                 
                 YAHOO.GDMA.datagrid.columnDefs.push(def);

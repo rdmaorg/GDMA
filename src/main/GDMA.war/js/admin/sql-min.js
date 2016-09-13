@@ -24,8 +24,7 @@ return
 return 
 }if(D.substring(0,1).toUpperCase()!="S"){D=D.substring(1)
 }else{D=D.substring(0)
-}alert(D);
-if(D.substring(0,6).toUpperCase()!="SELECT"){YAHOO.GDMA.dialog.showInfoDialog("Invalid operation!","This console is designed for SQL SELECT statements. Please use the GUI on the GDMA tab for SQL INSERTS, UPDATES or DELETES.",YAHOO.widget.SimpleDialog.ICON_BLOCK);
+}if(D.substring(0,6).toUpperCase()!="SELECT"){YAHOO.GDMA.dialog.showInfoDialog("Invalid operation!","This console is designed for SQL SELECT statements. Please use the GUI on the GDMA tab for SQL INSERTS, UPDATES or DELETES.",YAHOO.widget.SimpleDialog.ICON_BLOCK);
 return 
 }if(YAHOO.GDMA.sql.dataTable){YAHOO.GDMA.sql.dataTable.destroy()
 }if(YAHOO.GDMA.sql.paginator){YAHOO.GDMA.sql.paginator.destroy()
