@@ -5,7 +5,7 @@
 	<groupId>ie.clients.gdma</groupId>
 	<artifactId>GDMA</artifactId>
 	<packaging>war</packaging>
-	<version>4.1.3</version>
+	<version>4.1.4</version>
 	<ciManagement>
 		<system>continuum</system>
 		<notifiers>
@@ -18,30 +18,16 @@
 	</ciManagement>
 	<developers>
 		<developer>
-			<id>rgill</id>
-			<name>Ronan Gill</name>
-			<email>ronan.gill@clients.ie</email>
-			<organization>Client Solutions</organization>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-		<developer>
             <id>801992</id>
             <name>John Roche</name>
-            <email>john.roche@avnet.com</email>
-            <organization>Avnet Client Solutions</organization>
+            <email></email>
+            <organization></organization>
             <roles>
                 <role>developer</role>
             </roles>
         </developer>
 	</developers>
-	<scm>
-		<connection>scm:cvs|pserver|svu@cvs.clients.local|/home/cvsroot|GDMA</connection>
-		<developerConnection>>scm:cvs|pserver|svu@cvs.clients.local|/home/cvsroot|GDMA</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://cvs.clients.local/cgi-bin/viewcvs.cgi/GDMA</url>
-	</scm>
+
 	<build>
 		<defaultGoal>war:inplace</defaultGoal>
 		<plugins>
