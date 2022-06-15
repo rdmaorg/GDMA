@@ -54,8 +54,8 @@
 <tr><td width="100%" align="center">
 	<table style="width: 995; height:60%; font: 12px/1.3em Arial,Tahoma,Helvetica,sans-serif;">
 	<tr>
-	<td style="align: left; font-size: x-large;" align="left"><img alt="Avnet Client Solutions" src="images/gdma_logo.png"  width="162" height="60"/></td>
-	<td style="height:20%" align="right"><img alt="Avnet Client Solutions" src="images/CustomerLogo.png" width="152.45" height="50" /></td>
+	<td style="align: left; font-size: x-large;" align="left"><img alt="GDMA" src="images/gdma_logo.png"  width="162" height="60"/></td>
+	<td style="height:20%" align="right"></td>
 	</tr>
 	<tr>
 <td  colspan="2"><img src="images/blank.gif"  height="10" style="display:block" /></td>
@@ -63,7 +63,7 @@
 	<tr>
 	<td width="100%" align="center" valign="middle"  colspan="2">
 		<div >
-			<img src="images/header_bg.png" alt="Avnet Client Solutions"  style="display:block" />
+			<img src="images/header_bg.png" alt="GDMA"  style="display:block" />
 		</div>
 		<div style="position:absolute;top:150px;left:56%;overflow:hidden;" >
 			
@@ -119,7 +119,7 @@
 <td  colspan="2"><img src="images/blank.gif" height="20" style="display:block" /></td>
 </tr>
 <tr>
-<td style="height:20%"  align="right" colspan="2"> <span style="font-size: x-small;">© AVNET Client Solutions 2013</span></td>
+<td style="height:20%"  align="right" colspan="2"> <span style="font-size: x-small;"></span></td>
 </tr>
 	</table>
 </td>

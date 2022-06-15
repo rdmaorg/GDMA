@@ -34,7 +34,7 @@
             </li>
         </ul>
     </div>
-		<div style="float:left;z-index:0;"><img alt="Avnet Client Solutions" src="/GDMA/images/gdma_logo.png"  width="162" height="60"/></div>
-<div style="float:right;z-index:0;"><img alt="Avnet Client Solutions" src="/GDMA/images/CustomerLogo.png" width="152.45" height="50" /></div>
+		<div style="float:left;z-index:0;"><img alt="GDMA" src="/GDMA/images/gdma_logo.png"  width="162" height="60"/></div>
+<div style="float:right;z-index:0;"></div>
 
 </jsp:root>    

@@ -32,11 +32,11 @@
     
    <bean id="authenticationProvider"
         class="ie.clients.gdma.security.JcifsAuthenticationProvider"
-        p:domainController="IECORV5WK000847"
-        p:defaultDomain="emea"
+        p:domainController="IECOR000476"
+        p:defaultDomain="CLIENTSOLUTIONS"
         p:defaultRole="ROLE_USER"
         p:adminRole="ROLE_ADMIN"
-        p:expirationDate="01-Jan-2020"
+        p:expirationDate="01-Jan-2030"
         p:userDao-ref="userDao">
         
         <sec:custom-authentication-provider/>

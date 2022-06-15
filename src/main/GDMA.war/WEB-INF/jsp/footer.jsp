@@ -9,7 +9,7 @@
 				
 <div class="footer" height="100%">
 <div style="float:left"><b>Logged in User : </b><sec:authentication property="principal.firstName"/>&nbsp;&nbsp;<sec:authentication property="principal.lastName"/></div>
-<div style="float:right">© 2011 AVNET Client Solutions Ltd. 14 Joyce Way, Park West Business Park, Nangor Road, Dublin 12, Ireland</div>
+<div style="float:right"></div>
 
 </div>
 </jsp:root>
